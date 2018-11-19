@@ -1,0 +1,35 @@
+const http = require('http')
+const express = require('express')
+const app = express()
+const bodyParser = require('body-parser')
+const cors = require('cors')
+const db = require('./db')
+const config = require('./utils/config')
+const noteRouter = require('./routes/note')
+const tagRouter = require('./routes/tag')
+const systeminfoRouter = require('./routes/systeminfo')
+
+// const router = express.Router()
+app.use(bodyParser.json())
+app.use(cors())
+app.use(express.static('build'))
+
+app.use('/api/notes/directory/', noteRouter)
+app.use('/api/notes/tag', tagRouter)
+app.use('/api/systeminfo', systeminfoRouter)
+
+const server = http.createServer(app)
+
+server.listen(config.port, () => {
+	console.log(`Server running on port ${config.port}`)
+})
+
+server.on('close', () => {
+	db.close(() => {
+		console.log('postgres pool has ended')
+	})
+})
+
+module.exports = {
+	app, server
+}
