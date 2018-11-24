@@ -127,7 +127,7 @@ noteRouter.delete('/note/:id', async (req, res) => {
     res.status(500).json({ error: 'something went wrong' })
     throw exception
   } finally {
-    client.release()
+		// db.release() //HEROKU FAILS 'COS OF THIS(?)
     console.log(message)
   }
   if (message === '' || message === undefined) res.json('Note already deleted(?)')
