@@ -1,3 +1,5 @@
-let port = 3001
+const PORT = process.env.PORT || 3001
 
-module.exports = { port }
+module.exports = { PORT }
+
+
