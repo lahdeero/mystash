@@ -6,8 +6,7 @@
   "scripts": {
     "start": "NODE_ENV=production node index.js",
     "watch": "NODE_ENV=development nodemon index.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "eslint ."
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Eero Lahdenperä",
   "license": "MIT",
@@ -20,7 +19,6 @@
     "shelljs": "^0.8.2"
   },
   "devDependencies": {
-    "eslint": "^5.4.0",
     "nodemon": "^1.18.3"
   }
 }
