@@ -20,5 +20,6 @@
   },
   "devDependencies": {
     "nodemon": "^1.18.3"
-  }
+  },
+  "heroku-postbuild": "npm install && cd client && npm install --only-dev && npm install && npm run build"
 }
