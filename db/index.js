@@ -21,8 +21,6 @@ const client = new Client({
   ssl: true,
 });
 
-client.connect();
-
 module.exports = {
   query: (text, params) => client.query(text, params),
   connect: () => client.connect(),

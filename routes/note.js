@@ -5,6 +5,7 @@ noteRouter.get('/all', async (req, res) => {
 	db.connect();
 	try {
 		const { rows } = await db.query('SELECT muistiinpano.id, otsikko, sisalto, array_agg(tagi.nimi) as tagit FROM muistiinpano LEFT JOIN muistiinpanotagi ON muistiinpanotagi.muistiinpano_id = muistiinpano.id LEFT JOIN tagi ON tagi.id = muistiinpanotagi.tagi_id GROUP BY muistiinpano.id, otsikko, sisalto ORDER BY muistiinpano.id ASC')
+		db.close();
   	res.json(rows)
 	} catch (exception) {
 		res.send(exception)
@@ -76,7 +77,7 @@ noteRouter.post('/', async (req, res) => {
   if (body.otsikko === undefined) return res.status(400).json({ error: 'title missing' })
   else if (body.sisalto === undefined) return res.status(400).json({ error: 'contetent missing' })
 
-  const client = await db.connect()
+  const client = await db()
   let id
   try {
     await client.query('BEGIN')
