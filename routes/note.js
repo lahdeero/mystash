@@ -2,15 +2,12 @@ const noteRouter = require('express').Router()
 const db = require('../db')
 
 noteRouter.get('/all', async (req, res) => {
-	db.connect();
 	try {
 		const { rows } = await db.query('SELECT muistiinpano.id, otsikko, sisalto, array_agg(tagi.nimi) as tagit FROM muistiinpano LEFT JOIN muistiinpanotagi ON muistiinpanotagi.muistiinpano_id = muistiinpano.id LEFT JOIN tagi ON tagi.id = muistiinpanotagi.tagi_id GROUP BY muistiinpano.id, otsikko, sisalto ORDER BY muistiinpano.id ASC')
-		db.close();
   	res.json(rows)
 	} catch (exception) {
 		res.send(exception)
 	}
-	db.close();
 })
 
 noteRouter.get('/note/:id', async (req, res) => {
