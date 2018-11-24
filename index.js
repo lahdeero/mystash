@@ -20,8 +20,9 @@ app.use('/api/systeminfo', systeminfoRouter)
 
 const server = http.createServer(app)
 
-server.listen(config.port, () => {
-	console.log(`Server running on port ${config.port}`)
+const PORT = process.env.PORT || 3001
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`)
 })
 
 server.on('close', () => {
