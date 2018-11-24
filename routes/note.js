@@ -103,7 +103,7 @@ noteRouter.post('/', async (req, res) => {
     console.log(exception)
     res.status(400).send('Coult not add note! ' + exception)
   } finally {
-    db.release()
+		// db.release() //HEROKU FAILS 'COS OF THIS(?)
   }
 })
 
