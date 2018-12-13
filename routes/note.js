@@ -1,19 +1,19 @@
 const noteRouter = require('express').Router()
-const db = require('../db')
+const client = require('../db')
 
 noteRouter.get('/all', async (req, res) => {
 	try {
-		const { rows } = await db.query('SELECT muistiinpano.id, otsikko, sisalto, array_agg(tagi.nimi) as tagit FROM muistiinpano LEFT JOIN muistiinpanotagi ON muistiinpanotagi.muistiinpano_id = muistiinpano.id LEFT JOIN tagi ON tagi.id = muistiinpanotagi.tagi_id GROUP BY muistiinpano.id, otsikko, sisalto ORDER BY muistiinpano.id ASC')
+		const { rows } = await client.query('SELECT muistiinpano.id, otsikko, sisalto, array_agg(tagi.nimi) as tagit FROM muistiinpano LEFT JOIN muistiinpanotagi ON muistiinpanotagi.muistiinpano_id = muistiinpano.id LEFT JOIN tagi ON tagi.id = muistiinpanotagi.tagi_id GROUP BY muistiinpano.id, otsikko, sisalto ORDER BY muistiinpano.id DESC')
   	res.json(rows)
 	} catch (exception) {
 		res.send(exception)
-	}
+	} 
 })
 
 noteRouter.get('/note/:id', async (req, res) => {
 	const id = parseInt(req.params.id)
 	if (id === undefined || !Number.isInteger(id)) res.status(400).send('No id')
-	const { rows } = await db.query('SELECT muistiinpano.id, otsikko, sisalto, array_agg(tagi.nimi) as tagit FROM muistiinpano LEFT JOIN muistiinpanotagi ON muistiinpanotagi.muistiinpano_id = muistiinpano.id LEFT JOIN tagi ON tagi.id = muistiinpanotagi.tagi_id WHERE muistiinpano.id=($1) GROUP BY muistiinpano.id', [id])
+	const { rows } = await client.query('SELECT muistiinpano.id, otsikko, sisalto, array_agg(tagi.nimi) as tagit FROM muistiinpano LEFT JOIN muistiinpanotagi ON muistiinpanotagi.muistiinpano_id = muistiinpano.id LEFT JOIN tagi ON tagi.id = muistiinpanotagi.tagi_id WHERE muistiinpano.id=($1) GROUP BY muistiinpano.id', [id])
   res.json(rows)
 })
 
@@ -24,8 +24,6 @@ noteRouter.put('/note/:id', async (req, res) => {
 	const body = req.body
 	if (body.otsikko === undefined || body.otsikko.length === 0) return res.status(400).json({ error: 'title missing' })
 	else if (body.sisalto === undefined) return res.status(400).json({ error: 'contetent missing' })
-
-  const client = await db.connect()
 
   try {
     client.query('BEGIN')
@@ -57,14 +55,13 @@ noteRouter.put('/note/:id', async (req, res) => {
     }) 
     await client.query('COMMIT')
     /* FOR SOME REASON result DOESNT INCLUDE ADDED TAGS */
-    const result = await db.query('SELECT muistiinpano.id, otsikko, sisalto, array_agg(tagi.nimi) as tagit FROM muistiinpano LEFT JOIN muistiinpanotagi ON muistiinpanotagi.muistiinpano_id = muistiinpano.id LEFT JOIN tagi ON tagi.id = muistiinpanotagi.tagi_id WHERE muistiinpano.id=($1) GROUP BY muistiinpano.id', [id])
+    const result = await client.query('SELECT muistiinpano.id, otsikko, sisalto, array_agg(tagi.nimi) as tagit FROM muistiinpano LEFT JOIN muistiinpanotagi ON muistiinpanotagi.muistiinpano_id = muistiinpano.id LEFT JOIN tagi ON tagi.id = muistiinpanotagi.tagi_id WHERE muistiinpano.id=($1) GROUP BY muistiinpano.id', [id])
     await res.json(result.rows)
   } catch (error) {
     client.query('ROLLBACK')
     console.log(error)
     res.status(400).send('Could not update note' + error)
   } finally {
-    client.release()
   }
 })
 
@@ -74,7 +71,6 @@ noteRouter.post('/', async (req, res) => {
   if (body.otsikko === undefined) return res.status(400).json({ error: 'title missing' })
   else if (body.sisalto === undefined) return res.status(400).json({ error: 'contetent missing' })
 
-  const client = await db.connect()
   let id
   try {
     await client.query('BEGIN')
@@ -97,14 +93,12 @@ noteRouter.post('/', async (req, res) => {
     })
     
     await client.query('COMMIT')
-    const result = await db.query('SELECT muistiinpano.id, otsikko, sisalto, array_agg(tagi.nimi) as tagit FROM muistiinpano LEFT JOIN muistiinpanotagi ON muistiinpanotagi.muistiinpano_id = muistiinpano.id LEFT JOIN tagi ON tagi.id = muistiinpanotagi.tagi_id WHERE muistiinpano.id=($1) GROUP BY muistiinpano.id', [id])
+    const result = await client.query('SELECT muistiinpano.id, otsikko, sisalto, array_agg(tagi.nimi) as tagit FROM muistiinpano LEFT JOIN muistiinpanotagi ON muistiinpanotagi.muistiinpano_id = muistiinpano.id LEFT JOIN tagi ON tagi.id = muistiinpanotagi.tagi_id WHERE muistiinpano.id=($1) GROUP BY muistiinpano.id', [id])
     await res.json(result.rows)
   } catch (exception) {
     await client.query('ROLLBACK')
     console.log(exception)
     res.status(400).send('Coult not add note! ' + exception)
-  } finally {
-    client.release()
   }
 })
 
@@ -113,7 +107,6 @@ noteRouter.delete('/note/:id', async (req, res) => {
   if (id === undefined || !Number.isInteger(id)) res.status(400).send('Id missing')
 
   let message = ''
-  const client = await db.connect()
   try {
     await client.query('BEGIN')
     const { rows } = await client.query('SELECT * FROM muistiinpano WHERE id = ($1)', [id])
@@ -128,7 +121,6 @@ noteRouter.delete('/note/:id', async (req, res) => {
     res.status(500).json({ error: 'something went wrong' })
     throw exception
   } finally {
-    client.release()
     console.log(message)
   }
   if (message === '' || message === undefined) res.json('Note already deleted(?)')

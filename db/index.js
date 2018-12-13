@@ -1,5 +1,4 @@
-// const { Pool } = require('pg')
-const pg = require('pg')
+const { Client } = require('pg');
 
 require('dotenv').config()
 
@@ -14,17 +13,15 @@ require('dotenv').config()
 
 // const pool = new pg.Pool(config)
 
-const { Client } = require('pg');
-
 const client = new Client({
   connectionString: process.env.DATABASE_URL,
   ssl: true,
 });
 
-client.connect();
+client.connect()
 
 module.exports = {
   query: (text, params) => client.query(text, params),
   connect: () => client.connect(),
-  release: () => client.end()
+  end: () => client.end()
 }
