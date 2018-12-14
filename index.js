@@ -3,7 +3,7 @@ const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
 const cors = require('cors')
-const db = require('./db')
+const client = require('./db')
 const config = require('./utils/config')
 const noteRouter = require('./routes/note')
 const tagRouter = require('./routes/tag')
@@ -26,7 +26,7 @@ app.listen(PORT, () => {
 })
 
 server.on('close', () => {
-	db.close(() => {
+	client.end(() => {
 		console.log('postgres pool has ended')
 	})
 })

@@ -6,7 +6,6 @@ noteRouter.get('/all', async (req, res) => {
 	try {
 		const { rows } = await client.query('SELECT muistiinpano.id, otsikko, sisalto, array_agg(tagi.nimi) as tagit FROM muistiinpano LEFT JOIN muistiinpanotagi ON muistiinpanotagi.muistiinpano_id = muistiinpano.id LEFT JOIN tagi ON tagi.id = muistiinpanotagi.tagi_id GROUP BY muistiinpano.id, otsikko, sisalto ORDER BY muistiinpano.id DESC')
   	res.json(rows)
-		console.log(typeof(rows))
 	} catch (exception) {
 		res.send(exception)
 	} 
@@ -14,10 +13,8 @@ noteRouter.get('/all', async (req, res) => {
 
 noteRouter.get('/search/:keyword', async (req, res) => {
 	const keyword = req.params.keyword
-	console.log(keyword)
 	try {
 		const { rows } = await client.query('SELECT muistiinpano.id, otsikko, sisalto, array_agg(tagi.nimi) as tagit FROM muistiinpano LEFT JOIN muistiinpanotagi ON muistiinpanotagi.muistiinpano_id = muistiinpano.id LEFT JOIN tagi ON tagi.id = muistiinpanotagi.tagi_id WHERE tagi.nimi LIKE ($1) GROUP BY muistiinpano.id, otsikko, sisalto ORDER BY muistiinpano.id DESC', [keyword])
-		// console.log(rows)
 		res.json(rows)
 	} catch (exception) {
 		res.send(exception)
