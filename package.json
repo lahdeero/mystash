@@ -4,9 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "NODE_ENV=production node index.js",
-    "watch": "set NODE_ENV=development & nodemon index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "cross-env NODE_ENV=production node index.js",
+    "watch": "cross-env NODE_ENV=development nodemon index.js",
+    "test": "cross-env NODE_ENV=test jest --verbose",
+    "lint": "eslint ."
   },
   "author": "Eero Lahdenperä",
   "license": "MIT",
@@ -20,6 +21,7 @@
     "shelljs": "^0.8.2"
   },
   "devDependencies": {
+    "cross-env": "^5.2.0",
     "nodemon": "^1.18.3"
   },
   "heroku-postbuild": "npm install && cd client && npm install --only-dev && npm install && npm run build"
