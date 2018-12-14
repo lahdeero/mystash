@@ -106,13 +106,24 @@ noteRouter.post('/', async (req, res) => {
       await db.query(insertNoteTag, insertNoteTagValues)
     })
     
+<<<<<<< HEAD
+    await db.query('COMMIT')
+    const result = await db.query('SELECT muistiinpano.id, otsikko, sisalto, array_agg(tagi.nimi) as tagit FROM muistiinpano LEFT JOIN muistiinpanotagi ON muistiinpanotagi.muistiinpano_id = muistiinpano.id LEFT JOIN tagi ON tagi.id = muistiinpanotagi.tagi_id WHERE muistiinpano.id=($1) GROUP BY muistiinpano.id', [id])
+=======
     await client.query('COMMIT')
     const result = await client.query('SELECT muistiinpano.id, otsikko, sisalto, array_agg(tagi.nimi) as tagit FROM muistiinpano LEFT JOIN muistiinpanotagi ON muistiinpanotagi.muistiinpano_id = muistiinpano.id LEFT JOIN tagi ON tagi.id = muistiinpanotagi.tagi_id WHERE muistiinpano.id=($1) GROUP BY muistiinpano.id', [id])
+>>>>>>> 28e2a7a787f3aeaae87f7c4a861579644d5daf63
     await res.json(result.rows)
   } catch (exception) {
     await db.query('ROLLBACK')
     console.log(exception)
+<<<<<<< HEAD
+    res.status(400).send('Coult not add note! ' + exception)
+  } finally {
+		// db.release() //HEROKU FAILS 'COS OF THIS(?)
+=======
     res.status(400).send('Could not add note! ' + exception)
+>>>>>>> 28e2a7a787f3aeaae87f7c4a861579644d5daf63
   }
 })
 
@@ -135,6 +146,10 @@ noteRouter.delete('/note/:id', async (req, res) => {
     res.status(500).json({ error: 'something went wrong' })
     throw exception
   } finally {
+<<<<<<< HEAD
+		// db.release() //HEROKU FAILS 'COS OF THIS(?)
+=======
+>>>>>>> 28e2a7a787f3aeaae87f7c4a861579644d5daf63
     console.log(message)
   }
   if (message === '' || message === undefined) res.json('Note already deleted(?)')
