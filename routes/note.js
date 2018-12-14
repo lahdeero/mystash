@@ -84,15 +84,15 @@ noteRouter.post('/', async (req, res) => {
 
   let id
   try {
-    await db.query('BEGIN')
-    const { rows } = await db.query('INSERT INTO muistiinpano(otsikko,sisalto) VALUES($1, $2) RETURNING id', [body.otsikko, body.sisalto])
+    await client.query('BEGIN')
+    const { rows } = await client.query('INSERT INTO muistiinpano(otsikko,sisalto) VALUES($1, $2) RETURNING id', [body.otsikko, body.sisalto])
     id = rows[0].id
 
     await body.tagit.forEach( async (tagi) => {
       let tagId
-      const selectRes = await db.query('SELECT id FROM tagi WHERE nimi = ($1)', [tagi])
+      const selectRes = await client.query('SELECT id FROM tagi WHERE nimi = ($1)', [tagi])
       if (selectRes.rows[0] === undefined) {
-        const insertRes = await db.query('INSERT INTO tagi(nimi) VALUES($1) RETURNING id', [tagi])
+        const insertRes = await client.query('INSERT INTO tagi(nimi) VALUES($1) RETURNING id', [tagi])
         tagId = await insertRes.rows[0].id
       } else if (selectRes.rows[0] !== undefined){
         tagId = await selectRes.rows[0].id
@@ -100,14 +100,14 @@ noteRouter.post('/', async (req, res) => {
 
       const insertNoteTag = await 'INSERT INTO muistiinpanotagi(muistiinpano_id, tagi_id) VALUES ($1, $2)'
       const insertNoteTagValues = await [id, tagId]
-      await db.query(insertNoteTag, insertNoteTagValues)
+      await client.query(insertNoteTag, insertNoteTagValues)
     })
     
     await client.query('COMMIT')
     const result = await client.query('SELECT muistiinpano.id, otsikko, sisalto, array_agg(tagi.nimi) as tagit FROM muistiinpano LEFT JOIN muistiinpanotagi ON muistiinpanotagi.muistiinpano_id = muistiinpano.id LEFT JOIN tagi ON tagi.id = muistiinpanotagi.tagi_id WHERE muistiinpano.id=($1) GROUP BY muistiinpano.id', [id])
     await res.json(result.rows)
   } catch (exception) {
-    await db.query('ROLLBACK')
+    await client.query('ROLLBACK')
     console.log(exception)
     res.status(400).send('Could not add note! ' + exception)
   }
