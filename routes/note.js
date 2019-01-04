@@ -117,25 +117,24 @@ noteRouter.delete('/note/:id', async (req, res) => {
   const id = parseInt(req.params.id)
   if (id === undefined || !Number.isInteger(id)) res.status(400).send('Id missing')
 
-  let message = ''
+  let ret_id = 0
   try {
     await client.query('BEGIN')
     const { rows } = await client.query('SELECT * FROM note WHERE id = ($1)', [id])
+    ret_id = rows[0].id
     if (rows[0] !== undefined) {
-      message = await 'Note ' + rows[0].id + ' deleted! title: ' + rows[0].title + ' content: ' + rows[0].content
       await client.query('DELETE FROM note WHERE id = ($1)', [id])
       await client.query('COMMIT')
     }
   } catch (exception)  {
     console.log(exception)
     await client.query('ROLLBACK')
-    res.status(500).json({ error: 'something went wrong' })
+    res.status(500).json({ id: null, error: 'Could not delete note ' + id })
     throw exception
   } finally {
-    console.log(message)
+    console.log(ret_id)
+    res.json(ret_id)
   }
-  if (message === '' || message === undefined) res.json('Note already deleted(?)')
-  else res.json(message)
 })
 
 module.exports = noteRouter

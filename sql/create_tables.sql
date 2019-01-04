@@ -1,26 +1,28 @@
-CREATE TABLE kayttaja(
+CREATE TABLE account (
 	id SERIAL PRIMARY KEY,
-	nimi varchar(32) NOT NULL UNIQUE,
-	salasana varchar(32) NOT NULL
+	username varchar(32) NOT NULL UNIQUE,
+	password varchar(1024) NOT NULL,
+	salt varchar(512),
+    tier integer NOT NULL
 );
 
-CREATE TABLE muistiinpano(
+CREATE TABLE note(
 	id SERIAL PRIMARY KEY,
-	otsikko varchar(256) NOT NULL,
-	sisalto text NOT NULL,
-	kayttaja_id integer REFERENCES Kayttaja(id)
+	title varchar(256) NOT NULL,
+	content text NOT NULL,
+	account_id integer REFERENCES Account(id)
 );
 
-CREATE TABLE tagi(
+CREATE TABLE tag(
 	id SERIAL PRIMARY KEY,
-	nimi varchar(32)
+	name varchar(32)
 );
 
-CREATE TABLE muistiinpanotagi (
-	muistiinpano_id integer,
-	tagi_id integer,
-	FOREIGN KEY(muistiinpano_id) REFERENCES Muistiinpano(id) ON DELETE CASCADE,
-	FOREIGN KEY(tagi_id) REFERENCES Tagi(id) ON DELETE CASCADE
+CREATE TABLE notetag (
+	note_id integer,
+	tag_id integer,
+	FOREIGN KEY(note_id) REFERENCES Note(id) ON DELETE CASCADE,
+	FOREIGN KEY(tag_id) REFERENCES Tag(id) ON DELETE CASCADE
 );
 
 
