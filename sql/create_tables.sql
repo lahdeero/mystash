@@ -2,7 +2,8 @@ CREATE TABLE account (
 	id SERIAL PRIMARY KEY,
 	username varchar(32) NOT NULL UNIQUE,
 	password varchar(1024) NOT NULL,
-	salt varchar(512),
+	realname varchar(256) NOT NULL,
+	email varchar(256) NOT NULL,
     tier integer NOT NULL
 );
 
