@@ -4,6 +4,7 @@ CREATE TABLE account (
 	password varchar(1024) NOT NULL,
 	realname varchar(256) NOT NULL,
 	email varchar(256) NOT NULL,
+	register_date DATE,
     tier integer NOT NULL
 );
 
@@ -16,7 +17,7 @@ CREATE TABLE note(
 
 CREATE TABLE tag(
 	id SERIAL PRIMARY KEY,
-	name varchar(32)
+	name varchar(32) NOT NULL UNIQUE
 );
 
 CREATE TABLE notetag (
