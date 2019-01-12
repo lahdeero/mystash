@@ -1,26 +1,90 @@
+const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 const usersRouter = require('express').Router()
-const User = require('../models/user')
 const client = require('../db')
 
-
-usersRouter.post('/', async (request, response) => {
+function alphanumeric(inputtxt) { 
+  var letters = /^[0-9a-zA-Z]+$/
+  if (letters.test(inputtxt)) {
+    return true;
+  } else {
+    return false;
+  }
+}
+async function generateWelcome(id) {
   try {
-    const body = request.body
+    client.query('BEGIN')
+    const title = 'Welcome to my-stash!'
+    const content = 'This is automated welcome note!\nYou can start creating own notes now.\nIf you run into problemns create issue in github\nhttps://github.com/lahdeero/my-stash\n'
+    const { rows } = await client.query('INSERT INTO note(title,content,account_id) VALUES( $1, $2, $3) RETURNING id', [title,content,id])
+    const note_id = rows[0].id
+    const tag = 'initial'
+    const selectRes = await client.query('SELECT id FROM tag WHERE name = ($1)', [tag])
+    let tagId;
+    if (selectRes.rows[0] === undefined) {
+      const insertRes = await client.query('INSERT INTO tag(name) VALUES($1) RETURNING id', [tag])
+      tagId = await insertRes.rows[0].id
+    } else if (selectRes.rows[0] !== undefined){
+      tagId = await selectRes.rows[0].id
+    }
+    await client.query('INSERT INTO notetag(note_id, tag_id) VALUES ($1, $2)', [note_id, tagId])
+    client.query('COMMIT')
+  } catch (exception) {
+    await client.query('ROLLBACK')
+    console.log(exception)
+  }
+}
+usersRouter.post('/', async (request, response) => {
+  const body = request.body
+  if ( !body.username || !body.password) {
+    return response.status(400).json({ error: 'No username or password' })
+  } else if (alphanumeric(body.username) === false) {
+    console.log('inavlid name2')
+    return response.status(406).json({ error: 'Username can\'t include special characters' })
+  } else {
+    console.log('username fine')
+    console.log(body.username)
+  }
+
+  try {
+    const { rows } = await client.query('SELECT COUNT(username) FROM account WHERE username=($1)', [body.username])
+    console.log(rows)
+    if (rows[0].count != 0) {
+      return response.status(401).json({ error: 'Username not available' })
+    } 
+  } catch (exception) {
+    console.log(exception)
+    response.status(500).json({ error: 'something went wrong...' })
+  } 
+
+  try {
+    console.log(body)
 
     const saltRounds = 10
     const passwordHash = await bcrypt.hash(body.password, saltRounds)
 
     const today = new Date();
 
-    const { rows } = await client.query('INSERT INTO account(username,password,realname,tier,register_date) VALUES($1, $2, $3, $4, $5) RETURNING id', [body.username,passwordHash,body.realname,1,today])
-    const savedUser = await rows[0]
+    const { rows } = await client.query('INSERT INTO account (username,password,realname,email,tier,register_date) VALUES($1, $2, $3, $4, $5, $6) RETURNING id', [body.username,passwordHash,body.realname,body.email,1,today])
+    const id = rows[0].id
+  	const res = await client.query('SELECT * FROM account WHERE username = ($1) AND id=($2) LIMIT 1', [body.username, id])
+    const user = res.rows[0]
+    await generateWelcome(id)
 
-    response.json(savedUser)
+	  const userForToken = {
+	    username: user.username,
+	    id: user.id,
+	    tier: user.tier
+	  }
+	  const token = jwt.sign(userForToken, process.env.SECRET)
+		console.log('successful login')
+		response.status(200).send({ token, id: user.id, username: user.username, realname: user.realname, email: user.email, tier: user.tier })
   } catch (exception) {
     console.log(exception)
     response.status(500).json({ error: 'something went wrong...' })
   }
 })
+
+
 
 module.exports = usersRouter

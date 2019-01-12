@@ -1,6 +1,6 @@
 CREATE TABLE account (
 	id SERIAL PRIMARY KEY,
-	username varchar(32) NOT NULL UNIQUE,
+	username varchar(64) NOT NULL UNIQUE,
 	password varchar(1024) NOT NULL,
 	realname varchar(256) NOT NULL,
 	email varchar(256) NOT NULL,
