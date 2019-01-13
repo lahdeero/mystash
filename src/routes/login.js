@@ -28,7 +28,7 @@ loginRouter.post('/', async (request, response) => {
     }
     const token = jwt.sign(userForToken, process.env.SECRET)
     console.log('successful login')
-    response.status(200).send({ token, id: user.id, username: user.username, realname: user.realname, email: user.email, tier: user.tier })
+    response.status(200).send({ token, id: user.id })
   } catch (exception) {
     console.log('failed login, user: ' + body.username)
     return response.status(401).json({ error: 'invalid username or password' })
