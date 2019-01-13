@@ -10,21 +10,20 @@ class Filter extends React.Component {
 
     return (
       <div style={style}>
-         <input onChange={this.props.handleChange} value={this.props.filter} />
+        <input onChange={this.props.handleChange} value={this.props.filter} />
       </div>
     )
   }
 }
 
 const mapStateToProps = (store) => {
-	return {
-		filter: store.filter
-	}
+  return {
+    filter: store.filter
+  }
 }
 
 const ConnectedFilter = connect(
-	mapStateToProps
+  mapStateToProps
 )(Filter)
 
 export default ConnectedFilter
-

@@ -6,15 +6,15 @@ import filterReducer from './reducers/filter'
 // import rootReducer from './reducers/NOTNEEDED'
 
 const reducer = combineReducers({
-	notes: noteReducer,
-	notification: notificationReducer,
-	filter: filterReducer
+  notes: noteReducer,
+  notification: notificationReducer,
+  filter: filterReducer
 })
 // const reducer = combineReducers(rootReducer)
 
 const store = createStore(
-	reducer,
-	applyMiddleware(thunk)
+  reducer,
+  applyMiddleware(thunk)
 )
 
 export default store

@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { actionForLogin } from '../reducers/userReducer'
 import {noteInitialization} from '../reducers/noteReducer'
 import Register from './Register'
+import '../App.css'
 
 class Login extends Component {
 	constructor() {
@@ -53,7 +54,7 @@ class Login extends Component {
 			<div>
 				<Navbar className="indigo" brand='my-stash' right>
 				</Navbar>
-				<div className="container">
+				<div className="container centered">
 					<div>
 						{this.state.error}
 					</div>

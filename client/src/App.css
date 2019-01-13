@@ -11,14 +11,23 @@ ul {
   list-style-type: none;
 }
 
+.centered {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -moz-transform: translateX(-50%) translateY(-50%);
+  -webkit-transform: translateX(-50%) translateY(-50%);
+  transform: translateX(-50%) translateY(-50%);
+}
+
 .indent { 
-    display: block;
-    list-style-type: disc;
-    margin-top: 1em;
-    margin-bottom: 1 em;
-    margin-left: 0;
-    margin-right: 0;
-    padding-left: 40px;
+  display: block;
+  list-style-type: disc;
+  margin-top: 1em;
+  margin-bottom: 1 em;
+  margin-left: 0;
+  margin-right: 0;
+  padding-left: 40px;
 }
 
 .notification {

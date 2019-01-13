@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Pagination } from 'react-materialize'
 import { actionForFilter } from '../../reducers/filterReducer'
-import { noteInitialization } from '../../reducers/noteReducer'
+import { noteInitialization, createButDontSave } from '../../reducers/noteReducer'
 
 import ListNote from './ListNote'
 
@@ -11,15 +11,12 @@ class List extends React.Component {
 		super(props)
 		this.state = {
 			page: 1,
-			notesPerPage: 10,
-			notes: []
+			notesPerPage: 10
 		}
 	}
 
-	componentWillMount() {
-		if (this.props.notes.length === 0) {
-			this.props.noteInitialization(this.props.user)
-		}
+	componenWillMount() {
+		noteInitialization(this.props.user)
 	}
 
 	handleSelect = async (selectedKey) => {
@@ -57,20 +54,20 @@ class List extends React.Component {
 
 		return (
 			<div className="container">
-					<div className="center">
-						<Pagination items={Math.ceil(this.props.notes.length/this.state.notesPerPage)} activePage={this.state.page} maxButtons={10} onSelect={this.handleSelect} />
-					</div>
-					<ul>
-						{notesToShow.map(note => <li key={key++}>
-							<div>
-								<ListNote note={note} Link={this.props.Link} Key={key} handleChange={this.props.actionForFilter} />
-							</div>
-						</li>
-						)}
-					</ul>
-					<div className="center">
-						<Pagination items={Math.ceil(this.props.notes.length/this.state.notesPerPage)} activePage={this.state.page} maxButtons={10} onSelect={this.handleSelect} />
-					</div>
+				<div className="center">
+					<Pagination items={Math.ceil(this.props.notes.length/this.state.notesPerPage)} activePage={this.state.page} maxButtons={10} onSelect={this.handleSelect} />
+				</div>
+				<ul>
+					{notesToShow.map(note => <li key={key++}>
+						<div>
+							<ListNote note={note} Link={this.props.Link} Key={key} handleChange={this.props.actionForFilter} />
+						</div>
+					</li>
+					)}
+				</ul>
+				<div className="center">
+					<Pagination items={Math.ceil(this.props.notes.length/this.state.notesPerPage)} activePage={this.state.page} maxButtons={10} onSelect={this.handleSelect} />
+				</div>
 			</div>
 		)
 	}
@@ -85,7 +82,8 @@ const mapStateToProps = (store) => {
 }
 const mapDispatchToProps = {
 	noteInitialization,
-	actionForFilter
+	actionForFilter,
+	createButDontSave
 }
 const ConnectedList = connect(
 	mapStateToProps,

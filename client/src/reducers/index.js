@@ -5,8 +5,8 @@ import filter from './filterReducer'
 import notification from './notificationReducer'
 
 export default combineReducers({
-    user,
-    notes,
-    filter,
-    notification
+  user,
+  notes,
+  filter,
+  notification
 })

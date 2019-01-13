@@ -4,7 +4,6 @@ const app = express()
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const client = require('./db')
-const config = require('./utils/config')
 const noteRouter = require('./routes/note')
 const tagRouter = require('./routes/tag')
 const systeminfoRouter = require('./routes/systeminfo')
@@ -25,20 +24,20 @@ app.use('/api/login', loginRouter)
 const server = http.createServer(app)
 
 app.get('/create', function (req, res) {
-	res.json('create')
+  res.json('create')
 })
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`)
+  console.log(`Server running on port ${PORT}`)
 })
 
 server.on('close', () => {
-	client.end(() => {
-		console.log('postgres pool has ended')
-	})
+  client.end(() => {
+    console.log('postgres pool has ended')
+  })
 })
 
 module.exports = {
-	app, server
+  app, server
 }

@@ -3,15 +3,15 @@ const notificationReducer = (store = ' ', action) => {
     case 'NOTIFY':
       store = action.data
       return [store, action.data]
-		case 'ERROR':
-			store = action.data
-			return [store, action.data]
+    case 'ERROR':
+      store = action.data
+      return [store, action.data]
     case 'HIDE_NOTIFICATION':
       store = ''
       return store
-		case 'HIDE_ERROR':
-			store = ''
-			return store
+    case 'HIDE_ERROR':
+      store = ''
+      return store
     default:
       return store
   }
@@ -21,7 +21,7 @@ export const notify = (notification, timer) => {
   return async (dispatch) => {
     dispatch({
       type: 'NOTIFY',
-			data: notification
+      data: notification
     })
     setTimeout(() => {
       dispatch({ type: 'HIDE_NOTIFICATION' })
@@ -33,7 +33,7 @@ export const errormessage = (notification, timer) => {
   return async (dispatch) => {
     dispatch({
       type: 'ERROR',
-			data: notification
+      data: notification
     })
     setTimeout(() => {
       dispatch({ type: 'HIDE_ERROR' })

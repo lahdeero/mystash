@@ -98,7 +98,7 @@ class Form extends React.Component {
 		}
 
 		return(
-    	<div className="container">
+    <div className="container">
       	<h2>Create new note</h2>
 
 			<form id="noteform" onSubmit={this.handleSubmit}>
@@ -113,29 +113,29 @@ class Form extends React.Component {
        			</label>
          	</div>
 	 				<br/>
-				</form>
+			</form>
 
-				<div>
-					{this.state.tags.map(tag =>
-					<Button key={tag} onClick={() => { this.removeTag(tag) }}> {tag} </Button>
-					)}
-				</div>
+			<div>
+				{this.state.tags.map(tag =>
+				<Button key={tag} onClick={() => { this.removeTag(tag) }}> {tag} </Button>
+				)}
+			</div>
 		 	 
-				<form id="tagform" onSubmit={this.addTag}>
-					<Button className="deep orange" type="submit" form="tagform">Add tag</Button> 
-					<div>
-							<br />
-							<input name='tagText' value={this.state.tagText} onChange={this.handleChange}/>
-					</div>
-				</form>
-		 
-		 		<div>
-					<br />
-         			<Button form="noteform" className="red accent-2" type="submit">Create</Button>
+			<form id="tagform" onSubmit={this.addTag}>
+				<Button className="deep orange" type="submit" form="tagform">Add tag</Button> 
+				<div>
+						<br />
+						<input name='tagText' value={this.state.tagText} onChange={this.handleChange}/>
 				</div>
-			</div>  
-		)
-	}
+			</form>
+		 
+		 	<div>
+				<br />
+       	<Button form="noteform" className="red accent-2" type="submit">Create</Button>
+			</div>
+		</div>  
+	)
+ }
 }
 
 const mapDispatchToProps = {
