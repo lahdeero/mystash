@@ -14,6 +14,9 @@ const setToken = (id, newToken) => {
 
 // REMEMBER ALWAYS TO ADD EXPORT DEFAULT!!!!!!!!!
 const getAll = async () => {
+  if (userId == null) {
+    return null
+  }
   const response = await API.get(baseUrl + '/' + userId + '/all', config)
   return response.data
 }

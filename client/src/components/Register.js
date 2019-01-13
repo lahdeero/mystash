@@ -27,8 +27,8 @@ class Register extends Component {
         password: this.state.password,
         email: this.state.email
 	  })
-	  const user = tokenAndMessage[0]
-	  createButDontSave(tokenAndMessage[1])
+	  const user = await tokenAndMessage[0]
+	  await createButDontSave(tokenAndMessage[1])
 	  await window.localStorage.setItem('loggedMystashappUser', JSON.stringify(user))
 	  await setLogin(user)
 	  await window.location.reload();

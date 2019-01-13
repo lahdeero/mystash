@@ -113,7 +113,6 @@ noteRouter.post('/', async (req, res) => {
       return res.status(500).json({ error: 'something went wrong...' })
     }
   }
-
 })
 
 noteRouter.put('/note/:id', async (req, res) => {
@@ -198,7 +197,7 @@ noteRouter.delete('/note/:id', async (req, res) => {
     }
     return res.json(rows[0].id)
   } catch (exception) {
-    if (exception.name === 'JsonWebTokenError' ) {
+    if (exception.name === 'JsonWebTokenError') {
       res.status(401).json({ error: exception.message })
     } else {
       await client.query('ROLLBACK')
