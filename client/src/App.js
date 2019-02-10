@@ -1,7 +1,6 @@
-import React, { Component } from 'react'
+import React, {useState,useEffect } from 'react'
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
 import { connect } from 'react-redux'
-import PropTypes from 'prop-types'
 
 import './App.css'
 import Menu from './components/Menu'
@@ -13,67 +12,37 @@ import Form from './components/note/Form'
 import Settings from './components/Settings'
 import Notification from './components/Notification'
 import { noteInitialization, clearNotes } from './reducers/noteReducer'
-import { actionForFilter } from './reducers/filterReducer'
 import { setLogin, actionForLogout } from './reducers/userReducer'
+import useFilter from './hooks/useFilter'
 
-class App extends Component {
-	static propTypes = {
-    actionForFilter: PropTypes.func.isRequired,
-		clearNotes: PropTypes.func.isRequired,
-		setLogin: PropTypes.func.isRequired,
-		actionForLogout: PropTypes.func.isRequired
-	}
-	constructor() {
-		super()
-		this.state = {
-			navigation: 1
-		}
-	}
-
-	init = (loggedUserJSON) => {
-		const user = JSON.parse(loggedUserJSON)
-		this.props.setLogin(user)
-		this.props.noteInitialization(user)
-	}
-	componentWillMount() {
+const App = (props) => {
+	const filter = useFilter()
+	const [state, setState] = useState({ navigation: 0, logged: 0 })
+	
+	useEffect(() => {
 		const loggedUserJSON = window.localStorage.getItem('loggedMystashappUser')
-		if (loggedUserJSON && (!this.props.user || this.props.user.token)) {
-			this.init(loggedUserJSON)
-			this.setState({
-				first: false
-			})
+		if (state.logged === 0 && loggedUserJSON) {
+			setState(state.logged=1)
+			init(loggedUserJSON)
 		}
-		document.title = 'my-stash'
+	})
+
+	const init = (loggedUserJSON) => {
+		const user = JSON.parse(loggedUserJSON)
+		props.setLogin(user)
+		props.noteInitialization(user)
 	}
 
-	handleChange = (event) => {
-    event.preventDefault()
-    const filter = event.target.value
-    this.props.actionForFilter(filter)
-	}
-	handleLogout = async (event) => {
+	const handleLogout = async (event) => {
 		await event.preventDefault()
 		await window.localStorage.removeItem('loggedMystashappUser')
-    await this.props.actionForFilter('')
-		await this.props.clearNotes()
-		await this.props.actionForLogout()
+		await filter.setFilter('')
+		await props.clearNotes()
+		await props.actionForLogout()
+		await setState({ navigation: 0, logged: 0 })
 	}
 
-	handleSelect = (selectedKey) => () => {
-		switch(selectedKey) {
-			case 1:
-				return this.setState({ navigation: 1 })
-			case 2:
-				return this.setState({ navigation: 2 })
-			case 3:
-				return this.setState({ navigation: 3 })
-			default:
-				return this.state
-		}
-	}
-
-  render() {
-	if (!this.props.user) {
+	if (state.logged === 0) {
 	  return (<Login />)
 	} 
 	return (
@@ -81,8 +50,8 @@ class App extends Component {
 			<Notification />
       <Router>
 			  <div>
-		 		  <Menu currentPage={this.state.navigation} handleSelect={this.handleSelect} handleChange={this.handleChange} handleLogout={this.handleLogout} />
-  			  <Route exact path="/" render={() => <List Link={Link} Route={Route} handleChange={this.handleChange} />} />
+		 		  <Menu currentPage={state.navigation} filter={filter} handleLogout={handleLogout} />
+  			  <Route exact path="/" render={() => <List Link={Link} Route={Route} filter={filter} />} />
 					<Route path="/login" render={() => <Login />} />
 					<Route path="/create" render={() => <Form />} />
 					<Route path="/settings" render={() => <Settings />} />
@@ -91,20 +60,17 @@ class App extends Component {
 			  </div>
 			</Router>
 		</div>
-    )
-  }
+  )
 }
 
 const mapStateToProps = (store) => {
 	return {
 		notes: store.notes,
-		filter: store.filter,
 		user: store.user
 	}
 }
 const mapDispatchToProps = {
 	noteInitialization,
-	actionForFilter,
 	setLogin,
 	actionForLogout,
 	clearNotes

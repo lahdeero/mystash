@@ -10,7 +10,9 @@ li {
 ul {
   list-style-type: none;
 }
-
+.note-edit {
+  color: black;
+}
 .centered {
   position: absolute;
   top: 50%;
