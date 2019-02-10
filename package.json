@@ -23,7 +23,6 @@
     "shelljs": "^0.8.2"
   },
   "devDependencies": {
-    "heroku-cli": "^7.0.9",
     "cross-env": "^5.2.0",
     "eslint": "^5.12.0",
     "eslint-config-standard": "^12.0.0",
