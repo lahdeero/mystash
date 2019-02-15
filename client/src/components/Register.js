@@ -26,7 +26,7 @@ const Register = (props) => {
       await setLogin(user)
       await window.location.reload()
     } catch (exception) {
-      setError('Username already in use or contains illegal characters')
+      setError(exception)
       setTimeout(() => {
         setError(null)
       }, 5000)
