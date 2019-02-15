@@ -1,6 +1,7 @@
 import React from 'react';
+import Textarea from 'react-textarea-autosize'
 import { connect } from 'react-redux'
-import { Input,Button } from 'react-materialize'
+import { Button } from 'react-materialize'
 import { Redirect } from 'react-router-dom'
 
 import { createNote } from '../../reducers/noteReducer'
@@ -37,14 +38,14 @@ class Form extends React.Component {
 
 	addTag = async (event) => {
 		event.preventDefault()
-		const maxTags = 4
-		if (this.state.tagText.length === 0 || this.state.tags.includes(this.state.tagText)) return
-		let newTags = this.state.tags
-		newTags.push(this.state.tagText)
-		if (newTags.length > maxTags) {
+		const maxTags = 10
+		if (this.state.tags.length >= maxTags) {
 			this.props.notify(`Maxium number of tags is '${maxTags}'`, 10)
 			return
 		}
+		if (this.state.tagText.length === 0 || this.state.tags.includes(this.state.tagText)) return
+		let newTags = this.state.tags
+		newTags.push(this.state.tagText)
 		try {
 			await this.setState({
 				tags: newTags,
@@ -64,9 +65,9 @@ class Form extends React.Component {
 	handleSubmit = async (event) => {
 		event.preventDefault()
 		console.log('click')
-		// If user didnt hit "Add tag" but there's text in "add tag field"
+		// If user didnt hit "Add tag" but there's text in "add tag field" 
 		if ((this.state.tags === undefined || this.state.tags.length === 0) && this.state.tagText.length > 0) {
-			const newTags = await [this.state.tagText]
+			const newTags = this.state.tagText.split(';')
 			await this.setState({
 				tags: newTags
 			})
@@ -109,7 +110,7 @@ class Form extends React.Component {
          	<div>
           	<label>
 	 				 	Content<br />
-						<Input type='textarea' value={this.state.content} onChange={this.handleContent} />
+              <Textarea className="note-edit" value={this.state.content} onChange={this.handleContent} minRows={10} />
        			</label>
          	</div>
 	 				<br/>

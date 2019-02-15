@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { Navbar,Row,Input,Icon,Button } from 'react-materialize'
+import React, { useState } from 'react';
+import { Navbar, Row, Input, Icon, Button } from 'react-materialize'
 import { actionForRegister, setLogin } from '../reducers/userReducer'
 import { connect } from 'react-redux'
 import { noteInitialization, createButDontSave } from '../reducers/noteReducer';
@@ -14,6 +14,7 @@ const Register = (props) => {
 
   const handleRegister = async (event) => {
     event.preventDefault()
+<<<<<<< HEAD
 	try {
 	  const tokenAndMessage = await this.props.actionForRegister({
         realname: this.state.firstname + ' ' + this.state.lastname,
@@ -32,6 +33,24 @@ const Register = (props) => {
 	  })
 	  setTimeout(() => {
 		this.setState({ error: null })
+=======
+    try {
+      const tokenAndMessage = await props.actionForRegister({
+        realname: firstname + ' ' + lastname,
+        username: username,
+        password: password,
+        email: email
+      })
+      const user = tokenAndMessage[0]
+      createButDontSave(tokenAndMessage[1])
+      await window.localStorage.setItem('loggedMystashappUser', JSON.stringify(user))
+      await setLogin(user)
+      await window.location.reload();
+    } catch (exception) {
+      setError('Username already in use or contains illegal characters')
+      setTimeout(() => {
+        setError(null)
+>>>>>>> e74fb0ef69876b14e8963a140e26285a8a4e00b6
       }, 5000)
     }
   }
