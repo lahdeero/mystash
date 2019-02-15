@@ -8,7 +8,8 @@
     "start": "cross-env NODE_ENV=production node index.js",
     "watch": "cross-env NODE_ENV=development nodemon index.js",
     "test": "cross-env NODE_ENV=test jest --verbose",
-    "lint": "eslint ."
+    "lint": "eslint .",
+	"build": "rm -rf build && cd client && npm run-script build && cp -r build ../"
   },
   "author": "Eero Lahdenperä",
   "license": "MIT",
