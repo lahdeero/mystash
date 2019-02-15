@@ -26,6 +26,9 @@ class Settings extends Component {
     return (
       <div className='container'>
         <Row>
+          {'version 0.11'}
+        </Row>
+        <Row>
           <Col s={12} m={5}>
             <CardPanel className='red accent-2 black-text'>
               <span>Currently can't change your information</span>

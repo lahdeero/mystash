@@ -276,6 +276,7 @@ module.exports = function(webpackEnv) {
         // please link the files into your node_modules/ and let module-resolution kick in.
         // Make sure your source files are compiled, as they will not be processed in any way.
         new ModuleScopePlugin(paths.appSrc, [paths.appPackageJson]),
+        // new webpack.ProvidePlugin({"React": "react",}),
       ],
     },
     resolveLoader: {
@@ -502,6 +503,9 @@ module.exports = function(webpackEnv) {
             : undefined
         )
       ),
+      new webpack.ProvidePlugin({
+          "React": "react",
+      }),
       // Inlines the webpack runtime script. This script is too small to warrant
       // a network request.
       isEnvProduction &&

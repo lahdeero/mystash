@@ -9,7 +9,7 @@ import noteService from '../../services/NoteService.js'
 import { notify, errormessage } from '../../reducers/notificationReducer'
 
 class Edit extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       isMounted: false,
@@ -22,7 +22,7 @@ class Edit extends React.Component {
     }
   }
 
-  async componentWillMount() {
+  async componentWillMount () {
     const oneNoteArr = await noteService.getOne(this.props.match.params.id)
     try {
       await this.setState({
@@ -38,10 +38,10 @@ class Edit extends React.Component {
       })
     }
   }
-  async componentDidMount() {
+  async componentDidMount () {
     this.setState({ isMounted: true })
   }
-  async componentWillUnmount() {
+  async componentWillUnmount () {
     this.setState({ isMounted: false })
   }
 
@@ -56,7 +56,7 @@ class Edit extends React.Component {
       }
       await this.props.modifyNote(noteObject)
       await this.props.notify(`you modified '${noteObject.title}'`, 10)
-      //cant set id to empty 'cos of redirect
+      // Cant set id to empty 'cos of redirect
       this.setState({
         title: '',
         content: '',
@@ -97,15 +97,15 @@ class Edit extends React.Component {
     }
   }
 
-  removeTag(name) {
+  removeTag (name) {
     this.setState({
       tags: this.state.tags.filter(tag => tag !== name)
     })
   }
 
-  render() {
+  render () {
     if (this.state.redirect) {
-      const redirecturl = '/' //'notes/' + this.state.id
+      const redirecturl = '/' // 'notes/' + this.state.id
       return <div><Redirect to={redirecturl} /></div>
     }
 
