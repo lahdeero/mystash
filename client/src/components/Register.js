@@ -1,8 +1,7 @@
-import React, { Component } from 'react';
-import { Navbar,Row,Input,Icon,Button } from 'react-materialize'
+import { useState } from 'react'
 import { actionForRegister, setLogin } from '../reducers/userReducer'
 import { connect } from 'react-redux'
-import { noteInitialization, createButDontSave } from '../reducers/noteReducer';
+import { noteInitialization, createButDontSave } from '../reducers/noteReducer'
 
 const Register = (props) => {
   const [firstname, setFirstname] = useState('')
@@ -14,24 +13,22 @@ const Register = (props) => {
 
   const handleRegister = async (event) => {
     event.preventDefault()
-	try {
-	  const tokenAndMessage = await this.props.actionForRegister({
-        realname: this.state.firstname + ' ' + this.state.lastname,
-		username: this.state.username,
-        password: this.state.password,
-        email: this.state.email
-	  })
-	  const user = await tokenAndMessage[0]
-	  await createButDontSave(tokenAndMessage[1])
-	  await window.localStorage.setItem('loggedMystashappUser', JSON.stringify(user))
-	  await setLogin(user)
-	  await window.location.reload();
-	} catch(exception) {
-	  this.setState({
-		error: 'Username already in use or contains illegal characters'
-	  })
-	  setTimeout(() => {
-		this.setState({ error: null })
+    try {
+      const tokenAndMessage = await props.actionForRegister({
+        realname: firstname + ' ' + lastname,
+        username: username,
+        password: password,
+        email: email
+      })
+      const user = tokenAndMessage[0]
+      createButDontSave(tokenAndMessage[1])
+      await window.localStorage.setItem('loggedMystashappUser', JSON.stringify(user))
+      await setLogin(user)
+      await window.location.reload()
+    } catch (exception) {
+      setError('Username already in use or contains illegal characters')
+      setTimeout(() => {
+        setError(null)
       }, 5000)
     }
   }

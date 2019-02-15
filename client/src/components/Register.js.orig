@@ -1,8 +1,12 @@
-import React, { useState } from 'react';
-import { Navbar, Row, Input, Icon, Button } from 'react-materialize'
+<<<<<<< HEAD
+import React, { Component } from 'react';
+import { Navbar,Row,Input,Icon,Button } from 'react-materialize'
+=======
+import { useState } from 'react'
+>>>>>>> client npm eject and some linting
 import { actionForRegister, setLogin } from '../reducers/userReducer'
 import { connect } from 'react-redux'
-import { noteInitialization, createButDontSave } from '../reducers/noteReducer';
+import { noteInitialization, createButDontSave } from '../reducers/noteReducer'
 
 const Register = (props) => {
   const [firstname, setFirstname] = useState('')
@@ -45,12 +49,12 @@ const Register = (props) => {
       createButDontSave(tokenAndMessage[1])
       await window.localStorage.setItem('loggedMystashappUser', JSON.stringify(user))
       await setLogin(user)
-      await window.location.reload();
+      await window.location.reload()
     } catch (exception) {
       setError('Username already in use or contains illegal characters')
       setTimeout(() => {
         setError(null)
->>>>>>> e74fb0ef69876b14e8963a140e26285a8a4e00b6
+>>>>>>> client npm eject and some linting
       }, 5000)
     }
   }
