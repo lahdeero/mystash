@@ -6,6 +6,6 @@
 
 ## version 0.1.0
 
-*Basic functionality: adding, editing and deleting notes
-*Notes have tags
-*Filter for searching notes
+* Basic functionality: adding, editing and deleting notes
+* Notes have tags
+* Filter for searching notes
