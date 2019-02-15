@@ -80,6 +80,7 @@
   ],
   "proxy": "http://localhost:3001",
   "jest": {
+    "verbose": true,
     "collectCoverageFrom": [
       "src/**/*.{js,jsx,ts,tsx}",
       "!src/**/*.d.ts"
@@ -120,8 +121,8 @@
       "node"
     ],
     "watchPlugins": [
-      "/home/eero/client/node_modules/jest-watch-typeahead/filename.js",
-      "/home/eero/client/node_modules/jest-watch-typeahead/testname.js"
+      "jest-watch-typeahead/filename.js",
+      "jest-watch-typeahead/testname.js"
     ]
   },
   "babel": {
@@ -131,5 +132,9 @@
   },
   "eslintConfig": {
     "extends": "react-app"
+  },
+  "devDependencies": {
+    "jest-dom": "^3.1.1",
+    "react-testing-library": "^5.8.0"
   }
 }
