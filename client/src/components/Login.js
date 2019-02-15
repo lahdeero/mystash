@@ -1,10 +1,10 @@
+import '../App.css'
 import React, { Component } from 'react'
 import { Navbar, Input, Icon, Button } from 'react-materialize'
 import { connect } from 'react-redux'
 import { actionForLogin } from '../reducers/userReducer'
 import { noteInitialization } from '../reducers/noteReducer'
 import Register from './Register'
-import '../App.css'
 
 class Login extends Component {
   constructor() {

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Row, Navbar, Input, Icon, Button } from 'react-materialize'
 import { actionForRegister, setLogin } from '../reducers/userReducer'
 import { connect } from 'react-redux'
 import { noteInitialization, createButDontSave } from '../reducers/noteReducer'

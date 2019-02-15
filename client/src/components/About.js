@@ -5,32 +5,34 @@ class About extends Component {
   constructor(props) {
     super(props)
     this.state = {
-			isMounted: false,
-			sysinfo: [],
+      isMounted: false,
+      sysinfo: []
     }
   }
 
-	async componentWillMount(): Promise<void> {
+  async componentWillMount() {
     SystemService.getAll().then(sysinfo =>
-			this.setState({ 
-				isMounted:true,
-				sysinfo 
-			}) 
-	)}
-	async componentWillUnmount(): Promise<void> {
-		this.setState({ isMounted: false })
-	}
-	render() {
-  	return (
-     <div>
-			<h2>About</h2>
-			<br />
-			{this.state.sysinfo[0]}
-			<br />
-			{this.state.sysinfo[1]}
-		 </div>
-	  )
-	}
+      this.setState({
+        isMounted: true,
+        sysinfo
+      })
+    )
+  }
+  async componentWillUnmount() {
+    this.setState({ isMounted: false })
+  }
+
+  render() {
+    return (
+      <div>
+        <h2>About</h2>
+        <br />
+        {this.state.sysinfo[0]}
+        <br />
+        {this.state.sysinfo[1]}
+      </div>
+    )
+  }
 }
 
 export default About
