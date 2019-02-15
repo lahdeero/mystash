@@ -4,7 +4,6 @@ import { Row, Col, Chip } from 'react-materialize'
 // import useFilter from '../../hooks/useFilter'
 
 const ListNote = (props) => {
-
   const handleClick = (tagi) => {
     props.filter.setFilter(tagi.tag)
   }
@@ -29,7 +28,7 @@ const ListNote = (props) => {
       <div>
         {text.split('\n').map(function (row, key) {
           return (
-          <span key={key}> {row} <br /> </span>
+            <span key={key}> {row} <br /> </span>
           )
         })}
       </div>

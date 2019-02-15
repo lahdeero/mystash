@@ -26,10 +26,9 @@ class List extends React.Component {
   }
 
   removeDuplicatesUsingSet = (array) => {
-    let unique_array = Array.from(new Set(array))
-    return unique_array
+    let UniqueArray = Array.from(new Set(array))
+    return UniqueArray
   }
-
 
   render() {
     let key = 1
@@ -42,14 +41,13 @@ class List extends React.Component {
         const filterByTag = allNotes.filter(note => note.tags.join(' ').toLowerCase().includes(filter.toLowerCase()))
         notesToShow = this.removeDuplicatesUsingSet(filterByTitle.concat(filterByTag))
       } catch (e) {
-        //NOT SURE IF THIS IS EVEN NEEDED ANYMORE; BUG FIXED
+        // NOT SURE IF THIS IS EVEN NEEDED ANYMORE; BUG FIXED
         console.log(e)
       }
     }
     const start = (this.state.page - 1) * this.state.notesPerPage
     const end = start + this.state.notesPerPage
     notesToShow = notesToShow.slice(start, end)
-
 
     return (
       <div className="container">
@@ -75,7 +73,7 @@ class List extends React.Component {
 const mapStateToProps = (store) => {
   return {
     user: store.user,
-    notes: store.notes,
+    notes: store.notes
   }
 }
 const mapDispatchToProps = {
