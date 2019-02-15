@@ -5,17 +5,18 @@ import { connect } from 'react-redux'
 
 class Notification extends React.Component {
   static propTypes = {
-    notification: PropTypes.oneOfType([ PropTypes.string, PropTypes.array ])
-		// notification: PropTypes.string.isRequired
-		// notification: PropTypes.array.isRequired
+    notification: PropTypes.oneOfType([PropTypes.string, PropTypes.array])
+    // notification: PropTypes.string.isRequired
+    // notification: PropTypes.array.isRequired
   }
-  render () {
+  render() {
     const notification = this.props.notification[0]
-		if (notification === undefined || notification.length <= 1) 
-			return (<div></div>)
+    if (notification === undefined || notification.length <= 1) {
+      return (<div></div>)
+    }
     return (
       <div>
-					<strong>{notification}</strong>
+        <strong>{notification}</strong>
       </div>
     )
   }
