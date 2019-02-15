@@ -1,9 +1,10 @@
 {
   "name": "mystash-frontend",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "dependencies": {
     "axios": "^0.18.0",
+    "http-proxy-middleware": "^0.19.1",
     "prop-types": "^15.6.2",
     "react": "^16.4.2",
     "react-dom": "^16.4.2",
@@ -27,5 +28,6 @@
     "last 1 Chrome versions"
   ],
   "proxy": "http://localhost:3001",
-  "devDependencies": {}
+  "devDependencies": {
+  }
 }
