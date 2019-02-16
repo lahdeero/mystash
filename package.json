@@ -9,7 +9,7 @@
     "watch": "cross-env NODE_ENV=development nodemon index.js",
     "test": "cross-env NODE_ENV=test jest --verbose",
     "lint": "eslint .",
-	"build": "rm -rf build && cd client && npm run-script build && cp -r build ../"
+		"build": "cd client && npm run-script build"
   },
   "author": "Eero Lahdenperä",
   "license": "MIT",

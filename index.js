@@ -13,7 +13,7 @@ const loginRouter = require('./routes/login')
 // const router = express.Router()
 app.use(bodyParser.json())
 app.use(cors())
-app.use(express.static('build'))
+app.use(express.static('client/build'))
 
 app.use('/api/notes/directory/', noteRouter)
 app.use('/api/notes/tag', tagRouter)
