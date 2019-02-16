@@ -5,11 +5,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "cross-env NODE_ENV=production node index.js",
-    "watch": "cross-env NODE_ENV=development nodemon index.js",
-    "test": "cross-env NODE_ENV=test jest --verbose",
+    "start": "cross-env NODE_ENV=production node src/index.js",
+    "watch": "cross-env NODE_ENV=development nodemon src/index.js",
+    "test": "cross-env NODE_ENV=test src/jest --verbose",
     "lint": "eslint .",
-		"build": "cd client && npm run-script build"
+    "build": "cd src/client && npm run-script build"
   },
   "author": "Eero Lahdenperä",
   "license": "MIT",
@@ -34,6 +34,8 @@
   "jest": {
     "verbose": true,
     "testURL": "http://localhost/",
-	"testPathIgnorePatterns": ["/client/"]
+    "testPathIgnorePatterns": [
+      "/client/"
+    ]
   }
 }
