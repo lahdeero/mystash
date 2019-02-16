@@ -1,8 +1,7 @@
 import { useState } from 'react'
 import { Row, Navbar, Input, Icon, Button } from 'react-materialize'
-import { actionForRegister, setLogin } from '../reducers/userReducer'
-import { connect } from 'react-redux'
-import { noteInitialization, createButDontSave } from '../reducers/noteReducer'
+import { setLogin } from '../reducers/userReducer'
+import { createButDontSave } from '../reducers/noteReducer'
 
 const Register = (props) => {
   const [firstname, setFirstname] = useState('')
@@ -25,7 +24,6 @@ const Register = (props) => {
       createButDontSave(tokenAndMessage[1])
       await window.localStorage.setItem('loggedMystashappUser', JSON.stringify(user))
       await setLogin(user)
-      await window.location.reload()
     } catch (exception) {
       setError(exception)
       setTimeout(() => {
@@ -39,6 +37,10 @@ const Register = (props) => {
       <Navbar className="indigo" brand='my-stash' right>
       </Navbar>
       <div className="container">
+        <div>
+          <br />
+          Back to <a onClick={this.handleRegisterRedirect} href="/register">login</a>
+        </div>
         <div>{error}</div>
         <form onSubmit={handleRegister}>
           <Row>
@@ -55,16 +57,4 @@ const Register = (props) => {
   )
 }
 
-const mapDispatchToProps = {
-  actionForRegister,
-  setLogin,
-  createButDontSave,
-  noteInitialization
-}
-
-const ConnectedRegister = connect(
-  null,
-  mapDispatchToProps
-)(Register)
-
-export default ConnectedRegister
+export default Register

@@ -17,21 +17,19 @@ import useFilter from './hooks/useFilter'
 
 const App = (props) => {
   const filter = useFilter()
-  const [state, setState] = useState({ navigation: 0, logged: 0 })
+  const [state, setState] = useState({ user: null, navigation: 0, logged: 0 })
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedMystashappUser')
     if (state.logged === 0 && loggedUserJSON) {
-      setState(state.logged = 1)
-      init(loggedUserJSON)
+      setState({
+        user: JSON.parse(loggedUserJSON),
+        navigation: 1
+      })
+      props.setLogin(state.user)
+      props.noteInitialization(state.user)
     }
   })
-
-  const init = (loggedUserJSON) => {
-    const user = JSON.parse(loggedUserJSON)
-    props.setLogin(user)
-    props.noteInitialization(user)
-  }
 
   const handleLogout = async (event) => {
     await event.preventDefault()
@@ -39,28 +37,29 @@ const App = (props) => {
     await filter.setFilter('')
     await props.clearNotes()
     await props.actionForLogout()
-    await setState({ navigation: 0, logged: 0 })
+    await setState({ user: null, navigation: 0, logged: 0 })
   }
 
-  if (state.logged === 0) {
-    return (<Login />)
+  if (state.logged === 1) {
+    return (
+      <div>
+        <Notification />
+        <Router>
+          <div>
+            <Menu currentPage={state.navigation} filter={filter} handleLogout={handleLogout} />
+            <Route exact path="/" render={() => <List Link={Link} Route={Route} filter={filter} />} />
+            <Route path="/login" render={() => <Login />} />
+            <Route path="/create" render={() => <Form />} />
+            <Route path="/settings" render={() => <Settings />} />
+            <Route exact path="/notes/:id" component={Show} />
+            <Route exact path="/notes/edit/:id" component={Edit} />
+          </div>
+        </Router>
+      </div>
+    )
+  } else {
+    return <div><Login /></div>
   }
-  return (
-    <div>
-      <Notification />
-      <Router>
-        <div>
-          <Menu currentPage={state.navigation} filter={filter} handleLogout={handleLogout} />
-          <Route exact path="/" render={() => <List Link={Link} Route={Route} filter={filter} />} />
-          <Route path="/login" render={() => <Login />} />
-          <Route path="/create" render={() => <Form />} />
-          <Route path="/settings" render={() => <Settings />} />
-          <Route exact path="/notes/:id" component={Show} />
-          <Route exact path="/notes/edit/:id" component={Edit} />
-        </div>
-      </Router>
-    </div>
-  )
 }
 
 const mapStateToProps = (store) => {
