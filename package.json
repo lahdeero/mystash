@@ -7,7 +7,7 @@
   "scripts": {
     "start": "cross-env NODE_ENV=production node src/index.js",
     "watch": "cross-env NODE_ENV=development nodemon src/index.js",
-    "test": "cross-env NODE_ENV=test src/jest --verbose",
+    "test": "cross-env NODE_ENV=test jest --verbose",
     "lint": "eslint .",
     "build": "cd src/client && npm run-script build"
   },
