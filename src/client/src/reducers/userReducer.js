@@ -40,7 +40,6 @@ export const actionForLogin = (creditentals) => {
       type: 'LOGIN',
       data: user
     })
-    // console.log(user)
     return user
   }
 }

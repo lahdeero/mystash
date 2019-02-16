@@ -1,9 +1,6 @@
 import '../App.css'
 import React, { useState } from 'react'
 import { Navbar, Input, Icon, Button } from 'react-materialize'
-import { connect } from 'react-redux'
-import { actionForLogin } from '../reducers/userReducer'
-import { noteInitialization } from '../reducers/noteReducer'
 import Register from './Register'
 
 const Login = (props) => {
@@ -20,8 +17,10 @@ const Login = (props) => {
         password: password
       })
       await props.noteInitialization(user)
+      // await props.setState({ user: user })
     } catch (exception) {
       setError('Bad credentials')
+      console.log(exception)
       setTimeout(() => {
         setError('')
       }, 5000)
@@ -70,21 +69,11 @@ const Login = (props) => {
         </form>
         <div>
           <br />
-          Dont have account? <a onClick={this.handleRegisterRedirect} href="/register">Register here</a>
+          Dont have account? <a onClick={handleRegisterRedirect} href="/register">Register here</a>
         </div>
       </div>
     </div>
   )
 }
 
-const mapDispatchToProps = {
-  actionForLogin,
-  noteInitialization
-}
-
-const ConnectedLogin = connect(
-  null,
-  mapDispatchToProps
-)(Login)
-
-export default ConnectedLogin
+export default Login
