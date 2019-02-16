@@ -18,8 +18,10 @@ const Login = (props) => {
         password: password
       })
       await props.noteInitialization(user)
+      // await props.setState({ user: user })
     } catch (exception) {
       setError('Bad credentials')
+      console.log(exception)
       setTimeout(() => {
         setError('')
       }, 5000)

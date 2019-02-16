@@ -22,22 +22,28 @@ const App = (props) => {
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedMystashappUser')
     if (state.logged === 0 && loggedUserJSON) {
-      setState({
-        user: JSON.parse(loggedUserJSON),
-        navigation: 1
-      })
-      props.setLogin(state.user)
-      props.noteInitialization(state.user)
+      init(loggedUserJSON)
     }
   })
 
-  const handleLogout = async (event) => {
-    await event.preventDefault()
-    await window.localStorage.removeItem('loggedMystashappUser')
-    await filter.setFilter('')
-    await props.clearNotes()
-    await props.actionForLogout()
-    await setState({ user: null, navigation: 0, logged: 0 })
+  const init = async (loggedUserJSON) => {
+    const user = JSON.parse(loggedUserJSON)
+    await setState({
+      user: user,
+      navigation: 1,
+      logged: 1
+    })
+    await props.setLogin(user)
+    await props.noteInitialization(user)
+  }
+
+  const handleLogout = (event) => {
+    event.preventDefault()
+    window.localStorage.removeItem('loggedMystashappUser')
+    filter.setFilter('')
+    props.clearNotes()
+    props.actionForLogout()
+    setState({ user: null, navigation: 0, logged: 0 })
   }
 
   if (state.logged === 1) {
@@ -58,7 +64,7 @@ const App = (props) => {
       </div>
     )
   } else {
-    return <div><Login /></div>
+    return <div><Login actionForLogin={props.actionForLogin} noteInitialization={props.noteInitialization} /></div>
   }
 }
 
