@@ -1,4 +1,3 @@
-import '../App.css'
 import React, { useState } from 'react'
 import { Navbar, Input, Icon, Button } from 'react-materialize'
 import Register from './Register'
@@ -7,18 +6,16 @@ import '../App.css'
 const Login = (props) => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [error, setError] = useState(null)
+  const [error, setError] = useState('')
   const [register, setRegister] = useState(false)
 
   const handleLogin = async (event) => {
     event.preventDefault()
     try {
-      const user = await props.actionForLogin({
+      props.actionForLogin({
         username: username,
         password: password
       })
-      await props.noteInitialization(user)
-      // await props.setState({ user: user })
     } catch (exception) {
       setError('Bad credentials')
       console.log(exception)
@@ -45,7 +42,7 @@ const Login = (props) => {
       </Navbar>
       <div className="container centered">
         <div>
-          {error}
+          {error !== '' ? <div className="error">{error}</div> : <div>NO ERROR</div>}
         </div>
         <form onSubmit={handleLogin}>
           <div>
