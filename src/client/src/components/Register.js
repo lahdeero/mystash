@@ -10,6 +10,7 @@ const Register = (props) => {
   const [password, setPassword] = useState('')
   const [email, setEmail] = useState('')
   const [error, setError] = useState('')
+  const [redirect, setRedirect] = useState(false)
 
   const validateInput = () => {
     if (username.length < 3) {
@@ -35,9 +36,10 @@ const Register = (props) => {
         })
         const user = tokenAndMessage[0]
         await window.localStorage.setItem('loggedMystashappUser', JSON.stringify(user))
-        await props.setLogin(user)
+        await setRedirect(true)
+        await props.setLogin(user) // must be last line, activates App.js to "reload"
       } catch (exception) {
-        setError(exception)
+        setError('Username not available')
         setTimeout(() => {
           setError('')
         }, 5000)
@@ -45,14 +47,13 @@ const Register = (props) => {
     }
   }
 
-  const errorMessage = error === '' ? null : error
   return (
     <div>
       <Navbar className="indigo" brand='my-stash' right>
       </Navbar>
       <div className="container">
-        {errorMessage ? <div className="error">{error}</div> : <div className="notification">{'(*) are required fields'}</div>}
         <div>
+          {!redirect && error ? <div className="error">{error}</div> : <div className="notification">Fields with (*) are required</div>}
           <form onSubmit={handleRegister}>
             <Row>
               <Input onChange={(event) => setFirstname(event.target.value)} name="firstname" label="First Name" ><Icon>accessibility</Icon></Input>

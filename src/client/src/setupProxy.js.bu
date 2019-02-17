@@ -1,12 +1,10 @@
 const proxy = require('http-proxy-middleware')
 
 module.exports = function(app) {
-	const production = (global.NODE_ENV === 'production')
-	if (production) {
-		app.use(proxy('/', { target: 'http://localhost:3001/' }))
-		console.log('using production proxy')
-	} else {
+	const development = (process.env.NODE_ENV === 'development')
+	if (development) {
   	app.use(proxy('/', { target: 'http://192.168.10.56:3001/' }))
-		console.log('using developement proxy')
+	} else {
+		app.use(proxy('/', { target: 'http://localhost:3001/' }))
 	}
 }
