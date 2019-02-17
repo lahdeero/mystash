@@ -64,7 +64,7 @@ class Form extends React.Component {
 
   handleSubmit = async (event) => {
     event.preventDefault()
-    console.log('click')
+    // console.log('click')
     // If user didnt hit "Add tag" but there's text in "add tag field"
     if ((this.state.tags === undefined || this.state.tags.length === 0) && this.state.tagText.length > 0) {
       const newTags = this.state.tagText.split(';')

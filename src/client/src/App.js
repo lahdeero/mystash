@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
+import { BrowserRouter as Router, Route } from 'react-router-dom'
 import { connect } from 'react-redux'
 
 import './App.css'
@@ -17,7 +17,7 @@ import useFilter from './hooks/useFilter'
 
 const App = (props) => {
   const filter = useFilter()
-  const [state, setState] = useState({ user: null, navigation: 0, logged: 0 })
+  const [state, setState] = useState({ user: null, notes: [], navigation: 0, logged: 0 })
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedMystashappUser')
@@ -30,6 +30,7 @@ const App = (props) => {
     const user = JSON.parse(loggedUserJSON)
     await setState({
       user: user,
+      notes: [],
       navigation: 1,
       logged: 1
     })
@@ -53,7 +54,7 @@ const App = (props) => {
         <Router>
           <div>
             <Menu currentPage={state.navigation} filter={filter} handleLogout={handleLogout} />
-            <Route exact path="/" render={() => <List Link={Link} Route={Route} filter={filter} />} />
+            <Route exact path="/" render={() => <List notes={props.notes} filter={filter} />} />
             <Route path="/login" render={() => <Login />} />
             <Route path="/create" render={() => <Form />} />
             <Route path="/settings" render={() => <Settings />} />

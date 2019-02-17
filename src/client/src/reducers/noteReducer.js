@@ -1,9 +1,11 @@
 import noteService from '../services/NoteService.js'
 
 const noteReducer = (store = [], action) => {
+  console.log(action.data)
   switch (action.type) {
     case 'CREATE':
-      return store.concat(action.data)
+      store.unshift(action.data)
+      return store
     case 'MODIFY':
       return store.map(note => (note.id === action.data[0].id) ? action.data[0] : note)
     case 'REMOVE':
@@ -37,7 +39,6 @@ export const clearNotes = () => {
 }
 
 export const createButDontSave = (noteObject) => {
-  console.log(noteObject)
   return async (dispatch) => {
     dispatch({
       type: 'CREATE',
@@ -49,7 +50,6 @@ export const createButDontSave = (noteObject) => {
 export const createNote = (noteObject) => {
   return async (dispatch) => {
     const savedNoteObject = await noteService.create(noteObject)
-    console.log(savedNoteObject[0])
     dispatch({
       type: 'CREATE',
       data: savedNoteObject[0]

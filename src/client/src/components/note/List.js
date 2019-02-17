@@ -1,88 +1,59 @@
-import React from 'react'
-import { connect } from 'react-redux'
+import React, { useState } from 'react'
 import { Pagination } from 'react-materialize'
-import { noteInitialization, createButDontSave } from '../../reducers/noteReducer'
 
 import ListNote from './ListNote'
 
-class List extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      page: 1,
-      notesPerPage: 10
-    }
-  }
+const List = (props) => {
+  const [page, setPage] = useState(1)
+  const [notesPerPage] = useState(10)
 
-  componenWillMount() {
-    noteInitialization(this.props.user)
-  }
-
-  handleSelect = async (selectedKey) => {
+  const handleSelect = async (selectedKey) => {
     if (selectedKey !== undefined || selectedKey !== null) {
-      return this.setState({ page: selectedKey })
+      return setPage(selectedKey)
     }
-    return this.setState({})
   }
 
-  removeDuplicatesUsingSet = (array) => {
+  const removeDuplicatesUsingSet = (array) => {
     let UniqueArray = Array.from(new Set(array))
     return UniqueArray
   }
 
-  render() {
-    let key = 1
-    const filter = this.props.filter.value
-    const allNotes = this.props.notes
-    let notesToShow = allNotes
-    if (filter && (filter !== undefined || null || '')) {
-      try {
-        const filterByTitle = allNotes.filter(note => note.title.toLowerCase().includes(filter.toLowerCase()))
-        const filterByTag = allNotes.filter(note => note.tags.join(' ').toLowerCase().includes(filter.toLowerCase()))
-        notesToShow = this.removeDuplicatesUsingSet(filterByTitle.concat(filterByTag))
-      } catch (e) {
-        // NOT SURE IF THIS IS EVEN NEEDED ANYMORE; BUG FIXED
-        console.log(e)
-      }
+  let key = 1
+  const filter = props.filter.value
+  const allNotes = props.notes
+  let notesToShow = allNotes
+  if (filter && (filter !== undefined || null || '')) {
+    try {
+      const filterByTitle = allNotes.filter(note => note.title.toLowerCase().includes(filter.toLowerCase()))
+      const filterByTag = allNotes.filter(note => note.tags.join(' ').toLowerCase().includes(filter.toLowerCase()))
+      notesToShow = removeDuplicatesUsingSet(filterByTitle.concat(filterByTag))
+    } catch (e) {
+      // NOT SURE IF THIS IS EVEN NEEDED ANYMORE; BUG FIXED
+      console.log(e)
     }
-    const start = (this.state.page - 1) * this.state.notesPerPage
-    const end = start + this.state.notesPerPage
-    notesToShow = notesToShow.slice(start, end)
+  }
+  const start = (page - 1) * notesPerPage
+  const end = start + notesPerPage
+  notesToShow = notesToShow.slice(start, end)
 
-    return (
-      <div className="container">
-        <div className="center">
-          <Pagination items={Math.ceil(this.props.notes.length / this.state.notesPerPage)} activePage={this.state.page} maxButtons={10} onSelect={this.handleSelect} />
-        </div>
-        <ul>
-          {notesToShow.map(note => <li key={key++}>
-            <div>
-              <ListNote note={note} Link={this.props.Link} Key={key} filter={this.props.filter} />
-            </div>
-          </li>
-          )}
-        </ul>
-        <div className="center">
-          <Pagination items={Math.ceil(this.props.notes.length / this.state.notesPerPage)} activePage={this.state.page} maxButtons={10} onSelect={this.handleSelect} />
-        </div>
+  return (
+    <div className="container">
+      <div className="center">
+        <Pagination items={Math.ceil(props.notes.length / notesPerPage)} activePage={page} maxButtons={10} onSelect={handleSelect} />
       </div>
-    )
-  }
+      <ul>
+        {notesToShow.map(note => <li key={key++}>
+          <div>
+            <ListNote note={note} Key={key} filter={props.filter} />
+          </div>
+        </li>
+        )}
+      </ul>
+      <div className="center">
+        <Pagination items={Math.ceil(props.notes.length / notesPerPage)} activePage={page} maxButtons={10} onSelect={handleSelect} />
+      </div>
+    </div>
+  )
 }
 
-const mapStateToProps = (store) => {
-  return {
-    user: store.user,
-    notes: store.notes
-  }
-}
-const mapDispatchToProps = {
-  noteInitialization,
-  createButDontSave
-}
-const ConnectedList = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(List)
-
-export default ConnectedList
+export default List
