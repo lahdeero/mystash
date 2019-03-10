@@ -35,5 +35,10 @@
     "verbose": true,
     "testURL": "http://localhost/"
   },
-  "heroku-run-build-script": true
+  "heroku-run-build-script": true,
+  "testURL": "http://localhost/",
+  "testPathIgnorePatterns": [
+    "/client/"
+  ]
 }
+
