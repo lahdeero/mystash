@@ -27,18 +27,14 @@
   "devDependencies": {
     "cross-env": "^5.2.0",
     "eslint": "^5.12.0",
-    "jest": "^22.4.4",
+    "jest": "^24.3.1",
     "nodemon": "^1.18.3",
     "supertest": "^3.4.2"
   },
   "jest": {
     "verbose": true,
-    "testURL": "http://localhost/"
+    "testURL": "http://localhost/",
+    "testPathIgnorePatterns": ["/client/"]
   },
-  "heroku-run-build-script": true,
-  "testURL": "http://localhost/",
-  "testPathIgnorePatterns": [
-    "/client/"
-  ]
+  "heroku-run-build-script": true
 }
-
