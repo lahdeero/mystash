@@ -14,7 +14,7 @@
     "lint": "eslint .",
     "build": "cd src/client && npm install && npm run-script build",
     "react": "node src/client/scripts/start.js",
-    "dev": "cross-env NODE_ENV=development concurrently \"npm run watch\" \"npm run react\"",
+    "dev": "cross-env NODE_ENV=development concurrently \"npm run watch\" \"npm run react\""
   },
   "author": "Eero Lahdenperä",
   "license": "MIT",

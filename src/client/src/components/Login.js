@@ -42,7 +42,7 @@ const Login = (props) => {
       </Navbar>
       <div className="container centered">
         <div>
-          {error !== '' ? <div className="error">{error}</div> : <div>NO ERROR</div>}
+          {error !== '' ? <div className="error">{error}</div> : <div></div>}
         </div>
         <form onSubmit={handleLogin}>
           <div>
