@@ -1,0 +1,81 @@
+import React, { useState, useEffect } from 'react'
+import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
+import { connect } from 'react-redux'
+
+import './App.css'
+import Menu from './components/Menu'
+import Login from './components/Login'
+import List from './components/note/List'
+import Show from './components/note/Show'
+import Edit from './components/note/Edit'
+import Form from './components/note/Form'
+import Settings from './components/Settings'
+import Notification from './components/Notification'
+import { noteInitialization, clearNotes } from './reducers/noteReducer'
+import { setLogin, actionForLogout } from './reducers/userReducer'
+import useFilter from './hooks/useFilter'
+
+const App = (props) => {
+  const filter = useFilter()
+  const [state, setState] = useState({ navigation: 0, logged: 0 })
+
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem('loggedMystashappUser')
+    if (state.logged === 0 && loggedUserJSON) {
+      setState(state.logged = 1)
+      init(loggedUserJSON)
+    }
+  })
+
+  const init = (loggedUserJSON) => {
+    const user = JSON.parse(loggedUserJSON)
+    props.setLogin(user)
+    props.noteInitialization(user)
+  }
+
+  const handleLogout = async (event) => {
+    await event.preventDefault()
+    await window.localStorage.removeItem('loggedMystashappUser')
+    await filter.setFilter('')
+    await props.clearNotes()
+    await props.actionForLogout()
+    await setState({ navigation: 0, logged: 0 })
+  }
+
+  if (state.logged === 0) {
+    return (<Login />)
+  }
+  return (
+    <div>
+      <Notification />
+      <Router>
+        <div>
+          <Menu currentPage={state.navigation} filter={filter} handleLogout={handleLogout} />
+          <Route exact path="/" render={() => <List Link={Link} Route={Route} filter={filter} />} />
+          <Route path="/login" render={() => <Login />} />
+          <Route path="/create" render={() => <Form />} />
+          <Route path="/settings" render={() => <Settings />} />
+          <Route exact path="/notes/:id" component={Show} />
+          <Route exact path="/notes/edit/:id" component={Edit} />
+        </div>
+      </Router>
+    </div>
+  )
+}
+
+const mapStateToProps = (store) => {
+  return {
+    notes: store.notes,
+    user: store.user
+  }
+}
+const mapDispatchToProps = {
+  noteInitialization,
+  setLogin,
+  actionForLogout,
+  clearNotes
+}
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(App)
