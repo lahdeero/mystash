@@ -40,7 +40,9 @@
   "jest": {
     "verbose": true,
     "testURL": "http://localhost/",
-    "testPathIgnorePatterns": ["/client/"]
+    "testPathIgnorePatterns": [
+      "/client/"
+    ]
   },
   "browserslist": [
     ">0.2%",
