@@ -27,6 +27,7 @@ const App = (props) => {
   })
 
   const init = async (loggedUserJSON) => {
+    console.log('meneee2')
     const user = JSON.parse(loggedUserJSON)
     await setState({
       user: user,

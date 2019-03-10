@@ -12,7 +12,7 @@ const Login = (props) => {
   const handleLogin = async (event) => {
     event.preventDefault()
     try {
-      props.actionForLogin({
+      await props.actionForLogin({
         username: username,
         password: password
       })
@@ -41,9 +41,7 @@ const Login = (props) => {
       <Navbar className="indigo" brand='my-stash' right>
       </Navbar>
       <div className="container centered">
-        <div>
-          {error !== '' ? <div className="error">{error}</div> : <div></div>}
-        </div>
+        {error !== '' ? <div className="error">{error}</div> : <div></div>}
         <form onSubmit={handleLogin}>
           <div>
             username:

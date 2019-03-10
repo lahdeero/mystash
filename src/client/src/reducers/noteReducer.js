@@ -1,7 +1,6 @@
 import noteService from '../services/NoteService.js'
 
 const noteReducer = (store = [], action) => {
-  console.log(action.data)
   switch (action.type) {
     case 'CREATE':
       store.unshift(action.data)
