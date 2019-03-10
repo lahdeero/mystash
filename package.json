@@ -32,5 +32,6 @@
   "jest": {
     "verbose": true,
     "testURL": "http://localhost/"
-  }
+  },
+  "heroku-run-build-script": true
 }
