@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { Row, Col, CardPanel } from 'react-materialize'
 
 class Settings extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       username: '',
@@ -13,16 +13,18 @@ class Settings extends Component {
     }
   }
 
-  componentWillMount () {
-    this.setState({
-      username: this.props.user.username,
-      realname: this.props.user.realname,
-      tier: this.props.user.tier === 1 ? 'User' : 'Unknown',
-      email: this.props.user.email
-    })
+  componentWillMount() {
+    if (this.props.user) {
+      this.setState({
+        username: this.props.user.username !== null ? this.props.user.username : '',
+        realname: this.props.user.realname !== null ? this.props.user.realname : '',
+        tier: this.props.user.tier === 1 ? 'User' : 'Unknown',
+        email: this.props.user.email !== null ? this.props.user.email : ''
+      })
+    }
   }
 
-  render () {
+  render() {
     return (
       <div className='container'>
         <Row>

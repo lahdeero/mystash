@@ -21,7 +21,7 @@ noteRouter.get('/all/public', async (req, res) => {
   }
 })
 
-noteRouter.get('/:user/all', async (req, res) => {
+noteRouter.get('/all', async (req, res) => {
   try {
     const token = getTokenFrom(req)
     const decodedToken = jwt.verify(token, process.env.SECRET)

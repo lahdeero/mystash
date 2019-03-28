@@ -3,7 +3,7 @@ import noteService from '../services/NoteService.js'
 const noteReducer = (store = [], action) => {
   switch (action.type) {
     case 'CREATE':
-      store.unshift(action.data)
+      store.unshift(action.data) // unshift returns new length of array
       return store
     case 'MODIFY':
       return store.map(note => (note.id === action.data[0].id) ? action.data[0] : note)

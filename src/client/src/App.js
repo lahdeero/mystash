@@ -12,6 +12,7 @@ import Form from './components/note/Form'
 import Settings from './components/Settings'
 import Notification from './components/Notification'
 import { noteInitialization, clearNotes } from './reducers/noteReducer'
+import noteService from './services/NoteService'
 import { actionForLogin, setLogin, actionForLogout } from './reducers/userReducer'
 import useFilter from './hooks/useFilter'
 
@@ -27,15 +28,16 @@ const App = (props) => {
   })
 
   const init = async (loggedUserJSON) => {
-    console.log('meneee2')
-    const user = JSON.parse(loggedUserJSON)
+    // const user = JSON.parse(loggedUserJSON)
+    const user = props.user
     await setState({
       user: user,
       notes: [],
       navigation: 1,
       logged: 1
     })
-    await props.setLogin(user)
+    // await props.setLogin(user)
+    await noteService.setToken(JSON.parse(loggedUserJSON).token)
     await props.noteInitialization(user)
   }
 

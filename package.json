@@ -8,13 +8,13 @@
   "description": "check README.md",
   "main": "index.js",
   "scripts": {
-    "start": "cross-env NODE_ENV=production node src/index.js",
+    "start": "cross-env NODE_ENV=production node src/index.js & \node scripts/start.js",
     "watch": "cross-env NODE_ENV=development nodemon src/index.js",
     "test": "cross-env NODE_ENV=test jest --verbose",
     "lint": "eslint .",
     "build": "cd src/client && npm install && npm run-script build",
-    "react": "node src/client/scripts/start.js",
-    "dev": "cross-env NODE_ENV=development concurrently \"npm run watch\" \"npm run react\""
+    "react": "cd src/client && node ./scripts/start.js",
+    "dev": "concurrently \"npm run watch\" \"npm run react\""
   },
   "author": "Eero Lahdenperä",
   "license": "MIT",
