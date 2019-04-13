@@ -22,10 +22,11 @@ export const actionForRegister = (information) => {
 }
 
 export const setLogin = (user) => {
-  noteService.setToken(user.id, user.token)
+  noteService.setToken(user.token)
+  console.log(user)
   return async (dispatch) => {
     dispatch({
-      type: 'LOGIN',
+      type: 'NOTHING',
       data: user
     })
   }
@@ -33,15 +34,14 @@ export const setLogin = (user) => {
 
 export const actionForLogin = (creditentals) => {
   return async (dispatch) => {
-    const user = await loginService.login(creditentals)
-    noteService.setToken(user.id, user.token)
-    await window.localStorage.setItem('loggedMystashappUser', JSON.stringify(user))
+    const response = await loginService.login(creditentals)
+    await noteService.setToken(response.token)
+    await window.localStorage.setItem('loggedMystashappUser', JSON.stringify({ token: response.token }))
     dispatch({
       type: 'LOGIN',
-      data: user
+      data: response.user
     })
-    // console.log(user)
-    return user
+    return response.user
   }
 }
 

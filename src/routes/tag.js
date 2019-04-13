@@ -22,9 +22,9 @@ tagRouter.get('/directory/:tag_name', async (req, res) => {
 
 tagRouter.post('/', async (req, res) => {
   if (req.body.nimi === undefined) return res.status(400).json({ error: 'name missing' })
-  const tag_name = req.body.nimi.toLowerCase()
+  const tagName = req.body.nimi.toLowerCase()
   try {
-    const { rows } = await db.query('INSERT INTO tag(name) VALUES ($1) RETURNING name', [tag_name])
+    const { rows } = await db.query('INSERT INTO tag(name) VALUES ($1) RETURNING name', [tagName])
     await res.json(rows)
   } catch (exception) {
     res.status(400).send('error ' + exception)

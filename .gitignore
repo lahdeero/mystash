@@ -1,2 +1,5 @@
 node_modules/
 .env
+src\client\build  
+src\client\node_modules  
+trash  

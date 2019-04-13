@@ -4,20 +4,15 @@ const baseUrl = '/api/notes/directory'
 
 let token = null
 let config = {}
-let userId = null
 
-const setToken = (id, newToken) => {
-  userId = id
+const setToken = (newToken) => {
   token = `bearer ${newToken}`
   config = { headers: { 'Authorization': token } }
 }
 
 // REMEMBER ALWAYS TO ADD EXPORT DEFAULT!!!!!!!!!
 const getAll = async () => {
-  if (userId == null) {
-    return null
-  }
-  const response = await API.get(baseUrl + '/' + userId + '/all', config)
+  const response = await API.get(baseUrl + '/all', config)
   return response.data
 }
 

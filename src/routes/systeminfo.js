@@ -1,5 +1,5 @@
 const systeminfoRouter = require('express').Router()
-const shell = require('shelljs')
+// const shell = require('shelljs')
 
 systeminfoRouter.get('/', async (req, res) => {
   // let version = []
@@ -13,8 +13,5 @@ systeminfoRouter.get('/', async (req, res) => {
   //   res.send(data)
   // });
 })
-
-
-
 
 module.exports = systeminfoRouter

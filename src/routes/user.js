@@ -100,7 +100,7 @@ usersRouter.post('/', async (request, response) => {
     }
     const token = await jwt.sign(userForToken, process.env.SECRET)
     console.log('successfully registered')
-    response.status(200).send([{ token, id: user.id, username: user.username, realname: user.realname, email: user.email, tier: user.tier }, { welcomeMessage }])
+    response.status(200).send([{ token, id: user.id }, { welcomeMessage }])
   } catch (exception) {
     console.log(exception)
     response.status(500).json({ error: 'something went wrong...' })

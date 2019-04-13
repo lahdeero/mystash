@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
+import { BrowserRouter as Router, Route } from 'react-router-dom'
 import { connect } from 'react-redux'
 
 import './App.css'
@@ -12,55 +12,64 @@ import Form from './components/note/Form'
 import Settings from './components/Settings'
 import Notification from './components/Notification'
 import { noteInitialization, clearNotes } from './reducers/noteReducer'
-import { setLogin, actionForLogout } from './reducers/userReducer'
+import noteService from './services/NoteService'
+import { actionForLogin, setLogin, actionForLogout } from './reducers/userReducer'
 import useFilter from './hooks/useFilter'
 
 const App = (props) => {
   const filter = useFilter()
-  const [state, setState] = useState({ navigation: 0, logged: 0 })
+  const [state, setState] = useState({ user: null, notes: [], navigation: 0, logged: 0 })
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedMystashappUser')
     if (state.logged === 0 && loggedUserJSON) {
-      setState(state.logged = 1)
       init(loggedUserJSON)
     }
   })
 
-  const init = (loggedUserJSON) => {
-    const user = JSON.parse(loggedUserJSON)
-    props.setLogin(user)
-    props.noteInitialization(user)
+  const init = async (loggedUserJSON) => {
+    // const user = JSON.parse(loggedUserJSON)
+    const user = props.user
+    await setState({
+      user: user,
+      notes: [],
+      navigation: 1,
+      logged: 1
+    })
+    // await props.setLogin(user)
+    await noteService.setToken(JSON.parse(loggedUserJSON).token)
+    await props.noteInitialization(user)
   }
 
-  const handleLogout = async (event) => {
-    await event.preventDefault()
-    await window.localStorage.removeItem('loggedMystashappUser')
-    await filter.setFilter('')
-    await props.clearNotes()
-    await props.actionForLogout()
-    await setState({ navigation: 0, logged: 0 })
+  const handleLogout = (event) => {
+    event.preventDefault()
+    window.localStorage.removeItem('loggedMystashappUser')
+    filter.setFilter('')
+    props.clearNotes()
+    props.actionForLogout()
+    setState({ user: null, navigation: 0, logged: 0 })
   }
 
-  if (state.logged === 0) {
-    return (<Login />)
+  if (state.logged === 1) {
+    return (
+      <div>
+        <Notification />
+        <Router>
+          <div>
+            <Menu currentPage={state.navigation} filter={filter} handleLogout={handleLogout} />
+            <Route exact path="/" render={() => <List notes={props.notes} filter={filter} />} />
+            <Route path="/login" render={() => <Login />} />
+            <Route path="/create" render={() => <Form />} />
+            <Route path="/settings" render={() => <Settings />} />
+            <Route exact path="/notes/:id" component={Show} />
+            <Route exact path="/notes/edit/:id" component={Edit} />
+          </div>
+        </Router>
+      </div>
+    )
+  } else {
+    return <div><Login actionForLogin={props.actionForLogin} noteInitialization={props.noteInitialization} /></div>
   }
-  return (
-    <div>
-      <Notification />
-      <Router>
-        <div>
-          <Menu currentPage={state.navigation} filter={filter} handleLogout={handleLogout} />
-          <Route exact path="/" render={() => <List Link={Link} Route={Route} filter={filter} />} />
-          <Route path="/login" render={() => <Login />} />
-          <Route path="/create" render={() => <Form />} />
-          <Route path="/settings" render={() => <Settings />} />
-          <Route exact path="/notes/:id" component={Show} />
-          <Route exact path="/notes/edit/:id" component={Edit} />
-        </div>
-      </Router>
-    </div>
-  )
 }
 
 const mapStateToProps = (store) => {
@@ -72,6 +81,7 @@ const mapStateToProps = (store) => {
 const mapDispatchToProps = {
   noteInitialization,
   setLogin,
+  actionForLogin,
   actionForLogout,
   clearNotes
 }

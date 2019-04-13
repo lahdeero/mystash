@@ -21,7 +21,7 @@ noteRouter.get('/all/public', async (req, res) => {
   }
 })
 
-noteRouter.get('/:user/all', async (req,res) => {
+noteRouter.get('/all', async (req, res) => {
   try {
     const token = getTokenFrom(req)
     const decodedToken = jwt.verify(token, process.env.SECRET)
@@ -41,7 +41,7 @@ noteRouter.get('/:user/all', async (req,res) => {
   }
 })
 
-noteRouter.get('/note/:id', async (req,res) => {
+noteRouter.get('/note/:id', async (req, res) => {
   const noteid = parseInt(req.params.id)
   try {
     const token = getTokenFrom(req)
@@ -53,7 +53,7 @@ noteRouter.get('/note/:id', async (req,res) => {
     const { rows } = await client.query('SELECT note.id, title, content, array_agg(tag.name) as tags FROM note LEFT JOIN notetag ON notetag.note_id = note.id LEFT JOIN tag ON tag.id = notetag.tag_id WHERE note.id=($1) AND account_id = ($2) GROUP BY note.id', [noteid, decodedToken.id])
     res.send(rows)
   } catch (exception) {
-    if (exception.name === 'JsonWebTokenError' ) {
+    if (exception.name === 'JsonWebTokenError') {
       res.status(401).json({ error: exception.message })
     } else {
       console.log(exception)
@@ -106,7 +106,7 @@ noteRouter.post('/', async (req, res) => {
       res.status(400).send('Could not add note! ' + exception)
     }
   } catch (exception) {
-    if (exception.name === 'JsonWebTokenError' ) {
+    if (exception.name === 'JsonWebTokenError') {
       return res.status(401).json({ error: exception.message })
     } else {
       console.log(exception)
@@ -168,7 +168,7 @@ noteRouter.put('/note/:id', async (req, res) => {
       return res.status(400).send('Could not update note' + error)
     }
   } catch (exception) {
-    if (exception.name === 'JsonWebTokenError' ) {
+    if (exception.name === 'JsonWebTokenError') {
       res.status(401).json({ error: exception.message })
     } else {
       console.log(exception)

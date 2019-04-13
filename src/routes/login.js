@@ -12,23 +12,26 @@ loginRouter.post('/', async (request, response) => {
 
   try {
     const res = await client.query('SELECT * FROM account WHERE username = ($1) LIMIT 1', [body.username.toLowerCase()])
-    const user = res.rows[0]
+    const data = res.rows[0]
+    // console.log(data)
 
-    const passwordCorrect = user === null ? false : await bcrypt.compare(body.password, user.password)
+    const passwordCorrect = data === null ? false : await bcrypt.compare(body.password, data.password)
 
-    if (!(user && passwordCorrect)) {
+    if (!(data && passwordCorrect)) {
       console.log('failed login, user: ' + body.username.toLowerCase())
       return response.status(401).json({ error: 'invalid username or password' })
     }
 
-    const userForToken = {
-      username: user.username,
-      id: user.id,
-      tier: user.tier
+    const user = await {
+      username: data.username,
+      realname: data.realname,
+      id: data.id,
+      tier: data.tier,
+      email: data.email
     }
-    const token = jwt.sign(userForToken, process.env.SECRET)
-    console.log('successful login')
-    response.status(200).send({ token, id: user.id, username: user.username, realname: user.realname, email: user.email, tier: user.tier })
+    const token = await jwt.sign(user, process.env.SECRET)
+    console.log('successful login: ', user.username)
+    await response.status(200).send({ token, user })
   } catch (exception) {
     console.log('failed login, user: ' + body.username)
     return response.status(401).json({ error: 'invalid username or password' })
