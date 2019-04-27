@@ -14,7 +14,7 @@ const getTokenFrom = (request) => {
 
 noteRouter.get('/all/public', async (req, res) => {
   try {
-    const { rows } = await client.query('SELECT note.id, title, content, array_agg(tag.name) as tags FROM note LEFT JOIN notetag ON notetag.note_id = note.id LEFT JOIN tag ON tag.id = notetag.tag_id GROUP BY note.id, title, content ORDER BY note.id DESC')
+    const { rows } = await client.query('SELECT note.id FROM note')
     res.json(rows)
   } catch (exception) {
     res.send(exception)
@@ -82,7 +82,8 @@ noteRouter.post('/', async (req, res) => {
       const { rows } = await client.query('INSERT INTO note(title,content,account_id) VALUES($1, $2, $3) RETURNING id', [body.title, body.content, accId])
       id = await rows[0].id
 
-      await body.tags.forEach(async (tag) => {
+      const tags = body.tags.length === 0 ? ['undefined'] : body.tags
+      await tags.forEach(async (tag) => {
         let tagId
         const selectRes = await client.query('SELECT id FROM tag WHERE name = ($1)', [tag])
         if (selectRes.rows[0] === undefined) {
