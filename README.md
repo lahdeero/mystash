@@ -9,6 +9,6 @@ My-stash
 
 # environment variables
 DATABASE_URL=postgres://username:password@host:port/database <br />
-SECRET=salainen <br />
+SECRET=salaisuus <br />
 
 
