@@ -12,19 +12,19 @@ function alphanumeric (inputtxt) {
   }
 }
 
-let initialNote = [
-  {
+let initialNote = {
     id: 1,
-    title: 'Welcome to my-stash!',
-    content: 'This is automated welcome note!\nYou can start creating own notes now.\nIf you run into problemns create issue in github\nhttps://github.com/lahdeero/my-stash\n',
+    title: 'Welcome to mystash!',
+    content: 'This is automated welcome note!\nYou can start creating own notes now.\nIf you run into problemns create issue in github\nhttps://github.com/lahdeero/mystash-frontend\n',
     tags: ['welcome, initial']
   }
-]
+
 async function generateWelcome (accountId) {
   try {
     client.query('BEGIN')
-    const title = 'Welcome to my-stash!'
-    const content = 'This is automated welcome note!\nYou can start creating own notes now.\nIf you run into problemns create issue in github\nhttps://github.com/lahdeero/my-stash\n'
+    const title = initialNote.title
+    console.log('title = ', title)
+    const content = initialNote.content
     const { rows } = await client.query('INSERT INTO note(title,content,account_id) VALUES( $1, $2, $3) RETURNING id', [title, content, accountId])
     const noteId = rows[0].id
     const tag = 'initial'
@@ -85,10 +85,8 @@ usersRouter.post('/', async (request, response) => {
     }
     console.log('welcomeId = ' + welcomeId)
     console.log('accountId = ' + accountId)
-    let welcomeMessage = initialNote[0]
-    welcomeMessage.id = welcomeId
-    welcomeMessage.account_id = accountId
-    console.log(welcomeMessage)
+    const welcomeMessage = {...initialNote, id: welcomeId, account_id: accountId}
+    console.log('welcomeMessage: ', welcomeMessage)
 
     const res = await client.query('SELECT id,username,realname,email,tier FROM account WHERE username = ($1) AND id=($2) LIMIT 1', [body.username.toLowerCase(), accountId])
     const user = await res.rows[0]
@@ -100,7 +98,7 @@ usersRouter.post('/', async (request, response) => {
     }
     const token = await jwt.sign(userForToken, process.env.SECRET)
     console.log('successfully registered')
-    response.status(200).send([{ token, id: user.id }, { welcomeMessage }])
+    response.status(200).send(token)
   } catch (exception) {
     console.log(exception)
     response.status(500).json({ error: 'something went wrong...' })

@@ -5,10 +5,12 @@ const client = require('../db')
 // '/api/notes/directory/'
 
 const getTokenFrom = (request) => {
-  const authorization = request.get('authorization')
+  const authorization = request.get('Authorization')
+  console.log('authorization = ', authorization)
   if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
     return authorization.substring(7)
   }
+  console.log('return null')
   return null
 }
 
@@ -22,13 +24,20 @@ noteRouter.get('/all/public', async (req, res) => {
 })
 
 noteRouter.get('/all', async (req, res) => {
+  console.log('eka')
   try {
+    console.log('toka')
     const token = getTokenFrom(req)
+    console.log('kolmas')
+    console.log('token = ', token)
     const decodedToken = jwt.verify(token, process.env.SECRET)
+    console.log('neljas')
 
     if (!token || !decodedToken.id) {
+      console.log('token juttui')
       return res.status(401).json({ errro: 'token invalid or missing' })
     }
+    console.log('ei oo token juttui')
     const { rows } = await client.query('SELECT note.id,title,content,array_agg(tag.name) as tags FROM note LEFT JOIN notetag ON notetag.note_id = note.id LEFT JOIN tag ON tag.id = notetag.tag_id LEFT JOIN account ON account.id = note.account_id WHERE account.id = ($1) GROUP BY note.id ORDER BY note.id DESC', [decodedToken.id])
     res.send(rows)
   } catch (exception) {
