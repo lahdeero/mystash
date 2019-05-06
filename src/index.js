@@ -22,8 +22,8 @@ app.use('/api/login', loginRouter)
 
 const server = http.createServer(app)
 
-app.get('/create', function (req, res) {
-  res.json('create')
+app.get('/', function (req, res) {
+  res.send('<a href="https://lahdeero.github.io/mystash-frontend/">frontend</a>')
 })
 
 const PORT = process.env.PORT || 3001

@@ -1,15 +1,15 @@
 {
-  "name": "mystash",
+  "name": "mystash-backend",
   "repository": {
     "type": "git",
-    "url": "https://github.com/lahdeero/my-stash"
+    "url": "https://github.com/lahdeero/mystash-backend"
   },
   "version": "0.1.2",
   "description": "check README.md",
   "main": "index.js",
   "scripts": {
     "start": "cross-env NODE_ENV=production node src/index.js",
-    "watch": "cross-env NODE_ENV=development nodemon src/index.js",
+    "watch": "cross-env NODE_ENV=dev nodemon src/index.js",
     "test": "cross-env NODE_ENV=test jest --verbose",
     "lint": "eslint ."
   },

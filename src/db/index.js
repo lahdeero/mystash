@@ -13,9 +13,10 @@ require('dotenv').config()
 
 // const pool = new pg.Pool(config)
 
+console.log('node_env = ', process.env.NODE_ENV)
 const client = new Client({
   connectionString: process.env.DATABASE_URL,
-  ssl: true
+  ssl: process.env.NODE_ENV == 'dev' ? false : true
 })
 
 client.connect()
