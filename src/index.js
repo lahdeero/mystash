@@ -17,7 +17,7 @@ app.use(cors())
 app.use('/api/notes/directory/', noteRouter)
 app.use('/api/notes/tag', tagRouter)
 app.use('/api/systeminfo', systeminfoRouter)
-app.use('/api/register', userRouter)
+app.use('/api/user', userRouter)
 app.use('/api/login', loginRouter)
 
 const server = http.createServer(app)

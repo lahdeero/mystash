@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt')
 const usersRouter = require('express').Router()
 const client = require('../db')
 
-function alphanumeric (inputtxt) {
+function alphanumeric(inputtxt) {
   var letters = /^[0-9a-zA-Z]+$/
   if (letters.test(inputtxt)) {
     return true
@@ -13,13 +13,13 @@ function alphanumeric (inputtxt) {
 }
 
 let initialNote = {
-    id: 1,
-    title: 'Welcome to mystash!',
-    content: 'This is automated welcome note!\nYou can start creating own notes now.\nIf you run into problemns create issue in github\nhttps://github.com/lahdeero/mystash-frontend\n',
-    tags: ['welcome, initial']
-  }
+  id: 1,
+  title: 'Welcome to mystash!',
+  content: 'This is automated welcome note!\nYou can start creating own notes now.\nIf you run into problemns create issue in github\nhttps://github.com/lahdeero/mystash-frontend\n',
+  tags: ['welcome, initial']
+}
 
-async function generateWelcome (accountId) {
+async function generateWelcome(accountId) {
   try {
     client.query('BEGIN')
     const title = initialNote.title
@@ -45,6 +45,31 @@ async function generateWelcome (accountId) {
   }
   return 0
 }
+
+const getTokenFrom = (request) => {
+  const authorization = request.get('Authorization')
+  if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
+    return authorization.substring(7)
+  }
+  return null
+}
+
+usersRouter.get('/', async (request, response) => {
+  try {
+    const token = getTokenFrom(request)
+    const decodedToken = jwt.verify(token, process.env.SECRET)
+
+    const res = await client.query('SELECT id,username,realname,email,tier FROM account WHERE username = ($1) AND id=($2) LIMIT 1', [decodedToken.username, decodedToken.id])
+    const user = await res.rows[0]
+
+    console.log('sending users data')
+    response.status(200).send(user)
+  } catch (exception) {
+    console.log(exception)
+    response.status(404).json({ error: 'something went wrong..' })
+  }
+})
+
 usersRouter.post('/', async (request, response) => {
   const body = request.body
   if (!body.username || !body.password) {
@@ -85,20 +110,22 @@ usersRouter.post('/', async (request, response) => {
     }
     console.log('welcomeId = ' + welcomeId)
     console.log('accountId = ' + accountId)
-    const welcomeMessage = {...initialNote, id: welcomeId, account_id: accountId}
+    const welcomeMessage = { ...initialNote, id: welcomeId, account_id: accountId }
     console.log('welcomeMessage: ', welcomeMessage)
 
     const res = await client.query('SELECT id,username,realname,email,tier FROM account WHERE username = ($1) AND id=($2) LIMIT 1', [body.username.toLowerCase(), accountId])
     const user = await res.rows[0]
 
     const userForToken = await {
-      id: user.id,
       username: user.username,
-      tier: user.tier
+      realname: user.realname,
+      id: user.id,
+      tier: user.tier,
+      email: user.email
     }
     const token = await jwt.sign(userForToken, process.env.SECRET)
     console.log('successfully registered')
-    response.status(200).send(token)
+    response.status(200).send({ token, user })
   } catch (exception) {
     console.log(exception)
     response.status(500).json({ error: 'something went wrong...' })
