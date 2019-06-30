@@ -5,14 +5,15 @@ CREATE TABLE account (
 	realname varchar(256) NOT NULL,
 	email varchar(256) NOT NULL,
 	register_date DATE,
-    tier integer NOT NULL
+  tier integer NOT NULL
 );
 
 CREATE TABLE note(
 	id SERIAL PRIMARY KEY,
 	title varchar(256) NOT NULL,
 	content text NOT NULL,
-	account_id integer REFERENCES Account(id)
+	date_modified timestamp,
+	account_id integer REFERENCES Account(id) ON DELETE CASCADE,
 );
 
 CREATE TABLE tag(

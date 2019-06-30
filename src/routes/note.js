@@ -7,11 +7,14 @@ noteRouter.all('*', verifyJWT.verifyJWT_MW)
 noteRouter.get('/all', async (req, res) => {
   const user = req.user
   try {
-    const { rows } = await client.query('SELECT note.id,title,content,array_agg(tag.name) as tags FROM note LEFT JOIN notetag ON notetag.note_id = note.id LEFT JOIN tag ON tag.id = notetag.tag_id LEFT JOIN account ON account.id = note.account_id WHERE account.id = ($1) GROUP BY note.id ORDER BY note.id DESC', [user.id])
+    const { rows } = await client.query('SELECT note.id, title, content, modified_date, array_agg(tag.name) as tags FROM note  \
+    LEFT JOIN notetag ON notetag.note_id = note.id LEFT JOIN tag ON tag.id = notetag.tag_id \
+    LEFT JOIN account ON account.id = note.account_id WHERE account.id = ($1) \
+    GROUP BY note.id ORDER BY modified_date DESC NULLS LAST', [user.id])
     res.send(rows)
   } catch (exception) {
     console.log(exception)
-    res.status(500).json({ error: 'something went wrong...' })
+    res.status(500).json({ error: 'could not get notes' })
   }
 })
 
@@ -19,13 +22,24 @@ noteRouter.get('/note/:id', async (req, res) => {
   const user = req.user
   const noteid = parseInt(req.params.id)
   try {
-    const { rows } = await client.query('SELECT note.id, title, content, array_agg(tag.name) as tags FROM note LEFT JOIN notetag ON notetag.note_id = note.id LEFT JOIN tag ON tag.id = notetag.tag_id WHERE note.id=($1) AND account_id = ($2) GROUP BY note.id', [noteid, user.id])
+    const { rows } = await client.query('SELECT note.id, title, content, modified_date, array_agg(tag.name) as tags FROM note \
+    LEFT JOIN notetag ON notetag.note_id = note.id LEFT JOIN tag ON tag.id = notetag.tag_id \
+    WHERE note.id=($1) AND account_id = ($2) GROUP BY note.id', [noteid, user.id])
     res.send(rows)
   } catch (exception) {
     console.log(exception)
-    res.status(500).json({ error: 'something went wrong...' })
+    res.status(500).json({ error: 'failed to get note!' })
   }
 })
+
+resolveTagId = async (tag) => {
+  const selectRes = await client.query('SELECT id FROM tag WHERE name = ($1)', [tag])
+  if (selectRes.rows[0] === undefined) {
+    const insertRes = await client.query('INSERT INTO tag(name) VALUES($1) RETURNING id', [tag])
+    return insertRes.rows[0].id
+  }
+  return selectRes.rows[0].id
+}
 
 noteRouter.post('/', async (req, res) => {
   const user = req.user
@@ -36,28 +50,23 @@ noteRouter.post('/', async (req, res) => {
 
   try {
     await client.query('BEGIN')
-    const { rows } = await client.query('INSERT INTO note(title,content,account_id) VALUES($1, $2, $3) RETURNING id', [body.title, body.content, user.id])
-    id = await rows[0].id
+    const { rows } = await client.query('INSERT INTO note(title,content,account_id,modified_date) VALUES($1, $2, $3, NOW()) RETURNING id', [body.title, body.content, user.id])
+    const id = rows[0].id
 
     const tags = body.tags.length === 0 ? ['undefined'] : body.tags
     await tags.forEach(async (tag) => {
-      let tagId
-      const selectRes = await client.query('SELECT id FROM tag WHERE name = ($1)', [tag])
-      if (selectRes.rows[0] === undefined) {
-        const insertRes = await client.query('INSERT INTO tag(name) VALUES($1) RETURNING id', [tag])
-        tagId = await insertRes.rows[0].id
-      } else if (selectRes.rows[0] !== undefined) {
-        tagId = await selectRes.rows[0].id
-      }
-
+      const tagId = await resolveTagId(tag)
       const insertNoteTag = await 'INSERT INTO notetag(note_id, tag_id) VALUES ($1, $2)'
-      const insertNoteTagValues = await [id, tagId]
+      const insertNoteTagValues = [id, tagId]
       await client.query(insertNoteTag, insertNoteTagValues)
     })
-
     await client.query('COMMIT')
-    const result = await client.query('SELECT note.id, title, content, array_agg(tag.name) as tags FROM note LEFT JOIN notetag ON notetag.note_id = note.id LEFT JOIN tag ON tag.id = notetag.tag_id WHERE note.id=($1) GROUP BY note.id', [id])
-    await res.json(result.rows)
+    const querystring = 'SELECT note.id, title, content, array_agg(tag.name) as tags FROM note \
+      LEFT JOIN notetag ON notetag.note_id = note.id LEFT \
+      JOIN tag ON tag.id = notetag.tag_id WHERE note.id=($1) GROUP BY note.id'
+    const result = await client.query(querystring, [id])
+    console.log(result.rows[0])
+    res.json(result.rows[0])
   } catch (exception) {
     await client.query('ROLLBACK')
     console.log(exception)
@@ -75,7 +84,7 @@ noteRouter.put('/note/:id', async (req, res) => {
   else if (body.content === undefined) return res.status(400).json({ error: 'contetent missing' })
   try {
     client.query('BEGIN')
-    await client.query('UPDATE note SET title =($1), content =($2) WHERE note.id =($3) AND account_id =($4)', [body.title, body.content, id, user.id])
+    await client.query('UPDATE note SET title =($1), content =($2), modified_date=NOW() WHERE note.id =($3) AND account_id =($4)', [body.title, body.content, id, user.id])
 
     const currentTags = await client.query('SELECT tag.name, notetag.note_id, notetag.tag_id FROM notetag LEFT JOIN tag ON tag.id = notetag.tag_id WHERE notetag.note_id = ($1)', [id])
 
@@ -103,7 +112,8 @@ noteRouter.put('/note/:id', async (req, res) => {
     })
     await client.query('COMMIT')
     /* FOR UNKNOWN REASON result DOESNT INCLUDE ADDED TAGS */
-    const result = await client.query('SELECT note.id, title, content, array_agg(tag.name) as tags FROM note LEFT JOIN notetag ON notetag.note_id = note.id LEFT JOIN tag ON tag.id = notetag.tag_id WHERE note.id=($1) GROUP BY note.id', [id])
+    const result = await client.query('SELECT note.id, title, content, modified_date, array_agg(tag.name) as tags FROM note \
+    LEFT JOIN notetag ON notetag.note_id = note.id LEFT JOIN tag ON tag.id = notetag.tag_id WHERE note.id=($1) GROUP BY note.id', [id])
     return await res.json(result.rows)
   } catch (error) {
     client.query('ROLLBACK')
