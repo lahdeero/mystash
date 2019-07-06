@@ -13,7 +13,7 @@ CREATE TABLE note(
 	title varchar(256) NOT NULL,
 	content text NOT NULL,
 	date_modified timestamp,
-	account_id integer REFERENCES Account(id) ON DELETE CASCADE,
+	account_id integer REFERENCES Account(id)
 );
 
 CREATE TABLE tag(
