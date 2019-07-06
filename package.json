@@ -4,7 +4,7 @@
     "type": "git",
     "url": "https://github.com/lahdeero/mystash-backend"
   },
-  "version": "0.1.2",
+  "version": "0.2.3",
   "description": "check README.md",
   "main": "index.js",
   "scripts": {
@@ -23,8 +23,7 @@
     "express": "^4.16.3",
     "express-promise-router": "^3.0.3",
     "jsonwebtoken": "^8.4.0",
-    "pg": "^7.4.3",
-    "shelljs": "^0.8.2"
+    "pg": "^7.4.3"
   },
   "devDependencies": {
     "concurrently": "^4.1.0",

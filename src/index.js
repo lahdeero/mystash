@@ -6,7 +6,6 @@ const cors = require('cors')
 const client = require('./db')
 const noteRouter = require('./routes/note')
 const tagRouter = require('./routes/tag')
-const systeminfoRouter = require('./routes/systeminfo')
 const userRouter = require('./routes/user')
 const loginRouter = require('./routes/login')
 
@@ -16,7 +15,6 @@ app.use(cors())
 
 app.use('/api/notes/directory/', noteRouter)
 app.use('/api/notes/tag', tagRouter)
-app.use('/api/systeminfo', systeminfoRouter)
 app.use('/api/user', userRouter)
 app.use('/api/login', loginRouter)
 
