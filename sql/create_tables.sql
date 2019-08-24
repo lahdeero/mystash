@@ -12,7 +12,8 @@ CREATE TABLE note(
 	id SERIAL PRIMARY KEY,
 	title varchar(256) NOT NULL,
 	content text NOT NULL,
-	date_modified timestamp,
+	modified_date timestamp,
+	created_date timestamp,
 	account_id integer REFERENCES Account(id)
 );
 
