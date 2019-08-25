@@ -16,7 +16,8 @@ require('dotenv').config()
 console.log('node_env = ', process.env.NODE_ENV)
 const client = new Client({
   connectionString: process.env.DATABASE_URL,
-  ssl: process.env.NODE_ENV == 'dev' ? false : true
+  // ssl: process.env.NODE_ENV == 'dev' ? false : true
+  ssl: false // since we dont run in heroku anymore
 })
 
 client.connect()
