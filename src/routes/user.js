@@ -12,11 +12,11 @@ function alphanumeric(inputtxt) {
   }
 }
 
-let initialNote = {
+const initialNote = {
   id: 1,
   title: 'Welcome to mystash!',
-  content: 'This is automated welcome note!\nYou can start creating own notes now.\nIf you run into problemns create issue in github\nhttps://github.com/lahdeero/mystash-frontend\n',
-  tags: ['welcome, initial']
+  content: '# Welcome! \n\n Notes are rendered with markdown when having markdown tag.',
+  tags: ['welcome, initial, markdown']
 }
 
 async function generateWelcome(accountId) {
@@ -32,15 +32,15 @@ async function generateWelcome(accountId) {
     let tagId
     if (selectRes.rows[0] === undefined) {
       const insertRes = await client.query('INSERT INTO tag(name) VALUES($1) RETURNING id', [tag])
-      tagId = await insertRes.rows[0].id
+      tagId = insertRes.rows[0].id
     } else if (selectRes.rows[0] !== undefined) {
-      tagId = await selectRes.rows[0].id
+      tagId = selectRes.rows[0].id
     }
     await client.query('INSERT INTO notetag(note_id, tag_id) VALUES ($1, $2)', [noteId, tagId])
     client.query('COMMIT')
     return noteId
   } catch (exception) {
-    await client.query('ROLLBACK')
+    client.query('ROLLBACK')
     console.log(exception)
   }
   return 0
@@ -60,7 +60,7 @@ usersRouter.get('/', async (request, response) => {
     const decodedToken = jwt.verify(token, process.env.SECRET)
 
     const res = await client.query('SELECT id,username,realname,email,tier FROM account WHERE username = ($1) AND id=($2) LIMIT 1', [decodedToken.username, decodedToken.id])
-    const user = await res.rows[0]
+    const user = res.rows[0]
 
     console.log('sending users data')
     response.status(200).send(user)
@@ -96,13 +96,13 @@ usersRouter.post('/', async (request, response) => {
     console.log(body)
 
     const saltRounds = 10
-    const passwordHash = await bcrypt.hash(body.password, saltRounds)
+    const passwordHash = bcrypt.hash(body.password, saltRounds)
 
     const today = new Date()
 
     const { rows } = await client.query('INSERT INTO account (username,password,realname,email,tier,register_date) VALUES($1, $2, $3, $4, $5, $6) RETURNING id', [body.username.toLowerCase(), passwordHash, body.realname, body.email, 1, today])
     const accountId = rows[0].id
-    const welcomeId = await generateWelcome(accountId)
+    const welcomeId = generateWelcome(accountId)
     if (welcomeId === 0 || welcomeId === '0') {
       console.log('Could not generate welcome message')
       // TODO DELETE ACCOUNT
@@ -114,16 +114,16 @@ usersRouter.post('/', async (request, response) => {
     console.log('welcomeMessage: ', welcomeMessage)
 
     const res = await client.query('SELECT id,username,realname,email,tier FROM account WHERE username = ($1) AND id=($2) LIMIT 1', [body.username.toLowerCase(), accountId])
-    const user = await res.rows[0]
+    const user = res.rows[0]
 
-    const userForToken = await {
+    const userForToken = {
       username: user.username,
       realname: user.realname,
       id: user.id,
       tier: user.tier,
       email: user.email
     }
-    const token = await jwt.sign(userForToken, process.env.SECRET)
+    const token = jwt.sign(userForToken, process.env.SECRET)
     console.log('successfully registered')
     response.status(200).send({ token, user })
   } catch (exception) {

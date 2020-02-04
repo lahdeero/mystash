@@ -8,7 +8,7 @@
   "description": "check README.md",
   "main": "index.js",
   "scripts": {
-    "start": "cross-env NODE_ENV=production node src/index.js",
+    "start": "NODE_ENV=production node src/index.js",
     "watch": "cross-env NODE_ENV=dev nodemon src/index.js",
     "test": "cross-env NODE_ENV=test jest --verbose",
     "lint": "eslint ."
