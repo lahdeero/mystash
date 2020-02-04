@@ -33,12 +33,12 @@ noteRouter.get('/note/:id', async (req, res) => {
 })
 
 resolveTagId = async (tag) => {
-  const selectRes = await client.query('SELECT id FROM tag WHERE name = ($1)', [tag])
-  if (selectRes.rows[0] === undefined) {
+  const tagRow = await client.query('SELECT id FROM tag WHERE name = ($1)', [tag])
+  if (tagRow.rows[0] === undefined) {
     const insertRes = await client.query('INSERT INTO tag(name) VALUES($1) RETURNING id', [tag])
     return insertRes.rows[0].id
   }
-  return selectRes.rows[0].id
+  return tagRow.rows[0].id
 }
 
 noteRouter.post('/', async (req, res) => {
@@ -87,23 +87,26 @@ noteRouter.put('/note/:id', async (req, res) => {
     const currentTags = await client.query('SELECT tag.name, notetag.note_id, notetag.tag_id FROM notetag LEFT JOIN tag ON tag.id = notetag.tag_id WHERE notetag.note_id = ($1)', [noteId])
 
     // Check if notetags needs to be deleted
-    await currentTags.rows.forEach(async (row) => {
+    currentTags.rows.forEach(async (row) => {
       if (body.tags.includes(row.name)) return
       await client.query('DELETE FROM notetag WHERE note_id = ($1) AND tag_id = ($2)', [noteId, row.tag_id])
     })
 
     // Add new notetags (and new tags if needed)
-    body.tags.map(async (tag) => {
-      let tagId = 43 // for some reason result doesnt include added tags..
-      const selectRes = await client.query('SELECT id FROM tag WHERE name = ($1)', [tag])
-      if (selectRes.rows[0] === undefined) {
-        const insertRes = await client.query('INSERT INTO tag(name) VALUES($1) RETURNING id', [tag])
-        tagId = insertRes.rows[0].id
-      } else if (selectRes.rows[0] !== undefined) {
-        tagId = selectRes.rows[0].id
-      }
-      const checkIfExists = await client.query('SELECT * FROM notetag WHERE note_id =($1) AND tag_id =($2)', [noteId, tagId])
-      if (!checkIfExists.rows[0]) {
+    await body.tags.map(async (tag) => {
+      const tagRow = await client.query('SELECT id FROM tag WHERE name = ($1)', [tag])
+      // console.log('tagRow.rows', tagRow.rows)
+      // console.log('len', tagRow.rows.length)
+
+      const tagId = (tagRow.rows && tagRow.rows.length > 0 && tagRow.rows[0].id)
+        ? tagRow.rows[0].id : await client.query('INSERT INTO tag(name) VALUES($1) RETURNING id', [tag]).rows[0].id
+
+      const noteTagExists = await client.query('SELECT * FROM notetag WHERE note_id =($1) AND tag_id =($2)', [noteId, tagId])
+
+      // console.log('tag: ', tag)
+      // console.log('notetagExists: ', noteTagExists)
+
+      if (!noteTagExists.rows[0]) {
         const insertNoteTag = 'INSERT INTO notetag(note_id, tag_id) VALUES ($1, $2)'
         const insertNoteTagValues = [noteId, tagId]
         await client.query(insertNoteTag, insertNoteTagValues)
