@@ -14,5 +14,7 @@ SECRET=salaisuus <br />
 # docker
 
 docker build -t mystash .
-docker run -d -p 3001:3001 mystash
+docker run --network="host" --name="mystash-backend" mystash
 
+docker container exec -it mystash-backend bash
+node --inspect=0.0.0.0:9229 src/index.js
