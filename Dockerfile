@@ -2,7 +2,7 @@ FROM node:13
 
 ENV NODE_ENV=production
 
-WORKDIR /home/mystash/backend
+WORKDIR /data
 
 COPY package*.json ./
 

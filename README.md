@@ -14,4 +14,5 @@ SECRET=salaisuus <br />
 # docker
 
 docker build -t mystash .
-docker run -p 3001:3001 -d mystash
+docker run -d -p 3001:3001 mystash
+
