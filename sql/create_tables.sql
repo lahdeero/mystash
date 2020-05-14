@@ -1,9 +1,12 @@
 CREATE TABLE account (
 	id SERIAL PRIMARY KEY,
 	username varchar(64) NOT NULL UNIQUE,
-	password varchar(1024) NOT NULL,
+	github_id varchar(32),
+	google_id varchar(32),
+	facebook varchar(32),
+	password varchar(1024),
 	realname varchar(256) NOT NULL,
-	email varchar(256) NOT NULL,
+	email varchar(256) NOT NULL UNIQUE,
 	register_date DATE,
   tier integer NOT NULL
 );
