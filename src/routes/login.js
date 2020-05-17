@@ -48,8 +48,9 @@ passport.use(new GitHubStrategy({
 loginRouter.get('/github',
   passport.authenticate('github', { scope: ['user:email'] }),
   function (req, res) {
+    console.log('redirektaako eees')
     const fronendUrl = process.env.FRONTEND_URL
-    res.redirect(fronendUrl)
+    res.redirect('http://www.duckduckgo.com')
   }
 )
 
@@ -112,9 +113,9 @@ const findOrCreateUser = async (profile) => {
 }
 
 loginRouter.get('/github/callback',
-  passport.authenticate('github', { failureRedirect: '/login' }),
-  async (req, res) => {
-    console.log('callback authentikaatio onnistui', req.username)
+  passport.authenticate('github', { successRedirect: '/', failureRedirect: '/login' }),
+  (req, res) => {
+    console.log('callback authentikaatio onnistui', req.user.username)
 
     try {
       const token = jwt.sign(req.user, process.env.SECRET)
