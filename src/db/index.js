@@ -18,12 +18,13 @@ console.log('node_env = ', process.env.NODE_ENV)
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   max: 10,
-  ssl: false
+  ssl: false,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 2000,
 })
 
 // const client = new Client({
 //   connectionString: process.env.DATABASE_URL,
-// ssl: process.env.NODE_ENV == 'dev' ? false : true
 //   ssl: false // since we dont run in heroku anymore
 // })
 
@@ -31,6 +32,7 @@ const pool = new Pool({
 
 module.exports = {
   query: (text, params) => pool.query(text, params),
-  connect: () => client.connect(),
-  end: () => client.end()
+  // poolQuery: (text, params) => pool.query(text, params),
+  connect: () => pool.connect(),
+  end: () => pool.end()
 }

@@ -22,7 +22,8 @@ const server = http.createServer(app)
 
 app.get('/', function (req, res) {
   // res.send(`<a href="https://lahdeero.github.io/mystash-frontend/">frontend</a>`)
-  res.redirect('https://lahdeero.github.io/mystash-frontend/')
+  const fronendUrl = process.env.FRONTEND_URL
+  res.redirect(fronendUrl)
 })
 
 const PORT = process.env.PORT || 3001

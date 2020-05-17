@@ -2,6 +2,7 @@ const loginRouter = require('express').Router()
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 const client = require('../db')
+const User = require('../models/user')
 const passport = require('passport')
 // const ExtractJwt = require('passport-jwt')
 const queryString = require('query-string')
@@ -11,33 +12,45 @@ loginRouter.use(passport.initialize())
 
 passport.serializeUser(function (user, done) {
   console.log('serialize')
-  done(null, user)
+  done(null, user.id)
 })
+
+passport.deserializeUser((userId, done) => {
+  User.findOne(userId).then(user => {
+    if (!user) {
+      return done(null, false);
+    }
+
+    return done(null, user);
+  }).catch(done);
+});
 
 passport.use(new GitHubStrategy({
   clientID: process.env.GITHUB_CLIENT_ID,
   clientSecret: process.env.GITHUB_CLIENT_SECRET,
-  callbackURL: "http://localhost:8080/api/login/github/callback"
-  // clientID: GITHUB_CLIENT_ID,
-  // clientSecret: GITHUB_CLIENT_SECRET,
-  // callbackURL: "http://127.0.0.1:3000/auth/github/callback"
+  callbackURL: `${process.env.BACKEND_URL}/api/login/github/callback`
 },
-  function (accessToken, refreshToken, profile, done) {
-    // User.findOrCreate({ githubId: profile.id }, function (err, user) {
-    //   return done(err, user)
-    // })
-    process.nextTick(function () {
-      // console.log('profile:', profile)
-      return done(null, profile)
-    })
-  }
-))
+  (accessToken, refreshToken, profile, cb) => {
+    // User.findUserByGhProfile({ profile: { id, username, realname, email, github_id } }, (err, user) => {
+    // User.findUserByGhProfile(profile)
+    User.findOrCreateUser(profile)
+      .then(user => {
+        console.log('user', user)
+        return cb(null, user)
+      })
+      .catch(e => {
+        return cb(null, false, { error: 'No user found' })
+      })
+  })
+)
+
 
 loginRouter.get('/github',
   passport.authenticate('github', { scope: ['user:email'] })
 )
 
 const createUser = async (ghuser) => {
+  // console.log('ghuser', ghuser)
   const today = new Date()
   // console.log('passportuser', passportuser)
   const { username, displayName, _json } = ghuser
@@ -51,7 +64,7 @@ const createUser = async (ghuser) => {
   console.log('eioo')
   const accountId = rows[0].id
   console.log('accid', accountId)
-  const createduser = {
+  const user = {
     username: username,
     realname: displayName,
     id: accountId,
@@ -59,14 +72,14 @@ const createUser = async (ghuser) => {
     tier: 1,
     email: _json.email
   }
-  return createduser
+  return user
 }
 
-const findOrCreateUser = async (ghuser) => {
+const findOrCreateUser = async (profile) => {
+  const ghuser = profile.profile
   // console.log('ghuser', ghuser)
-  const res = await client.query('SELECT * FROM account WHERE github_id = ($1) LIMIT 1', [ghuser.id])
+  const res = await User.findUserByGhId(ghuser.id)
   let data = res.rows[0]
-  // console.log('data', data)
 
   if (!data) {
     const foo = await client.query('SELECT * FROM account WHERE email = ($1) LIMIT 1', [ghuser._json.email])
@@ -97,20 +110,15 @@ const findOrCreateUser = async (ghuser) => {
 loginRouter.get('/github/callback',
   passport.authenticate('github', { failureRedirect: '/login' }),
   async (req, res) => {
-    console.log('callback authentikaatio onnistui')
-    // console.log('request user', req.user)
+    console.log('callback authentikaatio onnistui', req.username)
 
     try {
-      // const passwordCorrect = data === null ? false : await bcrypt.compare(body.password, data.password)
-      const user = await findOrCreateUser(req.user)
-      const token = jwt.sign(user, process.env.SECRET)
-
-      console.log('successful login: ', user.username)
-      // res.redirect(process.env.NODE_ENV === 'dev' ? 'http://localhost:3000?token=' + token : process.env.FRONTEND_URL + '?token=' + token)
+      const token = jwt.sign(req.user, process.env.SECRET)
+      console.log('successful login: ', req.user.email)
       const redirect_url = `${process.env.FRONTEND_URL}?token=${token}`
       res.redirect(redirect_url)
     } catch (exception) {
-      console.log('failed login, user: ' + req.user.displayName)
+      console.log('failed github login, user: ' + req.user.email)
       return res.status(401).json({ error: 'github login failed' })
     }
   })
