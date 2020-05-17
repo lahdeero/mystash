@@ -46,7 +46,11 @@ passport.use(new GitHubStrategy({
 
 
 loginRouter.get('/github',
-  passport.authenticate('github', { scope: ['user:email'] })
+  passport.authenticate('github', { scope: ['user:email'] }),
+  function (req, res) {
+    const fronendUrl = process.env.FRONTEND_URL
+    res.redirect(fronendUrl)
+  }
 )
 
 const createUser = async (ghuser) => {
