@@ -11,35 +11,32 @@ const GitHubStrategy = require('passport-github2').Strategy
 loginRouter.use(passport.initialize())
 
 passport.serializeUser(function (user, done) {
-  console.log('serialize')
+  console.log('serialize user', user)
   done(null, user.id)
 })
 
 passport.deserializeUser((userId, done) => {
   User.findOne(userId).then(user => {
-    if (!user) {
-      return done(null, false);
-    }
-
-    return done(null, user);
-  }).catch(done);
-});
+    done(null, user);
+    console.log('deserialize userId: ', userId)
+  }).catch(err => done(err));
+})
 
 passport.use(new GitHubStrategy({
   clientID: process.env.GITHUB_CLIENT_ID,
   clientSecret: process.env.GITHUB_CLIENT_SECRET,
   callbackURL: `${process.env.BACKEND_URL}/api/login/github/callback`
 },
-  (accessToken, refreshToken, profile, cb) => {
+  (accessToken, refreshToken, profile, done) => {
     // User.findUserByGhProfile({ profile: { id, username, realname, email, github_id } }, (err, user) => {
     // User.findUserByGhProfile(profile)
     User.findOrCreateUser(profile)
       .then(user => {
         console.log('user', user)
-        return cb(null, user)
+        return done(null, user)
       })
       .catch(e => {
-        return cb(null, false, { error: 'No user found' })
+        return done(null, false, { error: 'No user found' })
       })
   })
 )
