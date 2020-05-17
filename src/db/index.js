@@ -1,4 +1,4 @@
-const { Client } = require('pg')
+const { Pool } = require('pg')
 
 require('dotenv').config()
 
@@ -14,16 +14,23 @@ require('dotenv').config()
 // const pool = new pg.Pool(config)
 
 console.log('node_env = ', process.env.NODE_ENV)
-const client = new Client({
+
+const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  // ssl: process.env.NODE_ENV == 'dev' ? false : true
-  ssl: false // since we dont run in heroku anymore
+  max: 10,
+  ssl: false
 })
 
-client.connect()
+// const client = new Client({
+//   connectionString: process.env.DATABASE_URL,
+// ssl: process.env.NODE_ENV == 'dev' ? false : true
+//   ssl: false // since we dont run in heroku anymore
+// })
+
+// client.connect()
 
 module.exports = {
-  query: (text, params) => client.query(text, params),
+  query: (text, params) => pool.query(text, params),
   connect: () => client.connect(),
   end: () => client.end()
 }
