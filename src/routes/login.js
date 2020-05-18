@@ -17,7 +17,7 @@ passport.serializeUser(function (user, done) {
 passport.use(new GitHubStrategy({
   clientID: process.env.GITHUB_CLIENT_ID,
   clientSecret: process.env.GITHUB_CLIENT_SECRET,
-  callbackURL: "http://localhost:8080/api/login/github/callback"
+  callbackURL: process.env.CALLBACK_URL,
   // clientID: GITHUB_CLIENT_ID,
   // clientSecret: GITHUB_CLIENT_SECRET,
   // callbackURL: "http://127.0.0.1:3000/auth/github/callback"

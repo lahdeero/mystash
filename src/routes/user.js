@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 const usersRouter = require('express').Router()
-const client = require('../db')
+const pool = require('../db')
 
 function alphanumeric(inputtxt) {
   var letters = /^[0-9a-zA-Z]+$/
@@ -20,6 +20,7 @@ const initialNote = {
 }
 
 async function generateWelcome(accountId) {
+  const client = pool.connect()
   try {
     client.query('BEGIN')
     const title = initialNote.title
@@ -42,7 +43,10 @@ async function generateWelcome(accountId) {
   } catch (exception) {
     client.query('ROLLBACK')
     console.log(exception)
+  } finally {
+    client.release()
   }
+
   return 0
 }
 
@@ -55,6 +59,7 @@ const getTokenFrom = (request) => {
 }
 
 usersRouter.get('/', async (request, response) => {
+  const client = pool.connect()
   try {
     const token = getTokenFrom(request)
     const decodedToken = jwt.verify(token, process.env.SECRET)
@@ -67,6 +72,8 @@ usersRouter.get('/', async (request, response) => {
   } catch (exception) {
     console.log(exception)
     response.status(404).json({ error: 'something went wrong..' })
+  } finally {
+    client.release()
   }
 })
 
@@ -82,6 +89,7 @@ usersRouter.post('/', async (request, response) => {
     console.log(body.username)
   }
 
+  const client = pool.connect()
   try {
     const { rows } = await client.query('SELECT COUNT(username) FROM account WHERE username=($1)', [body.username.toLowerCase()])
     if (rows[0].count !== '0') {
@@ -129,6 +137,8 @@ usersRouter.post('/', async (request, response) => {
   } catch (exception) {
     console.log(exception)
     response.status(500).json({ error: 'something went wrong...' })
+  } finally {
+    client.release()
   }
 })
 

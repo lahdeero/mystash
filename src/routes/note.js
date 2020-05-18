@@ -1,11 +1,12 @@
 const noteRouter = require('express').Router()
-const client = require('../db')
+const pool = require('../db')
 const verifyJWT = require('../middlewares/verifyJWT')
 
 noteRouter.all('*', verifyJWT.verifyJWT_MW)
 
 noteRouter.get('/all', async (req, res) => {
   const user = req.user
+  const client = await pool.connect()
   try {
     const { rows } = await client.query('SELECT note.id, title, content, modified_date, array_agg(tag.name) as tags FROM note  \
     LEFT JOIN notetag ON notetag.note_id = note.id LEFT JOIN tag ON tag.id = notetag.tag_id \
@@ -15,12 +16,15 @@ noteRouter.get('/all', async (req, res) => {
   } catch (exception) {
     console.log(exception)
     res.status(500).json({ error: 'could not get notes' })
+  } finally {
+    client.release()
   }
 })
 
 noteRouter.get('/note/:id', async (req, res) => {
   const user = req.user
   const noteId = parseInt(req.params.id)
+  const client = await pool.connect()
   try {
     const { rows } = await client.query('SELECT note.id, title, content, modified_date, array_agg(tag.name) as tags FROM note \
     LEFT JOIN notetag ON notetag.note_id = note.id LEFT JOIN tag ON tag.id = notetag.tag_id \
@@ -29,10 +33,12 @@ noteRouter.get('/note/:id', async (req, res) => {
   } catch (exception) {
     console.log(exception)
     res.status(500).json({ error: 'failed to get note!' })
+  } finally {
+    client.release()
   }
 })
 
-resolveTagId = async (tag) => {
+resolveTagId = async (tag, client) => {
   const tagRow = await client.query('SELECT id FROM tag WHERE name = ($1)', [tag])
   if (tagRow.rows[0] === undefined) {
     const insertRes = await client.query('INSERT INTO tag(name) VALUES($1) RETURNING id', [tag])
@@ -48,6 +54,7 @@ noteRouter.post('/', async (req, res) => {
   if (body.title === undefined) return res.status(400).json({ error: 'title missing' })
   else if (body.content === undefined) return res.status(400).json({ error: 'contetent missing' })
 
+  const client = await pool.connect()
   try {
     await client.query('BEGIN')
     const { rows } = await client.query('INSERT INTO note(title,content,account_id,modified_date,created_date) VALUES($1, $2, $3, NOW(),NOW()) RETURNING id', [body.title, body.content, user.id])
@@ -55,7 +62,7 @@ noteRouter.post('/', async (req, res) => {
 
     const tags = body.tags.length === 0 ? ['undefined'] : body.tags
     await tags.forEach(async (tag) => {
-      const tagId = await resolveTagId(tag)
+      const tagId = await resolveTagId(tag, client)
       const insertNoteTag = await 'INSERT INTO notetag(note_id, tag_id) VALUES ($1, $2)'
       const insertNoteTagValues = [noteId, tagId]
       await client.query(insertNoteTag, insertNoteTagValues)
@@ -69,6 +76,8 @@ noteRouter.post('/', async (req, res) => {
     await client.query('ROLLBACK')
     console.log(exception)
     res.status(400).send('Could not add note! ' + exception)
+  } finally {
+    client.release()
   }
 })
 
@@ -80,6 +89,7 @@ noteRouter.put('/note/:id', async (req, res) => {
   const body = req.body
   if (body.title === undefined || body.title.length === 0) return res.status(400).json({ error: 'title missing' })
   else if (body.content === undefined) return res.status(400).json({ error: 'contetent missing' })
+  const client = await pool.connect()
   try {
     client.query('BEGIN')
     await client.query('UPDATE note SET title =($1), content =($2), modified_date=NOW() WHERE note.id =($3) AND account_id =($4)', [body.title, body.content, noteId, user.id])
@@ -125,6 +135,8 @@ noteRouter.put('/note/:id', async (req, res) => {
     client.query('ROLLBACK')
     console.log(error)
     return res.status(400).send('Could not update note' + error)
+  } finally {
+    client.release()
   }
 })
 
@@ -133,12 +145,15 @@ noteRouter.delete('/note/:id', async (req, res) => {
   const noteId = parseInt(req.params.id)
   if (noteId === undefined || !Number.isInteger(noteId)) return res.status(400).json('Id missing')
 
+  const client = await pool.connect()
   try {
     await client.query('DELETE FROM note WHERE id = ($1) AND account_id = ($2)', [noteId, user.id])
     return res.status(200).json(noteId)
   } catch (exception) {
     await client.query('ROLLBACK')
     return res.status(500).json({ error: 'Could not delete note ' + noteId })
+  } finally {
+    client.release()
   }
 })
 
