@@ -1,9 +1,8 @@
 const loginRouter = require('express').Router()
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
-const client = require('../db')
+const pool = require('../db')
 const passport = require('passport')
-// const ExtractJwt = require('passport-jwt')
 const queryString = require('query-string')
 const GitHubStrategy = require('passport-github2').Strategy
 
@@ -46,8 +45,10 @@ const createUser = async (ghuser) => {
   console.log(_json.email)
   console.log(1)
   console.log(today)
+  const client = await pool.connect()
   const { rows } = await client.query('INSERT INTO account (username,realname,email,github_id,tier,register_date) VALUES ($1, $2, $3, $4, 1, NOW()) RETURNING id',
     [username, displayName, _json.email, ghuser.id])
+  client.release()
   console.log('eioo')
   const accountId = rows[0].id
   console.log('accid', accountId)
@@ -63,7 +64,7 @@ const createUser = async (ghuser) => {
 }
 
 const findOrCreateUser = async (ghuser) => {
-  // console.log('ghuser', ghuser)
+  const client = await pool.connect()
   const res = await client.query('SELECT * FROM account WHERE github_id = ($1) LIMIT 1', [ghuser.id])
   let data = res.rows[0]
   // console.log('data', data)
@@ -90,6 +91,7 @@ const findOrCreateUser = async (ghuser) => {
   } : await createUser(ghuser)
 
   console.log('usedmade', usermade)
+  client.release()
 
   return usermade
 }
@@ -123,6 +125,7 @@ loginRouter.post('/', async (request, response) => {
     return response.status(401).json({ error: 'no username or password' })
   }
 
+  const client = await pool.connect()
   try {
     const res = await client.query('SELECT * FROM account WHERE username = ($1) LIMIT 1', [body.username.toLowerCase()])
     const data = res.rows[0]
@@ -148,6 +151,8 @@ loginRouter.post('/', async (request, response) => {
   } catch (exception) {
     console.log('failed login, user: ' + body.username)
     return response.status(401).json({ error: 'invalid username or password' })
+  } finally {
+    client.release()
   }
 })
 

@@ -20,7 +20,7 @@ const initialNote = {
 }
 
 async function generateWelcome(accountId) {
-  const client = pool.connect()
+  const client = await pool.connect()
   try {
     client.query('BEGIN')
     const title = initialNote.title
@@ -59,13 +59,13 @@ const getTokenFrom = (request) => {
 }
 
 usersRouter.get('/', async (request, response) => {
-  const client = pool.connect()
+  const client = await pool.connect()
   try {
     const token = getTokenFrom(request)
     const decodedToken = jwt.verify(token, process.env.SECRET)
 
-    const res = await client.query('SELECT id,username,realname,email,tier FROM account WHERE username = ($1) AND id=($2) LIMIT 1', [decodedToken.username, decodedToken.id])
-    const user = res.rows[0]
+    const first = await client.query('SELECT id,username,realname,email,tier FROM account WHERE username = ($1) AND id=($2) LIMIT 1', [decodedToken.username, decodedToken.id])
+    const user = first.rows[0]
 
     console.log('sending users data')
     response.status(200).send(user)
@@ -89,7 +89,7 @@ usersRouter.post('/', async (request, response) => {
     console.log(body.username)
   }
 
-  const client = pool.connect()
+  const client = await pool.connect()
   try {
     const { rows } = await client.query('SELECT COUNT(username) FROM account WHERE username=($1)', [body.username.toLowerCase()])
     if (rows[0].count !== '0') {
