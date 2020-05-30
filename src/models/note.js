@@ -33,16 +33,10 @@ const findOne = async (noteId, userId) => {
 
 const addTags = async (noteId, currentTags, bodyTags) => {
   const client = await pool.connect()
+  const currentTagsNames = currentTags.map(ctag => ctag.name)
   try {
     bodyTags.forEach(async (tag) => {
-      let found = false
-      for (let i = 0; i < currentTags.length; i++) {
-        if (tag === currentTags[i].name) {
-          found = true
-          break
-        }
-      }
-      if (!found) {
+      if (!currentTagsNames.includes(tag)) {
         let tagId = null
         const second = await client.query('SELECT tag.id FROM tag WHERE name = ($1)', [tag])
         if (second.rows[0]) {
