@@ -9,12 +9,12 @@ const getTokenFrom = (request) => {
 }
 
 module.exports = {
-  verifyJWT_MW: function(req, res, next) {
+  verifyJWT_MW: function (req, res, next) {
     const token = getTokenFrom(req)
     try {
       const decodedToken = jwt.verify(token, process.env.SECRET)
       if (decodedToken) {
-        console.log(decodedToken)
+        // console.log(decodedToken)
         req.user = decodedToken
         next()
       }

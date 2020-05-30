@@ -16,7 +16,6 @@ passport.use(new GitHubStrategy({
   (accessToken, refreshToken, profile, done) => {
     User.findOrCreateUser(profile)
       .then(user => {
-        console.log('loggin user', user)
         return done(null, user)
       })
       .catch(e => {
@@ -56,7 +55,7 @@ loginRouter.get('/github/callback',
 
 loginRouter.post('/', async (request, response) => {
   const body = request.body
-  console.log('LOGIN ATTEMPT', body.username)
+  console.log('PASSWORD LOGIN ATTEMPT', body.username)
   if (!body.username || !body.password) {
     return response.status(401).json({ error: 'no username or password' })
   }

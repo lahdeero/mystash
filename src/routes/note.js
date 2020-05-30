@@ -1,6 +1,7 @@
 const noteRouter = require('express').Router()
 const pool = require('../db')
 const verifyJWT = require('../middlewares/verifyJWT')
+const Note = require('../models/note')
 
 noteRouter.all('*', verifyJWT.verifyJWT_MW)
 
@@ -24,17 +25,12 @@ noteRouter.get('/all', async (req, res) => {
 noteRouter.get('/note/:id', async (req, res) => {
   const user = req.user
   const noteId = parseInt(req.params.id)
-  const client = await pool.connect()
   try {
-    const { rows } = await client.query('SELECT note.id, title, content, modified_date, array_agg(tag.name) as tags FROM note \
-    LEFT JOIN notetag ON notetag.note_id = note.id LEFT JOIN tag ON tag.id = notetag.tag_id \
-    WHERE note.id=($1) AND account_id = ($2) GROUP BY note.id', [noteId, user.id])
-    res.send(rows[0])
+    const note = await Note.findOne(noteId, user.id)
+    res.send(note.toJSON())
   } catch (exception) {
     console.log(exception)
     res.status(500).json({ error: 'failed to get note!' })
-  } finally {
-    client.release()
   }
 })
 
@@ -60,6 +56,7 @@ noteRouter.post('/', async (req, res) => {
     const { rows } = await client.query('INSERT INTO note(title,content,account_id,modified_date,created_date) VALUES($1, $2, $3, NOW(),NOW()) RETURNING id', [body.title, body.content, user.id])
     const noteId = rows[0].id
 
+    console.log('body.tags', body.tags)
     const tags = body.tags.length === 0 ? ['undefined'] : body.tags
     await tags.forEach(async (tag) => {
       const tagId = await resolveTagId(tag, client)
@@ -68,10 +65,9 @@ noteRouter.post('/', async (req, res) => {
       await client.query(insertNoteTag, insertNoteTagValues)
     })
     await client.query('COMMIT')
-    const result = await client.query('SELECT note.id, title, content, modified_date, array_agg(tag.name) as tags FROM note \
-    LEFT JOIN notetag ON notetag.note_id = note.id LEFT JOIN tag ON tag.id = notetag.tag_id \
-    WHERE note.id=($1) AND account_id = ($2) GROUP BY note.id', [noteId, user.id])
-    res.json(result.rows[0])
+    const note = await Note.findOne(noteId, user.id)
+    console.log(note.toJSON())
+    res.json(note.toJSON())
   } catch (exception) {
     await client.query('ROLLBACK')
     console.log(exception)
@@ -86,52 +82,31 @@ noteRouter.put('/note/:id', async (req, res) => {
   const noteId = parseInt(req.params.id)
   if (noteId === undefined || !Number.isInteger(noteId)) return res.status(400).send('No id')
 
-  console.log('eka')
   const body = req.body
   if (body.title === undefined || body.title.length === 0) return res.status(400).json({ error: 'title missing' })
   else if (body.content === undefined) return res.status(400).json({ error: 'contetent missing' })
+  else if (body.tags.length > 10) return res.status(400).json({ error: 'too many tags' })
+
   const client = await pool.connect()
   try {
     client.query('BEGIN')
-    await client.query('UPDATE note SET title =($1), content =($2), modified_date=NOW() WHERE note.id =($3) AND account_id =($4)', [body.title, body.content, noteId, user.id])
 
-    const currentTags = await client.query('SELECT tag.name, notetag.note_id, notetag.tag_id FROM notetag LEFT JOIN tag ON tag.id = notetag.tag_id WHERE notetag.note_id = ($1)', [noteId])
-    console.log('currentTags:', currentTags)
+    const first = await client.query('SELECT tag.name, notetag.note_id, notetag.tag_id FROM notetag LEFT JOIN tag ON tag.id = notetag.tag_id WHERE notetag.note_id = ($1)', [noteId])
+    const currentTags = first.rows
+    // const currentTags = ['aamu', 'ilta']
+    // console.log('currentTags: ', currentTags)
+    Note.deleteTags(noteId, currentTags, body.tags)
+    Note.addTags(noteId, currentTags, body.tags)
+    await client.query('UPDATE note SET title =($1), content =($2), modified_date=NOW() WHERE note.id =($3) AND account_id =($4) RETURNING id', [body.title, body.content, noteId, user.id])
 
-    // Check if notetags needs to be deleted
-    currentTags.rows.forEach(async (row) => {
-      if (body.tags.includes(row.name)) return
-      await client.query('DELETE FROM notetag WHERE note_id = ($1) AND tag_id = ($2)', [noteId, row.tag_id])
-    })
-
-    // Add new notetags (and new tags if needed)
-    await body.tags.map(async (tag) => {
-      const tagRow = await client.query('SELECT id FROM tag WHERE name = ($1)', [tag])
-
-      const tagId = (tagRow.rows && tagRow.rows.length > 0 && tagRow.rows[0].id)
-        ? tagRow.rows[0].id : await client.query('INSERT INTO tag(name) VALUES($1) RETURNING id', [tag]).rows[0].id
-
-      const noteTagExists = await client.query('SELECT * FROM notetag WHERE note_id =($1) AND tag_id =($2)', [noteId, tagId])
-
-
-      if (!noteTagExists.rows[0]) {
-        const insertNoteTag = 'INSERT INTO notetag(note_id, tag_id) VALUES ($1, $2)'
-        const insertNoteTagValues = [noteId, tagId]
-        await client.query(insertNoteTag, insertNoteTagValues)
-      }
-    })
     await client.query('COMMIT')
-    /* FOR UNKNOWN REASON result DOESNT INCLUDE ADDED TAGS */
-    // const result = await client.query('SELECT note.id, title, content, modified_date, array_agg(tag.name) as tags FROM note \
-    // LEFT JOIN notetag ON notetag.note_id = note.id LEFT JOIN tag ON tag.id = notetag.tag_id WHERE note.id=($1) GROUP BY note.id', [id])
-    const { rows } = await client.query('SELECT note.id, title, content, modified_date, array_agg(tag.name) as tags FROM note \
-    LEFT JOIN notetag ON notetag.note_id = note.id LEFT JOIN tag ON tag.id = notetag.tag_id \
-    WHERE note.id=($1) AND account_id = ($2) GROUP BY note.id', [noteId, user.id])
-    return res.json(rows[0])
+
+    const note = await Note.findOne(noteId, user.id)
+    return res.json(note.toJSON())
   } catch (error) {
     client.query('ROLLBACK')
     console.log(error)
-    return res.status(400).send('Could not update note' + error)
+    return res.status(400).send({ message: 'Could not update note', error })
   } finally {
     client.release()
   }

@@ -1,22 +1,28 @@
 const pool = require('../db')
 
-// class User {
-//   constructor(row) {
-//     this.id = row.id
-//     this.username = row.username
-//     this.realname = row.realname
-//     this.email = row.email
-//     this.tier = row.tier
-//   }
-// }
+class User {
+  constructor(row) {
+    this.id = row.id
+    this.username = row.username
+    this.realname = row.realname
+    this.email = row.email
+    this.tier = row.tier
+  }
+  toJSON() {
+    return Object.getOwnPropertyNames(this).reduce((a, b) => {
+      a[b] = this[b]
+      return a
+    }, {})
+  }
+}
 
 createUserObject = (row) => {
-  return { id: row.id, username: row.username, realname: row.realname, email: row.email, tier: row.tier }
+  return new User(row).toJSON()
 }
 
 const findOne = (id) => {
   const qry = `
-    SELECT id, username, realname, email, github_id 
+    SELECT id, username, realname, email, tier
     FROM account
     WHERE id=$1`
   return pool
