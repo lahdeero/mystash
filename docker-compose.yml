@@ -1,14 +1,12 @@
 version: '3'
 
 services:
-  # db: 
-  #   image: postgres:latest
-  #   environment:
-  #     - POSTGRES_PASSWORD=example
   backend:
     build: 
       context: .
       dockerfile: Dockerfile.dev
+    depends_on:
+      - postgres
     command: "npm ${NPMCOMMAND}"
     volumes:
       - "${LOCATION}:/app/"
@@ -20,4 +18,18 @@ services:
       - SECRET=${SECRET}
       - JWT_KEY=${JWT_KEY}
 
+  postgres:
+    restart: always
+    image: postgres:10.4
+    ports:
+      - "5432:5432" 
+    volumes: 
+      - ./sql/create_tables.sql:/docker-entrypoint-initrb.d/init.sql
+    environment:
+      - POSTGRES_USER=username
+      - POSTGRES_PASSWORD=password
+      # - POSTGRES_DB=database
+
+volumes: 
+  sql:
 
