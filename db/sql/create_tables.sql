@@ -32,4 +32,6 @@ CREATE TABLE notetag (
 	FOREIGN KEY(tag_id) REFERENCES Tag(id) ON DELETE CASCADE
 );
 
+-- dev login info: testi / salasana
+INSERT INTO account (username, password, realname,email, tier, github_id) VALUES('testi', '$2b$10$Z2Hw2e.kUu1KVXJ0brEgdesGN9Uqj51UiKVVUUoi85mPj0NMc.wBi',	'testaaja','testi@host.fi', 1, 123456);
 

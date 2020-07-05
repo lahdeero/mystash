@@ -7,9 +7,6 @@ My-stash
 
 [My-stash @ Heroku](https://my-stash.herokuapp.com/)
 
-# environment variables
-DATABASE_URL=postgres://username:password@host:port/database <br />
-SECRET=salaisuus <br />
 
 # docker
 
@@ -18,3 +15,20 @@ docker run --network="host" --name="mystash-backend" mystash
 
 docker container exec -it mystash-backend bash
 node --inspect=0.0.0.0:9229 src/index.js
+
+# docker-compose .env for dev
+```
+FRONTEND_URL=http://localhost:3000
+BACKEND_URL=http://localhost:8080
+CALLBACK_URL=http://localhost:8080/api/login/github/callback
+DATABASE_URL=postgres://postgres:password@postgres:5432/postgres
+SECRET=salaisuus
+JWT_KEY=salaisuus
+
+LOCATION=/c/Sites/mystash-backend/
+NPMCOMMAND=run watchd
+PORT=8080
+
+GITHUB_CLIENT_ID=xxxxxxxxxxxxx
+GITHUB_CLIENT_SECRET=xxxxxxxxxxx
+```

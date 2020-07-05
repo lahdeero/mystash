@@ -1,5 +1,5 @@
-const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
 const usersRouter = require('express').Router()
 const pool = require('../db')
 
@@ -18,6 +18,98 @@ const initialNote = {
   content: '# Welcome! \n\n Notes are rendered with markdown when having markdown tag.',
   tags: ['welcome, initial, markdown']
 }
+
+const getTokenFrom = (request) => {
+  const authorization = request.get('Authorization')
+  if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
+    return authorization.substring(7)
+  }
+  return null
+}
+
+usersRouter.get('/', async (request, response) => {
+  const client = await pool.connect()
+  try {
+    const token = getTokenFrom(request)
+    const decodedToken = jwt.verify(token, process.env.SECRET)
+
+    const first = await client.query('SELECT id,username,realname,email,tier FROM account WHERE username = ($1) AND id=($2) LIMIT 1', [decodedToken.username, decodedToken.id])
+    const user = first.rows[0]
+
+    console.log('sending users data')
+    response.status(200).send(user)
+  } catch (exception) {
+    console.log(exception)
+    response.status(404).json({ error: 'something went wrong..' })
+  } finally {
+    client.release()
+  }
+})
+
+/**
+ * Register new user
+ */
+usersRouter.post('/', async (request, response) => {
+  const body = request.body
+  if (!body.username || !body.password) {
+    return response.status(400).json({ error: 'No username or password' })
+  } else if (alphanumeric(body.username) === false) {
+    console.log('inavlid name2')
+    return response.status(406).json({ error: 'Username can not include special characters' })
+  } else {
+    console.log('username fine')
+    console.log(body.username)
+  }
+
+  const client = await pool.connect()
+  try {
+    const { rows } = await client.query('SELECT COUNT(username) FROM account WHERE username=($1)', [body.username.toLowerCase()])
+    if (rows[0].count !== '0') {
+      return response.status(401).json({ error: 'Username not available' })
+    }
+  } catch (exception) {
+    console.log(exception)
+    return response.status(500).json({ error: 'Could not SELECT count(username) when registering new user' })
+  }
+
+  try {
+    console.log(body)
+
+    const saltRounds = 10
+    const passwordHash = await bcrypt.hash(body.password, saltRounds)
+    console.log('passwordHash', passwordHash)
+
+    const today = new Date()
+
+    const { rows } = await client.query(`INSERT INTO account \
+      (username,password,realname,email,tier,register_date) \
+      VALUES($1, $2, $3, $4, $5, $6) RETURNING id`,
+      [body.username.toLowerCase(), passwordHash, body.realname, body.email, 1, today])
+    const accountId = rows[0].id
+
+    generateWelcome(accountId)
+
+    const res = await client.query(`SELECT id,username,realname,email,tier FROM account \
+      WHERE username = ($1) AND id=($2) LIMIT 1`, [body.username.toLowerCase(), accountId])
+    const user = res.rows[0]
+
+    const userForToken = {
+      username: user.username,
+      realname: user.realname,
+      id: user.id,
+      tier: user.tier,
+      email: user.email
+    }
+    const token = jwt.sign(userForToken, process.env.SECRET)
+    console.log('successfully registered')
+    response.status(200).send({ token, user })
+  } catch (exception) {
+    console.log(exception)
+    response.status(500).json({ error: 'Error while registering new user' })
+  } finally {
+    client.release()
+  }
+})
 
 async function generateWelcome(accountId) {
   const client = await pool.connect()
@@ -49,97 +141,5 @@ async function generateWelcome(accountId) {
 
   return 0
 }
-
-const getTokenFrom = (request) => {
-  const authorization = request.get('Authorization')
-  if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
-    return authorization.substring(7)
-  }
-  return null
-}
-
-usersRouter.get('/', async (request, response) => {
-  const client = await pool.connect()
-  try {
-    const token = getTokenFrom(request)
-    const decodedToken = jwt.verify(token, process.env.SECRET)
-
-    const first = await client.query('SELECT id,username,realname,email,tier FROM account WHERE username = ($1) AND id=($2) LIMIT 1', [decodedToken.username, decodedToken.id])
-    const user = first.rows[0]
-
-    console.log('sending users data')
-    response.status(200).send(user)
-  } catch (exception) {
-    console.log(exception)
-    response.status(404).json({ error: 'something went wrong..' })
-  } finally {
-    client.release()
-  }
-})
-
-usersRouter.post('/', async (request, response) => {
-  const body = request.body
-  if (!body.username || !body.password) {
-    return response.status(400).json({ error: 'No username or password' })
-  } else if (alphanumeric(body.username) === false) {
-    console.log('inavlid name2')
-    return response.status(406).json({ error: 'Username can not include special characters' })
-  } else {
-    console.log('username fine')
-    console.log(body.username)
-  }
-
-  const client = await pool.connect()
-  try {
-    const { rows } = await client.query('SELECT COUNT(username) FROM account WHERE username=($1)', [body.username.toLowerCase()])
-    if (rows[0].count !== '0') {
-      return response.status(401).json({ error: 'Username not available' })
-    }
-  } catch (exception) {
-    console.log(exception)
-    return response.status(500).json({ error: 'something went wrong...' })
-  }
-
-  try {
-    console.log(body)
-
-    const saltRounds = 10
-    const passwordHash = bcrypt.hash(body.password, saltRounds)
-
-    const today = new Date()
-
-    const { rows } = await client.query('INSERT INTO account (username,password,realname,email,tier,register_date) VALUES($1, $2, $3, $4, $5, $6) RETURNING id', [body.username.toLowerCase(), passwordHash, body.realname, body.email, 1, today])
-    const accountId = rows[0].id
-    const welcomeId = generateWelcome(accountId)
-    if (welcomeId === 0 || welcomeId === '0') {
-      console.log('Could not generate welcome message')
-      // TODO DELETE ACCOUNT
-      return response.status(500).json({ error: 'Could not generate welcome message' })
-    }
-    console.log('welcomeId = ' + welcomeId)
-    console.log('accountId = ' + accountId)
-    const welcomeMessage = { ...initialNote, id: welcomeId, account_id: accountId }
-    console.log('welcomeMessage: ', welcomeMessage)
-
-    const res = await client.query('SELECT id,username,realname,email,tier FROM account WHERE username = ($1) AND id=($2) LIMIT 1', [body.username.toLowerCase(), accountId])
-    const user = res.rows[0]
-
-    const userForToken = {
-      username: user.username,
-      realname: user.realname,
-      id: user.id,
-      tier: user.tier,
-      email: user.email
-    }
-    const token = jwt.sign(userForToken, process.env.SECRET)
-    console.log('successfully registered')
-    response.status(200).send({ token, user })
-  } catch (exception) {
-    console.log(exception)
-    response.status(500).json({ error: 'something went wrong...' })
-  } finally {
-    client.release()
-  }
-})
 
 module.exports = usersRouter

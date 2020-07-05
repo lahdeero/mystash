@@ -1,23 +1,29 @@
 version: '3'
 
 services:
-  # db: 
-  #   image: postgres:latest
-  #   environment:
-  #     - POSTGRES_PASSWORD=example
   backend:
     build: 
       context: .
       dockerfile: Dockerfile.dev
+    depends_on:
+      - postgres
     command: "npm ${NPMCOMMAND}"
     volumes:
-      - "${LOCATION}:/app/"
-      - /app/node_modules
+      - "${LOCATION}:/usr/app/"
+      - /usr/app/node_modules
     ports:
       - "${PORT}:${PORT}"
     environment:
       - DATABASE_URL=${DATABASE_URL}
       - SECRET=${SECRET}
       - JWT_KEY=${JWT_KEY}
+
+  postgres:
+    build: ./db
+    restart: unless-stopped
+    environment:
+      POSTGRES_PASSWORD: password
+    ports: 
+      - "5432:5432"
 
 

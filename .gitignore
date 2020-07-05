@@ -1,6 +1,7 @@
 node_modules/
+.vscode/
 .env
-src\client\build  
-src\client\node_modules  
-trash  
 .envBU
+src/client/build 
+src/client/node_modules 
+trash
