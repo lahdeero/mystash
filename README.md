@@ -5,7 +5,7 @@ My-stash
 [![GitHub license](	https://img.shields.io/github/license/lahdeero/mystash-backend.svg)](https://github.com/lahdeero/mystash-backend/blob/master/LICENSE)
 [![Last version](https://img.shields.io/github/tag-date/lahdeero/mystash-backend.svg)](https://github.com/lahdeero/mystash-backend/blob/master/CHANGELOG.md)
 
-[My-stash @ Heroku](https://my-stash.herokuapp.com/)
+[My-stash @ GitHub pages](https://lahdeero.github.io/mystash-frontend/)
 
 
 # docker
