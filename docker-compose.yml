@@ -9,8 +9,8 @@ services:
       - postgres
     command: "npm ${NPMCOMMAND}"
     volumes:
-      - "${LOCATION}:/app/"
-      - /app/node_modules
+      - "${LOCATION}:/usr/app/"
+      - /usr/app/node_modules
     ports:
       - "${PORT}:${PORT}"
     environment:
@@ -19,17 +19,11 @@ services:
       - JWT_KEY=${JWT_KEY}
 
   postgres:
-    restart: always
-    image: postgres:10.4
-    ports:
-      - "5432:5432" 
-    volumes: 
-      - ./sql/create_tables.sql:/docker-entrypoint-initrb.d/init.sql
+    build: ./db
+    restart: unless-stopped
     environment:
-      - POSTGRES_USER=username
-      - POSTGRES_PASSWORD=password
-      # - POSTGRES_DB=database
+      POSTGRES_PASSWORD: password
+    ports: 
+      - "5432:5432"
 
-volumes: 
-  sql:
 

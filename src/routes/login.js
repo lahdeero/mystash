@@ -6,6 +6,10 @@ const passport = require('passport')
 const GitHubStrategy = require('passport-github2').Strategy
 const User = require('../models/user')
 
+/**
+ * /api/login
+ */
+
 loginRouter.use(passport.initialize())
 
 passport.use(new GitHubStrategy({

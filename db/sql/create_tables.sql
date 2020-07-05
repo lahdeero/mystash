@@ -1,9 +1,3 @@
-CREATE USER username WITH PASSWORD 'password' CREATEDB;
-
-CREATE DATABASE database OWNER username;
-
-GRANT ALL PRIVILEGES ON DATABASE database TO username;
-
 CREATE TABLE account (
 	id SERIAL PRIMARY KEY,
 	username varchar(64) NOT NULL UNIQUE,
@@ -38,8 +32,6 @@ CREATE TABLE notetag (
 	FOREIGN KEY(tag_id) REFERENCES Tag(id) ON DELETE CASCADE
 );
 
-GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO username
-GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO username
-
-INSERT INTO account (username, realname,email, tier, github_id) VALUES ('testi', 'testaaja','testi@host.fi', 1, 123456);
+-- dev login info: testi / salasana
+INSERT INTO account (username, password, realname,email, tier, github_id) VALUES('testi', '$2b$10$Z2Hw2e.kUu1KVXJ0brEgdesGN9Uqj51UiKVVUUoi85mPj0NMc.wBi',	'testaaja','testi@host.fi', 1, 123456);
 

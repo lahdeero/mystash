@@ -1,14 +1,11 @@
 FROM node:13
 
-RUN mkdir /app
-WORKDIR /app
+RUN mkdir /usr/app
+WORKDIR /usr/app
 
-COPY package.json .
+COPY package*.json ./
 
-RUN npm install -g nodemon
-RUN npm install -g cross-env
+# RUN npm install -g nodemon
 RUN npm install
-
-COPY . .
 
 EXPOSE 8080

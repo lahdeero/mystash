@@ -16,14 +16,19 @@ docker run --network="host" --name="mystash-backend" mystash
 docker container exec -it mystash-backend bash
 node --inspect=0.0.0.0:9229 src/index.js
 
-# docker-compose .env
+# docker-compose .env for dev
 ```
-NPMCOMMAND=run watchd
-LOCATION=.
-PORT=8080
-DATABASE_URL=postgres://username:password@localhost:5432/database
+FRONTEND_URL=http://localhost:3000
+BACKEND_URL=http://localhost:8080
+CALLBACK_URL=http://localhost:8080/api/login/github/callback
+DATABASE_URL=postgres://postgres:password@postgres:5432/postgres
 SECRET=salaisuus
 JWT_KEY=salaisuus
-GITHUB_CLIENT_ID=xxxxxxxx
-GITHUB_CLIENT_SECRET=xxxxxxx
+
+LOCATION=/c/Sites/mystash-backend/
+NPMCOMMAND=run watchd
+PORT=8080
+
+GITHUB_CLIENT_ID=xxxxxxxxxxxxx
+GITHUB_CLIENT_SECRET=xxxxxxxxxxx
 ```
