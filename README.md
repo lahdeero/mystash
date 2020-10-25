@@ -11,7 +11,7 @@ mystash
 ## docker
 
 docker build -t mystash .
-docker run --network="host" --name="mystash-backend" mystash
+docker run --network="host" --name="mystash-backend" --restart="on-failure" mystash
 
 docker container exec -it mystash-backend bash
 node --inspect=0.0.0.0:9229 src/index.js
