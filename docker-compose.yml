@@ -22,8 +22,6 @@ services:
     build: ./db
     restart: unless-stopped
     environment:
-      POSTGRES_PASSWORD: password
+      POSTGRES_PASSWORD: ${PG_PASSWORD}
     ports: 
       - "5432:5432"
-
-

@@ -8,7 +8,7 @@ mystash
 [mystash @ GitHub pages](https://lahdeero.github.io/mystash-frontend/)
 
 
-# docker
+## docker
 
 docker build -t mystash .
 docker run --network="host" --name="mystash-backend" mystash
@@ -16,7 +16,7 @@ docker run --network="host" --name="mystash-backend" mystash
 docker container exec -it mystash-backend bash
 node --inspect=0.0.0.0:9229 src/index.js
 
-# docker-compose .env for dev
+## docker-compose .env for dev
 ```
 FRONTEND_URL=http://localhost:3000
 BACKEND_URL=http://localhost:8080
@@ -32,3 +32,13 @@ PORT=8080
 GITHUB_CLIENT_ID=xxxxxxxxxxxxx
 GITHUB_CLIENT_SECRET=xxxxxxxxxxx
 ```
+
+## Psql
+
+```
+psql "postgres://postgres:password@localhost:5432/postgres"
+```
+
+## Todo
+
+1. BUG: docker-compose nodemon doesn't reload 

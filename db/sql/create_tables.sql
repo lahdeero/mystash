@@ -20,6 +20,17 @@ CREATE TABLE note(
 	account_id integer REFERENCES Account(id)
 );
 
+CREATE TABLE backupnote(
+	id SERIAL PRIMARY KEY,
+	note_id integer,
+	title varchar(256) NOT NULL,
+	content text NOT NULL,
+	modified_date timestamp,
+	created_date timestamp,
+	account_id integer REFERENCES Account(id),
+	FOREIGN KEY(note_id) REFERENCES Note(id)	
+);
+
 CREATE TABLE tag(
 	id SERIAL PRIMARY KEY,
 	name varchar(32) NOT NULL UNIQUE

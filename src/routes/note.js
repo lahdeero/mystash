@@ -46,9 +46,7 @@ resolveTagId = async (tag, client) => {
 noteRouter.post('/', async (req, res) => {
   const user = req.user
   const body = req.body
-
-  if (body.title === undefined) return res.status(400).json({ error: 'title missing' })
-  else if (body.content === undefined) return res.status(400).json({ error: 'contetent missing' })
+  validateRequest(body)
 
   const client = await pool.connect()
   try {
@@ -81,24 +79,19 @@ noteRouter.put('/note/:id', async (req, res) => {
   const user = req.user
   const noteId = parseInt(req.params.id)
   if (noteId === undefined || !Number.isInteger(noteId)) return res.status(400).send('No id')
-
   const body = req.body
-  if (body.title === undefined || body.title.length === 0) return res.status(400).json({ error: 'title missing' })
-  else if (body.content === undefined) return res.status(400).json({ error: 'contetent missing' })
-  else if (body.tags.length > 10) return res.status(400).json({ error: 'too many tags' })
+  validateRequest(body)
 
+  await Note.createBackup(noteId, user.id)
   const client = await pool.connect()
   try {
     client.query('BEGIN')
 
     const first = await client.query('SELECT tag.name, notetag.note_id, notetag.tag_id FROM notetag LEFT JOIN tag ON tag.id = notetag.tag_id WHERE notetag.note_id = ($1)', [noteId])
     const currentTags = first.rows
-    // const currentTags = ['aamu', 'ilta']
-    // console.log('currentTags: ', currentTags)
     await Note.deleteTags(noteId, currentTags, body.tags)
     await Note.addTags(noteId, currentTags, body.tags)
     await client.query('UPDATE note SET title =($1), content =($2), modified_date=NOW() WHERE note.id =($3) AND account_id =($4) RETURNING id', [body.title, body.content, noteId, user.id])
-
     await client.query('COMMIT')
 
     const note = await Note.findOne(noteId, user.id)
@@ -128,5 +121,11 @@ noteRouter.delete('/note/:id', async (req, res) => {
     client.release()
   }
 })
+
+const validateRequest = (body) => {
+  if (body.title === undefined) return res.status(400).json({ error: 'title missing' })
+  else if (body.content === undefined) return res.status(400).json({ error: 'contetent missing' })
+  else if (body.tags && body.tags.length > 10) return res.status(400).json({ error: 'too many tags' })
+}
 
 module.exports = noteRouter

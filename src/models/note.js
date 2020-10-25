@@ -71,4 +71,23 @@ const deleteTags = async (noteId, currentTags, bodyTags) => {
   }
 }
 
-module.exports = { findOne, addTags, deleteTags }
+const createBackup = async (noteId, userId) => {
+  console.log("Create backup")
+  const note = await findOne(noteId, userId)
+
+  const client = await pool.connect()
+  let id = null
+  try {
+    const rows = await client.query(`INSERT INTO backupnote(note_id, title,content,account_id,modified_date,created_date) 
+      VALUES($1, $2, $3, $4, NOW(),NOW()) RETURNING id`, [note.id, note.title, note.content, userId])
+    id = rows.rows[0].id
+  } catch (e) {
+    console.log(e)
+  } finally {
+    client.release()
+  }
+
+  if (id) console.log("Created backup", id)
+}
+
+module.exports = { findOne, addTags, deleteTags, createBackup }
