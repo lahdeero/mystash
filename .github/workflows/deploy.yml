@@ -1,20 +1,20 @@
-name: Build & Deploy
+name: Deploy branch to staging
+
 on:
   push:
-    branches: [master]
+    branches: [ master ]
+
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - name: Deploy NodeJS app
-        uses: appleboy/ssh-action@v0.1.2
+      - name: executing remote ssh commands
+        uses: appleboy/ssh-action@master
         with:
-          host: ${{secrets.SSH_HOST}}
-          key: ${{secrets.SSH_KEY}}
-          username: ${{ secrets.SSH_USERNAME }}
-
-          script:
-            cd mystash-backend
-            git pull
-            pm2 start src/index.js
+          script_stop: true
+          host: ${{ secrets.NEWDEV_HOST }}
+          username: ${{ secrets.NEWDEV_USERNAME }}
+          key: ${{ secrets.NEWDEV_SSH_KEY }}
+          port: ${{ secrets.NEWDEV_SSH_PORT }}
+          script: whoami
