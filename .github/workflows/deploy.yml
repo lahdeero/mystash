@@ -20,4 +20,6 @@ jobs:
             cd mystash-backend
             git pull
             echo -e "$(date)\n$(cat .push-history)" > .push-history
+            which node
+            which pm2
             pm2 restart ./src/index.js
