@@ -20,5 +20,7 @@ jobs:
             cd mystash-backend
             git pull
             echo -e "$(date)\n$(cat .push-history)" > .push-history
-            npm -i pm2
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            npm install
             pm2 restart ./src/index.js
