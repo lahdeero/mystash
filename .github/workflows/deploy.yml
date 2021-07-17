@@ -16,4 +16,8 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
-          script: echo foo >> ~/bar
+          script:
+            cd mystash-backend
+            git pull
+            echo -e "$(date)\n$(cat .push-history)" > .push-history
+            pm2 restart ./src/index.js
