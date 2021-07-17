@@ -13,8 +13,7 @@ jobs:
         uses: appleboy/ssh-action@master
         with:
           script_stop: true
-          host: ${{ secrets.NEWDEV_HOST }}
-          username: ${{ secrets.NEWDEV_USERNAME }}
-          key: ${{ secrets.NEWDEV_SSH_KEY }}
-          port: ${{ secrets.NEWDEV_SSH_PORT }}
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
           script: whoami
