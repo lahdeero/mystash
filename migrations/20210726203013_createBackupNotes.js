@@ -7,8 +7,7 @@ exports.up = function(knex) {
     table.string("title");
     table.text("content");
     table.timestamps();
-    table.foreign("account_id").references("account.id");
-    table.foreign("note_id").references("note.id");
+    table.foreign("account_id").references("account.id").onDelete("CASCADE");
   })
 };
 

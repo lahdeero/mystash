@@ -1,4 +1,4 @@
-mystash 
+mystash
 ============
 
 [![Build Status](https://travis-ci.com/lahdeero/mystash-backend.svg?branch=master)](https://travis-ci.com/lahdeero/mystash-backend)
@@ -8,7 +8,38 @@ mystash
 [mystash @ GitHub pages](https://lahdeero.github.io/mystash-frontend/)
 
 
-## docker
+## Install
+
+1. Install Postgresql (if not yet installed), recommended version: 9.6
+
+2. Create environment file
+```
+cp .env.example .env
+```
+
+3. Set your own environment secrets!
+```
+nano .env
+```
+
+4. Install packages
+```
+npm install
+```
+
+5. Execute migrations
+```
+./node_modules/.bin/knex migrate:latest
+```
+
+## Run
+
+```
+npm start
+```
+
+
+## docker (OUTDATED)
 
 docker build -t mystash .
 docker run --network="host" --name="mystash-backend" --restart="on-failure" mystash
@@ -41,4 +72,4 @@ psql "postgres://postgres:password@localhost:5432/postgres"
 
 ## Todo
 
-1. BUG: docker-compose nodemon doesn't reload 
+1. BUG: docker-compose nodemon doesn't reload
