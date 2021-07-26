@@ -38,6 +38,17 @@ npm install
 npm start
 ```
 
+## Development
+
+Seeds
+```
+knex seed:run
+```
+
+Nodemon
+```
+npm run watch
+```
 
 ## docker (OUTDATED)
 
