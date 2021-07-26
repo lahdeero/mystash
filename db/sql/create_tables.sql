@@ -3,7 +3,7 @@ CREATE TABLE account (
 	username varchar(64) NOT NULL UNIQUE,
 	github_id varchar(32),
 	google_id varchar(32),
-	facebook varchar(32),
+	facebook_id varchar(32),
 	password varchar(1024),
 	realname varchar(256) NOT NULL,
 	email varchar(256) NOT NULL UNIQUE,
@@ -15,8 +15,8 @@ CREATE TABLE note(
 	id SERIAL PRIMARY KEY,
 	title varchar(256) NOT NULL,
 	content text NOT NULL,
-	modified_date timestamp,
-	created_date timestamp,
+	updated_at timestamp,
+	created_at timestamp,
 	account_id integer REFERENCES Account(id)
 );
 
@@ -25,10 +25,10 @@ CREATE TABLE backupnote(
 	note_id integer,
 	title varchar(256) NOT NULL,
 	content text NOT NULL,
-	modified_date timestamp,
-	created_date timestamp,
+	updated_at timestamp,
+	created_at timestamp,
 	account_id integer REFERENCES Account(id),
-	FOREIGN KEY(note_id) REFERENCES Note(id)	
+	FOREIGN KEY(note_id) REFERENCES Note(id)
 );
 
 CREATE TABLE tag(
@@ -45,4 +45,3 @@ CREATE TABLE notetag (
 
 -- dev login info: testi / salasana
 INSERT INTO account (username, password, realname,email, tier, github_id) VALUES('testi', '$2b$10$Z2Hw2e.kUu1KVXJ0brEgdesGN9Uqj51UiKVVUUoi85mPj0NMc.wBi',	'testaaja','testi@host.fi', 1, 123456);
-

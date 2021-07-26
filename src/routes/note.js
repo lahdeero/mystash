@@ -9,10 +9,10 @@ noteRouter.get('/all', async (req, res) => {
   const user = req.user
   const client = await pool.connect()
   try {
-    const { rows } = await client.query('SELECT note.id, title, content, modified_date, array_agg(tag.name) as tags FROM note  \
+    const { rows } = await client.query('SELECT note.id, title, content, note.updated_at, array_agg(tag.name) as tags FROM note  \
     LEFT JOIN notetag ON notetag.note_id = note.id LEFT JOIN tag ON tag.id = notetag.tag_id \
     LEFT JOIN account ON account.id = note.account_id WHERE account.id = ($1) \
-    GROUP BY note.id ORDER BY modified_date DESC NULLS LAST', [user.id])
+    GROUP BY note.id ORDER BY updated_at DESC NULLS LAST', [user.id])
     res.send(rows)
   } catch (exception) {
     console.log(exception)
@@ -51,7 +51,7 @@ noteRouter.post('/', async (req, res) => {
   const client = await pool.connect()
   try {
     await client.query('BEGIN')
-    const { rows } = await client.query('INSERT INTO note(title,content,account_id,modified_date,created_date) VALUES($1, $2, $3, NOW(),NOW()) RETURNING id', [body.title, body.content, user.id])
+    const { rows } = await client.query('INSERT INTO note(title,content,account_id,updated_at,created_at) VALUES($1, $2, $3, NOW(),NOW()) RETURNING id', [body.title, body.content, user.id])
     const noteId = rows[0].id
 
     console.log('body.tags', body.tags)
@@ -91,7 +91,7 @@ noteRouter.put('/note/:id', async (req, res) => {
     const currentTags = first.rows
     await Note.deleteTags(noteId, currentTags, body.tags)
     await Note.addTags(noteId, currentTags, body.tags)
-    await client.query('UPDATE note SET title =($1), content =($2), modified_date=NOW() WHERE note.id =($3) AND account_id =($4) RETURNING id', [body.title, body.content, noteId, user.id])
+    await client.query('UPDATE note SET title =($1), content =($2), updated_at=NOW() WHERE note.id =($3) AND account_id =($4) RETURNING id', [body.title, body.content, noteId, user.id])
     await client.query('COMMIT')
 
     const note = await Note.findOne(noteId, user.id)

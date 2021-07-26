@@ -77,7 +77,7 @@ usersRouter.post('/', async (request, response) => {
 
     const saltRounds = 10
     const passwordHash = await bcrypt.hash(body.password, saltRounds)
-    console.log('passwordHash', passwordHash)
+    // console.log('passwordHash', passwordHash)
 
     const today = new Date()
 

@@ -6,7 +6,7 @@ class Note {
     this.title = row.title
     this.content = row.content
     this.tags = row.tags
-    this.modified_date = row.modified_date
+    this.updated_at = row.updated_at
   }
   toJSON() {
     return Object.getOwnPropertyNames(this).reduce((a, b) => {
@@ -19,7 +19,7 @@ class Note {
 const findOne = async (noteId, userId) => {
   const client = await pool.connect()
   try {
-    const { rows } = await client.query('SELECT note.id, title, content, modified_date, array_agg(tag.name) as tags FROM note \
+    const { rows } = await client.query('SELECT note.id, title, content, updated_at, array_agg(tag.name) as tags FROM note \
     LEFT JOIN notetag ON notetag.note_id = note.id LEFT JOIN tag ON tag.id = notetag.tag_id \
     WHERE note.id=($1) AND account_id = ($2) GROUP BY note.id', [noteId, userId])
     const note = new Note(rows[0])
@@ -78,7 +78,7 @@ const createBackup = async (noteId, userId) => {
   const client = await pool.connect()
   let id = null
   try {
-    const rows = await client.query(`INSERT INTO backupnote(note_id, title,content,account_id,modified_date,created_date) 
+    const rows = await client.query(`INSERT INTO backupnote(note_id, title,content,account_id,updated_at,created_at)
       VALUES($1, $2, $3, $4, NOW(),NOW()) RETURNING id`, [note.id, note.title, note.content, userId])
     id = rows.rows[0].id
   } catch (e) {
