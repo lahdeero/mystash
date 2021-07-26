@@ -22,5 +22,5 @@ jobs:
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             npm install
-            knex migrate:latest
+            ./node_modules/.bin/knex migrate:latest
             pm2 restart ./src/index.js
