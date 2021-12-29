@@ -40,15 +40,63 @@ npm start
 
 ## Development
 
-Seeds
+Seeds creates user
+``
+testi/salasana
+``
 ```
 knex seed:run
 ```
+
+
 
 Nodemon
 ```
 npm run watch
 ```
+
+## docker-compose .env for dev
+```
+FRONTEND_URL=http://localhost:3000
+BACKEND_URL=http://localhost:8080
+CALLBACK_URL=http://localhost:8080/api/login/github/callback
+DATABASE_URL=postgres://postgres:password@postgres:5432/postgres
+DOCKER_DATABASE_URL=postgres://mystashuser:password@postgres:5432/mystashdb
+SECRET=salaisuus
+JWT_KEY=salaisuus
+
+LOCATION=/home/lahdeero/sites/mystash-backend
+NPMCOMMAND=run watchd
+PORT=8080
+
+GITHUB_CLIENT_ID=xxxxxxxxxxxxx
+GITHUB_CLIENT_SECRET=xxxxxxxxxxx
+```
+
+In WSL1 locations was:
+```LOCATION=/c/Sites/mystash-backend/```
+
+Build & run:
+```bash
+docker-compose build
+docker-compose up
+```
+
+Connect to container:
+```bash
+docker container exec -it mystash-backend_backend_1 bash
+```
+
+## Psql
+
+```
+psql -U mystashuser -d mystashdb
+psql "postgres://mystashuser:password@localhost:5432/mystashdb"
+```
+
+## Todo
+
+1. BUG: docker-compose nodemon doesn't reload
 
 ## docker (OUTDATED)
 
@@ -57,30 +105,3 @@ docker run --network="host" --name="mystash-backend" --restart="on-failure" myst
 
 docker container exec -it mystash-backend bash
 node --inspect=0.0.0.0:9229 src/index.js
-
-## docker-compose .env for dev
-```
-FRONTEND_URL=http://localhost:3000
-BACKEND_URL=http://localhost:8080
-CALLBACK_URL=http://localhost:8080/api/login/github/callback
-DATABASE_URL=postgres://postgres:password@postgres:5432/postgres
-SECRET=salaisuus
-JWT_KEY=salaisuus
-
-LOCATION=/c/Sites/mystash-backend/
-NPMCOMMAND=run watchd
-PORT=8080
-
-GITHUB_CLIENT_ID=xxxxxxxxxxxxx
-GITHUB_CLIENT_SECRET=xxxxxxxxxxx
-```
-
-## Psql
-
-```
-psql "postgres://postgres:password@localhost:5432/postgres"
-```
-
-## Todo
-
-1. BUG: docker-compose nodemon doesn't reload
