@@ -17,6 +17,8 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           script: |
             cd mystash-backend
+            git add .
+            git stash
             git pull
             echo -e "$(date)\n$(cat .push-history)" > .push-history
             export NVM_DIR="$HOME/.nvm"
