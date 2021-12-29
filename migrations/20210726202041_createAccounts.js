@@ -10,6 +10,7 @@ exports.up = function(knex) {
     table.string("realname");
     table.string("email").notNullable();
     table.integer("tier").unsigned();
+    table.date("register_date");
     table.timestamps();
   })
 };

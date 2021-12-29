@@ -10,7 +10,6 @@ services:
     command: >
       bash -c "npm install
       && ./node_modules/.bin/knex migrate:latest
-      && ./node_modules/.bin/knex seed:run
       && NODE_ENV=dev node ./src/index.js"
     volumes:
       - "${LOCATION}:/usr/app/"
