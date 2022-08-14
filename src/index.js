@@ -1,6 +1,6 @@
 const http = require('http')
 const express = require('express')
-const app = express()
+const session = require('express-session')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const path = require('path')
@@ -10,11 +10,21 @@ const tagRouter = require('./routes/tag')
 const userRouter = require('./routes/user')
 const loginRouter = require('./routes/login')
 
+const app = express()
 app.use(express.static('public'))
 app.use('/mystash-frontend/static', express.static(path.join(__dirname, "../public/static")))
 console.log("__dirname", __dirname)
 app.use(bodyParser.json())
 app.use(cors())
+
+// Sessions
+app.use(express.urlencoded({extended: false}))
+//Middleware
+app.use(session({
+    secret: process.env.SESSION_SECRET,
+    resave: false ,
+    saveUninitialized: true ,
+}))
 
 app.use('/api/notes/directory/', noteRouter)
 app.use('/api/notes/tag', tagRouter)

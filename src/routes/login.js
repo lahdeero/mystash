@@ -11,6 +11,8 @@ const User = require('../models/user')
  */
 
 loginRouter.use(passport.initialize())
+//allow passport to use "express-session"
+loginRouter.use(passport.session())
 
 passport.use(new GitHubStrategy({
   clientID: process.env.GITHUB_CLIENT_ID,
