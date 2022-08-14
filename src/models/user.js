@@ -35,7 +35,7 @@ const findOne = (id) => {
 
 const findUserByGhProfile = (profile) => {
   const qry = `
-    SELECT id, username, realname, email, tier 
+    SELECT id, username, realname, email, tier
     FROM account
     WHERE github_id=$1`
   return pool
@@ -62,7 +62,7 @@ const createUser = (profile) => {
   const displayName = profile.displayName ? profile.displayName : profile.username
   const email = profile._json.email ? profile._json.email : `${displayName}@unknow.mail`
   const query = `
-      INSERT INTO account 
+      INSERT INTO account
       (username,realname,email,github_id,tier,register_date)
        VALUES ($1, $2, $3, $4, 1, NOW()) RETURNING *`
   const values = [profile.username, displayName, email, profile.id]
