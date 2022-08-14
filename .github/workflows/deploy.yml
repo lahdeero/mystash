@@ -10,17 +10,20 @@ jobs:
     steps:
       - name: executing remote ssh commands
         uses: appleboy/ssh-action@master
+        env:
+          NODE_ENV: ${{ secrets.NODE_ENV }}
         with:
           host: ${{ secrets.SSH_HOST }}
           port: ${{ secrets.SSH_PORT }}
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
-          passphrase: ${{ secrets.PASSPHRASE }}
+          passphrase: ${{ secrets.SSH_PASSPHRASE }}
+          script_stop: true # Stops script after first failure
           script: |
             cd backend
             git add .
             git stash
-            git pull
+            git pull origin master --ff-only
             echo -e "$(date)\n$(cat .push-history)" > .push-history
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
