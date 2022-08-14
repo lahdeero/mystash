@@ -29,4 +29,4 @@ jobs:
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             npm install
             ./node_modules/.bin/knex migrate:latest
-            pm2 restart ./src/index.js
+            ./node_modules/.bin/pm2 restart ./src/index.js
