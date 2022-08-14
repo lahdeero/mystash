@@ -91,7 +91,10 @@ noteRouter.put('/note/:id', async (req, res) => {
     const currentTags = first.rows
     await Note.deleteTags(noteId, currentTags, body.tags)
     await Note.addTags(noteId, currentTags, body.tags)
-    await client.query('UPDATE note SET title =($1), content =($2), updated_at=NOW() WHERE note.id =($3) AND account_id =($4) RETURNING id', [body.title, body.content, noteId, user.id])
+    await client.query(
+      'UPDATE note SET title =($1), content =($2), updated_at=NOW() WHERE note.id =($3) AND account_id =($4) RETURNING id',
+      [body.title, body.content, noteId, user.id]
+    )
     await client.query('COMMIT')
 
     const note = await Note.findOne(noteId, user.id)

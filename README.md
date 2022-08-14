@@ -48,11 +48,15 @@ testi/salasana
 knex seed:run
 ```
 
-
-
 Nodemon
 ```
 npm run watch
+```
+
+## Production
+
+```
+./node_modules/.bin/pm2 start src/index.js
 ```
 
 ## docker-compose .env for dev

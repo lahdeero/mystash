@@ -20,9 +20,13 @@ app.use('/api/login', loginRouter)
 
 const server = http.createServer(app)
 
-app.get('/', function (req, res) {
+app.get('/', function (_req, res) {
   // res.send(`<a href="https://lahdeero.github.io/mystash-frontend/">frontend</a>`)
   res.redirect('https://lahdeero.github.io/mystash-frontend/')
+})
+
+app.get('/ping', function (_req, res) {
+  res.send(`<html><body>Hello from backend! Timestamp: ${Date()}</body></html>`)
 })
 
 const PORT = process.env.PORT || 3001
