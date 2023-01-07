@@ -53,6 +53,18 @@ Nodemon
 npm run watch
 ```
 
+## Deploy
+
+### Frontend
+
+frontend build/ equals backend public/
+
+```bash
+1. npm run build # in frontend
+2. mv build public
+3. mv public ../mystash-backend
+```
+
 ## Production
 
 ```
