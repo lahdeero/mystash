@@ -9,10 +9,17 @@ noteRouter.get('/all', async (req, res) => {
   const user = req.user
   const client = await pool.connect()
   try {
-    const { rows } = await client.query('SELECT note.id, title, content, note.updated_at, array_agg(tag.name) as tags FROM note  \
-    LEFT JOIN notetag ON notetag.note_id = note.id LEFT JOIN tag ON tag.id = notetag.tag_id \
-    LEFT JOIN account ON account.id = note.account_id WHERE account.id = ($1) \
-    GROUP BY note.id ORDER BY updated_at DESC NULLS LAST', [user.id])
+    const { rows } = await client.query(
+      'SELECT note.id, title, content, note.updated_at, \
+      array_agg(tag.name) as tags, array_agg(file.id) as files \
+      FROM note \
+      LEFT JOIN file on file.note_id = note.id \
+      LEFT JOIN notetag ON notetag.note_id = note.id \
+      LEFT JOIN tag ON tag.id = notetag.tag_id \
+      LEFT JOIN account ON account.id = note.account_id WHERE account.id = ($1) \
+      GROUP BY note.id ORDER BY updated_at DESC NULLS LAST',
+      [user.id]
+    )
     res.send(rows)
   } catch (exception) {
     console.log(exception)

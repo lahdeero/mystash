@@ -2,6 +2,7 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const usersRouter = require('express').Router()
 const pool = require('../db')
+const tierlist = require('../utils/tierlist')
 
 function alphanumeric(inputtxt) {
   var letters = /^[0-9a-zA-Z]+$/
@@ -82,9 +83,9 @@ usersRouter.post('/', async (request, response) => {
     const today = new Date()
 
     const { rows } = await client.query(`INSERT INTO account \
-      (username,password,realname,email,tier,register_date) \
+      (username, password, realname, email, tier, register_date) \
       VALUES($1, $2, $3, $4, $5, $6) RETURNING id`,
-      [body.username.toLowerCase(), passwordHash, body.realname, body.email, 1, today])
+      [body.username.toLowerCase(), passwordHash, body.realname, body.email, tierlist.DEFAULT, today])
     const accountId = rows[0].id
 
     generateWelcome(accountId)

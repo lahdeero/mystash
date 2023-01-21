@@ -78,9 +78,9 @@ const createBackup = async (noteId, userId) => {
   const client = await pool.connect()
   let id = null
   try {
-    const rows = await client.query(`INSERT INTO backupnote(note_id, title,content,account_id,updated_at,created_at)
+    const result = await client.query(`INSERT INTO backupnote(note_id, title,content, account_id, updated_at, created_at)
       VALUES($1, $2, $3, $4, NOW(),NOW()) RETURNING id`, [note.id, note.title, note.content, userId])
-    id = rows.rows[0].id
+    id = result.rows[0].id
   } catch (e) {
     console.log(e)
   } finally {
