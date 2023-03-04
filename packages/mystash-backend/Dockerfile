@@ -1,11 +1,12 @@
-FROM node:13
+FROM node:18.14.2
 
 ENV NODE_ENV=production
 
-WORKDIR /data
+WORKDIR /mystash-platform
 
 COPY package*.json ./
 
+RUN npm install bcrypt
 RUN npm install
 
 COPY . .

@@ -8,11 +8,13 @@ mystash
 1. Install Postgresql (if not yet installed), recommended version: 9.6 or higher
 
 2. Setup database
+```
 postgres=# create database mystashdb;
 CREATE DATABASE
-postgres=# create user mystashuser with encrypted password 'salasana';
+postgres=# create user mystashuser with encrypted password 'changeme';
 CREATE ROLE
 postgres=# grant all privileges on database mystashdb to mystashuser;
+```
 
 3. Create environment file
 ```
@@ -70,6 +72,31 @@ frontend build/ equals backend public/
 ./node_modules/.bin/pm2 start src/index.js
 ```
 
+## Docker
+
+### Build
+
+```bash
+docker build -t mystash-backend .
+docker run --network="host" --name="mystash-backend" --restart="on-failure" mystash-backend
+```
+
+### Debug
+
+```bash
+docker container exec -it mystash-backend bash
+node --inspect=0.0.0.0:9229 src/index.js
+```
+
+## Psql
+
+### Debug
+
+```
+psql -U mystashuser -d mystashdb
+psql "postgres://mystashuser:changeme@localhost:5432/mystashdb"
+```
+
 ## docker-compose .env for dev (OUTDATED)
 ```
 FRONTEND_URL=http://localhost:3000
@@ -101,18 +128,3 @@ Connect to container:
 ```bash
 docker container exec -it mystash-backend_backend_1 bash
 ```
-
-## Psql
-
-```
-psql -U mystashuser -d mystashdb
-psql "postgres://mystashuser:password@localhost:5432/mystashdb"
-```
-
-## docker (OUTDATED)
-
-docker build -t mystash .
-docker run --network="host" --name="mystash-backend" --restart="on-failure" mystash
-
-docker container exec -it mystash-backend bash
-node --inspect=0.0.0.0:9229 src/index.js
