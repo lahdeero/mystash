@@ -27,8 +27,12 @@ jobs:
             echo -e "$(date)\n$(cat .push-history)" > .push-history
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            npm run ci
-            cd packages
-            cd mystash-backend
+            npm install
+            npm run ci -y
+            cd packages/mystash-backend
             ./node_modules/.bin/knex migrate:latest
             ./node_modules/.bin/pm2 restart ./src/index.js
+            cd ../mystash-frontend
+            npm run build
+            rm -r ../mystash-backend/public
+            mv build ../mystash-backend/public

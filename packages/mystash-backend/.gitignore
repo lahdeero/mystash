@@ -2,8 +2,5 @@ node_modules/
 .vscode/
 .env
 .envBU
-src/client/build
-src/client/node_modules
 trash
-.push-history
 uploads
