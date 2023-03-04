@@ -3,17 +3,21 @@ mystash
 
 [Mystash @ duckdns](https://mystash.duckdns.org/)
 
+[Docker repository](https://hub.docker.com/repository/docker/lahdeero/mystash-backend/general)
+
 ## Install
 
-1. Install Postgresql (if not yet installed), recommended version: 9.6 or higher
+### Using docker
+
+1. Setup postgres
+  a. Install Postgresql (if not yet installed), recommended version: 9.6 or higher
+  b. Connect to your postgresql server
 
 2. Setup database
 ```
-postgres=# create database mystashdb;
-CREATE DATABASE
-postgres=# create user mystashuser with encrypted password 'changeme';
-CREATE ROLE
-postgres=# grant all privileges on database mystashdb to mystashuser;
+create database mystashdb;
+create user mystashuser with encrypted password 'changeme';
+grant all privileges on database mystashdb to mystashuser;
 ```
 
 3. Create environment file
@@ -78,7 +82,7 @@ frontend build/ equals backend public/
 
 ```bash
 docker build -t mystash-backend .
-docker run --network="host" --name="mystash-backend" --restart="on-failure" mystash-backend
+docker run -p 8080:8080 --name="mystash-backend" --restart="on-failure" mystash-backend
 ```
 
 ### Debug
@@ -86,6 +90,12 @@ docker run --network="host" --name="mystash-backend" --restart="on-failure" myst
 ```bash
 docker container exec -it mystash-backend bash
 node --inspect=0.0.0.0:9229 src/index.js
+```
+
+### Publish
+
+```
+docker push lahdeero/mystash-backend:tagname
 ```
 
 ## Psql
