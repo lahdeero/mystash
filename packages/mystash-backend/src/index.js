@@ -1,6 +1,7 @@
 const http = require('http')
 const express = require('express')
 const session = require('express-session')
+const KnexSessionStore = require('connect-session-knex')(session)
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const path = require('path')
@@ -10,6 +11,9 @@ const tagRouter = require('./routes/tagRouter')
 const userRouter = require('./routes/userRouter')
 const loginRouter = require('./routes/loginRouter')
 const fileRouter = require('./routes/fileRouter')
+const knexFile = require('../knexfile')
+const knex = require('knex')(knexFile);
+
 
 const app = express()
 app.use(express.static('public'))
@@ -20,12 +24,23 @@ app.use(cors())
 
 // Sessions
 app.use(express.urlencoded({extended: false}))
+
+const store = new KnexSessionStore({
+  knex,
+  createtable: true
+})
 //Middleware
-app.use(session({
+app.use(
+  session({
     secret: process.env.SESSION_SECRET,
-    resave: false ,
-    saveUninitialized: true ,
-}))
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+      maxAge: 360 * 24 * 60 * 60 * 1000,
+    },
+    store,
+  }),
+)
 
 app.use('/api/notes/directory/', noteRouter)
 app.use('/api/notes/tag', tagRouter)
