@@ -28,6 +28,6 @@ jobs:
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             cd packages/mystash-backend
-            npm run ci
+            npm install
             ./node_modules/.bin/knex migrate:latest
             ./node_modules/.bin/pm2 restart ./src/index.js
