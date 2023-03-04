@@ -11,5 +11,8 @@ RUN npm install
 
 COPY . .
 
+RUN rm .env
+RUN mv .env.docker .env
+
 EXPOSE 8080
 CMD ["npm", "start"]
