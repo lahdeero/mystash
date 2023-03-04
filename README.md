@@ -7,11 +7,9 @@ mystash
 
 ## Install
 
-### Using docker
-
 1. Setup postgres
-  a. Install Postgresql (if not yet installed), recommended version: 9.6 or higher
-  b. Connect to your postgresql server
+  - Install Postgresql (if not yet installed), recommended version: 9.6 or higher
+  - Connect to your postgresql server
 
 2. Setup database
 ```
