@@ -23,7 +23,7 @@ jobs:
             cd mystash-platform
             git add .
             git stash
-            git pull origin master --ff-only
+            git pull origin main --ff-only
             echo -e "$(date)\n$(cat .push-history)" > .push-history
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
