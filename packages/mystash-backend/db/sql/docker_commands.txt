@@ -1,0 +1,2 @@
+docker run --rm --name pg-docker -e POSTGRES_PASSWORD=docker -d -p 5432:5432 -v /home/eero/docker/volumes/postgres:/var/lib/postgresql/data postgres:9.6.12
+psql -h localhost -U postgres -d postgres

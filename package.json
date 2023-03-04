@@ -1,60 +1,35 @@
 {
-  "name": "mystash-backend",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/lahdeero/mystash-backend"
-  },
-  "version": "0.2.3",
-  "description": "check README.md",
+  "name": "mystash",
+  "version": "0.5.0",
+  "description": "CRUD app",
   "main": "index.js",
   "scripts": {
-    "start": "NODE_ENV=production node src/index.js",
-    "watch": "cross-env NODE_ENV=dev nodemon src/index.js",
-    "watchd": "NODE_ENV=dev nodemon src/index.js",
-    "test": "cross-env NODE_ENV=test jest --verbose",
-    "lint": "eslint ."
+    "ci": "npx lerna run ci",
+    "dev": "npx lerna run dev",
+    "test": "npx lerna run test",
+    "bootstrap": "lerna bootstrap",
+    "clean": "lerna run --parallel clean",
+    "release": "lerna publish"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lahdeero/mystash-backend.git"
+  },
+  "keywords": [
+    "crud",
+    "notes",
+    "oauth"
+  ],
   "author": "Eero Lahdenperä",
   "license": "MIT",
-  "dependencies": {
-    "babel-preset-react-app": "^10.0.1",
-    "bcrypt": "^5.0.0",
-    "cookie-parser": "^1.4.6",
-    "cors": "^2.8.4",
-    "dotenv": "^6.1.0",
-    "express": "^4.16.3",
-    "express-promise-router": "^3.0.3",
-    "express-session": "^1.17.3",
-    "jsonwebtoken": "^9.0.0",
-    "knex": "^2.4.1",
-    "multer": "^1.4.5-lts.1",
-    "passport": "^0.6.0",
-    "passport-github2": "^0.1.12",
-    "passport-jwt": "^4.0.0",
-    "pg": "^8.6.0",
-    "pm2": "^5.1.0",
-    "query-string": "^6.13.1"
+  "bugs": {
+    "url": "https://github.com/lahdeero/mystash-backend/issues"
   },
-  "devDependencies": {
-    "concurrently": "^6.5.1",
-    "cross-env": "^5.2.0",
-    "eslint": "^8.5.0",
-    "jest": "^26.1.0",
-    "nodemon": "^2.0.12",
-    "supertest": "^3.4.2"
-  },
-  "jest": {
-    "verbose": true,
-    "testURL": "http://localhost/",
-    "testPathIgnorePatterns": [
-      "/client/"
-    ]
-  },
-  "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not ie <= 11",
-    "not op_mini all"
+  "homepage": "https://github.com/lahdeero/mystash-backend#readme",
+  "workspaces": [
+    "packages/*"
   ],
-  "heroku-run-build-script": true
+  "devDependencies": {
+    "lerna": "^6.5.1"
+  }
 }

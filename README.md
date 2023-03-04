@@ -10,32 +10,41 @@ mystash
 
 ## Install
 
-1. Install Postgresql (if not yet installed), recommended version: 9.6
+1. Install Postgresql (if not yet installed), recommended version: 9.6 or higher
 
-2. Create environment file
+2. Setup database
+postgres=# create database mystashdb;
+CREATE DATABASE
+postgres=# create user mystashuser with encrypted password 'salasana';
+CREATE ROLE
+postgres=# grant all privileges on database mystashdb to mystashuser;
+
+3. Create environment file
 ```
 cp .env.example .env
 ```
 
-3. Set your own environment secrets!
+4. Set your own environment secrets!
 ```
 nano .env
 ```
 
-4. Install packages
+5. Install packages
 ```
-npm install
+npm run ci
 ```
 
-5. Execute migrations
+6. Execute migrations
 ```
+cd packages/mystash-backend
 ./node_modules/.bin/knex migrate:latest
+cd ../..
 ```
 
 ## Run
 
 ```
-npm start
+npm run dev
 ```
 
 ## Development
@@ -45,12 +54,7 @@ Seeds creates user
 testi/salasana
 ``
 ```
-knex seed:run
-```
-
-Nodemon
-```
-npm run watch
+./node_modules/.bin/knex seed:run
 ```
 
 ## Deploy
