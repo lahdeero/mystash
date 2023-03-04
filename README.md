@@ -1,12 +1,7 @@
 mystash
 ============
 
-[![Build Status](https://travis-ci.com/lahdeero/mystash-backend.svg?branch=master)](https://travis-ci.com/lahdeero/mystash-backend)
-[![GitHub license](	https://img.shields.io/github/license/lahdeero/mystash-backend.svg)](https://github.com/lahdeero/mystash-backend/blob/master/LICENSE)
-[![Last version](https://img.shields.io/github/tag-date/lahdeero/mystash-backend.svg)](https://github.com/lahdeero/mystash-backend/blob/master/CHANGELOG.md)
-
-[mystash @ GitHub pages](https://lahdeero.github.io/mystash-frontend/)
-
+[Mystash @ duckdns](https://mystash.duckdns.org/)
 
 ## Install
 
@@ -75,7 +70,7 @@ frontend build/ equals backend public/
 ./node_modules/.bin/pm2 start src/index.js
 ```
 
-## docker-compose .env for dev
+## docker-compose .env for dev (OUTDATED)
 ```
 FRONTEND_URL=http://localhost:3000
 BACKEND_URL=http://localhost:8080
@@ -113,10 +108,6 @@ docker container exec -it mystash-backend_backend_1 bash
 psql -U mystashuser -d mystashdb
 psql "postgres://mystashuser:password@localhost:5432/mystashdb"
 ```
-
-## Todo
-
-1. BUG: docker-compose nodemon doesn't reload
 
 ## docker (OUTDATED)
 

@@ -1,12 +1,13 @@
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
-import { actionForRegister, setLogin } from '../reducers/userReducer'
+import { actionForRegister, setLogin } from '../../reducers/userReducer'
 import { ClipLoader } from 'react-spinners'
-import { Navbar } from './common/Navigation'
-import Input from './common/Input'
-import Icon from './common/Icon'
-import Button from './common/Button'
-import Container from './common/Container'
+import { Navbar } from '../common/Navigation'
+import Input from '../common/Input'
+import Icon from '../common/Icon'
+import Button from '../common/Button'
+import Container from '../common/Container'
+import TextContainer from '../common/TextContainer'
 
 const Register = (props) => {
   const [firstname, setFirstname] = useState('')
@@ -57,9 +58,9 @@ const Register = (props) => {
             <Button type="submit">Register</Button>
           </form>
         </div>
-        <br />
-        <br />
-        Back to <a onClick={props.handleRegisterRedirect} href={process.env.PUBLIC_URL}>login</a>
+        <TextContainer>
+          Back to <a onClick={props.togglePage} href={'#'}>login</a>
+        </TextContainer>
       </Container>
     </div>
   )

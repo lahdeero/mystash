@@ -1,16 +1,14 @@
 import React, { useState } from 'react'
-import styled from 'styled-components'
-import Register from './Register'
 import { ClipLoader } from 'react-spinners'
-import '../App.css'
-import { resolveUrl } from '../utils/environmentResolvers'
-import githubLoginImage from '../assets/github_login.png'
-import { Navbar } from './common/Navigation'
-import Input from './common/Input'
-import Icon from './common/Icon'
-import Button from './common/Button'
-import Container from './common/Container'
-import Colors from '../layout/colors'
+import styled from 'styled-components'
+import githubLoginImage from '../../assets/github_login.png'
+import { Navbar } from '../common/Navigation'
+import Input from '../common/Input'
+import Icon from '../common/Icon'
+import Button from '../common/Button'
+import Container from '../common/Container'
+import { resolveUrl } from '../../utils/environmentResolvers'
+import Colors from '../../layout/colors'
 
 const FlexItem = styled.div`
   display: flex;
@@ -45,18 +43,21 @@ const ErrorText = styled.div`
   margin: 0 0 10px;
 `
 
-const Login = ({ actionForLogin, init }) => {
+const Login = (props) => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
-  const [register, setRegister] = useState(false)
   const [loading, setLoading] = useState(false)
+
+  const backendUrl = resolveUrl()
+  console.debug('backend url:', backendUrl)
+  const githubLoginUrl = `${backendUrl}/api/login/github`
 
   const handleLogin = async (event) => {
     event.preventDefault()
     try {
       setLoading(true)
-      await actionForLogin({
+      await props.actionForLogin({
         username: username,
         password: password
       })
@@ -66,29 +67,10 @@ const Login = ({ actionForLogin, init }) => {
       if (exception.code === 'ERR_BAD_REQUEST') {
         setError('Invalid credentials')
       } else {
-        setError('Login error')
+        setError('Error')
       }
-      setTimeout(() => {
-        setError('')
-      }, 5000)
     }
   }
-  const handleRegisterRedirect = async (event) => {
-    event.preventDefault()
-    setRegister(!register)
-  }
-
-  if (register) {
-    return (
-      <div>
-        <Register init={init} />
-      </div>
-    )
-  }
-
-  const backendUrl = resolveUrl()
-  console.debug('backend url:', backendUrl)
-  const githubLoginUrl = `${backendUrl}/api/login/github`
 
   return (
     <div>
@@ -127,7 +109,7 @@ const Login = ({ actionForLogin, init }) => {
           <Button type="submit">Login</Button>
         </form>
         <Suggestion>
-          Dont have account? <a onClick={handleRegisterRedirect} href="/register">Register</a>
+          Dont have account? <a onClick={props.togglePage} href="/register">Register</a>
         </Suggestion>
       </Container>
     </div >

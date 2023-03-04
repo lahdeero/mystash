@@ -5,7 +5,7 @@ import queryString from 'query-string'
 import styled from 'styled-components'
 import './App.css'
 import Menu from './components/Menu'
-import Login from './components/Login'
+import Frontpage from './components/frontpage/Frontpage'
 import List from './components/note/List'
 import Show from './components/note/Show'
 import Edit from './components/note/Edit'
@@ -72,7 +72,7 @@ const App = (props) => {
             <div>
               <Menu filter={filter} handleLogout={handleLogout} />
               <Route exact path="/" render={() => <List filter={filter} loading={loading} />} />
-              <Route path='/login' render={() => <Login />} />
+              <Route path='/login' render={() => <Frontpage />} />
               <Route path='/create' render={() => <Form />} />
               <Route path='/settings' render={() => <Settings />} />
               <Route exact path='/notes/:id' component={Show} />
@@ -88,7 +88,7 @@ const App = (props) => {
     return (
       <>
         <Content>
-          <Login actionForLogin={props.actionForLogin} init={init} />
+          <Frontpage actionForLogin={props.actionForLogin} init={init} />
         </Content>
         <Footer />
       </>

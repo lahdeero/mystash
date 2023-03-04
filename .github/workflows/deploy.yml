@@ -20,13 +20,15 @@ jobs:
           passphrase: ${{ secrets.SSH_PASSPHRASE }}
           script_stop: true # Stops script after first failure
           script: |
-            cd backend
+            cd mystash-platform
             git add .
             git stash
             git pull origin master --ff-only
             echo -e "$(date)\n$(cat .push-history)" > .push-history
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            npm install
+            npm run ci
+            cd packages
+            cd mystash-backend
             ./node_modules/.bin/knex migrate:latest
             ./node_modules/.bin/pm2 restart ./src/index.js

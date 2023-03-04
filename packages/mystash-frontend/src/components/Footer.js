@@ -23,11 +23,10 @@ const Footer = () => (
     <div>
       mystash v. {versionResolver}
     </div>
-    <a href="https://github.com/lahdeero/mystash-frontend" rel="noreferrer" target="_blank">
+    <a href="https://github.com/lahdeero/mystash" rel="noreferrer" target="_blank">
       <img src={GithubLink} alt="Link to github repository"/>
     </a>
   </FooterWrapper>
 )
-
 
 export default Footer
