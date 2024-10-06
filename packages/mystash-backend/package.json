@@ -16,8 +16,12 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.363.0",
+    "@aws-sdk/client-lambda": "^3.363.0",
+    "@aws-sdk/lib-dynamodb": "^3.365.0",
     "babel-preset-react-app": "^10.0.1",
     "bcrypt": "^5.0.0",
+    "body-parser": "^1.20.0",
     "connect-session-knex": "^3.0.1",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.4",
@@ -36,6 +40,8 @@
     "query-string": "^6.13.1"
   },
   "devDependencies": {
+    "@types/aws-lambda": "^8.10.145",
+    "@types/uuid": "^10.0.0",
     "concurrently": "^6.5.1",
     "cross-env": "^5.2.0",
     "eslint": "^8.5.0",

@@ -44,7 +44,7 @@ const ErrorText = styled.div`
 `
 
 const Login = (props) => {
-  const [username, setUsername] = useState('')
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
@@ -58,8 +58,8 @@ const Login = (props) => {
     try {
       setLoading(true)
       await props.actionForLogin({
-        username: username,
-        password: password
+        email,
+        password
       })
     } catch (exception) {
       console.error(exception)
@@ -87,13 +87,13 @@ const Login = (props) => {
         {error !== '' ? <ErrorText>{error}</ErrorText> : <div></div>}
         <form onSubmit={handleLogin}>
           <div>
-            username:
+            email:
             <Input
-              type="text"
-              name="username"
+              type="email"
+              name="email"
               autoComplete="off"
-              value={username}
-              onChange={(event) => setUsername(event.target.value)}
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
             ><Icon>account_circle</Icon></Input>
           </div>
           <div>

@@ -1,7 +1,9 @@
 mystash
 ============
 
-[Mystash @ duckdns](https://mystash.duckdns.org/)
+[Mystash @ duckdns](https://mystash.duckdns.org)
+
+[Mystash @ AWS](https://d2i9hujvjf3jxs.cloudfront.net)
 
 [Docker repository](https://hub.docker.com/repository/docker/lahdeero/mystash-backend/general)
 
@@ -135,4 +137,29 @@ docker-compose up
 Connect to container:
 ```bash
 docker container exec -it mystash-backend_backend_1 bash
+```
+
+## AWS CLI
+
+Must install [aws cli](https://aws.amazon.com/cli/) and [cdk](https://github.com/aws/aws-cdk/tree/main) before. If cdk synth gives some docker error make sure esbuild is installed!
+
+````bash
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+sudo ./aws/install
+npm i -g aws-cdk
+```
+
+```bash
+export AWS_PROFILE=mystashapp-prod
+npm ci
+aws s3 ls
+aws sts get-caller-identity --profile mystashapp-prod
+cdk bootstrap aws://AWS-ACCOUNT-ID-HERE/eu-north-1
+```
+
+```bash
+cdk synth --profile mystashapp-prod # creates cdk.out
+cdk diff --profile mystashapp-prod # compares difference between deployed stack
+cdk deploy --profile mystashapp-prod # deploys stack
 ```

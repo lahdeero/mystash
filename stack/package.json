@@ -1,0 +1,11 @@
+{
+  "name": "root",
+  "private": true,
+  "dependencies": {
+    "aws-cdk-lib": "^2.161.1",
+    "esbuild": "^0.20.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.7"
+  }
+}

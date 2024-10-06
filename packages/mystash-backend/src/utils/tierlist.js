@@ -1,4 +1,4 @@
 module.exports = {
   DEFAULT: 1,
-  ADMIN: 7,
+  ADMIN: 5,
 }
