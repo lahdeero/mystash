@@ -1,11 +1,11 @@
-import type { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
-import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { DynamoDBDocumentClient, QueryCommand } from "@aws-sdk/lib-dynamodb";
-import { createHmac, createDecipheriv } from "crypto";
-import { createJWT, verifyJWT } from "../utils/jwt";
+import type { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda"
+import { DynamoDBClient } from "@aws-sdk/client-dynamodb"
+import { DynamoDBDocumentClient, QueryCommand } from "@aws-sdk/lib-dynamodb"
+import { createHmac, createDecipheriv } from "crypto"
+import { createJWT, verifyJWT } from "../utils/jwt"
 
-const client = new DynamoDBClient({});
-const dynamoDb = DynamoDBDocumentClient.from(client);
+const client = new DynamoDBClient({})
+const dynamoDb = DynamoDBDocumentClient.from(client)
 const iv = process.env.SECRET.slice(0,16).split("").reverse().join("")
 
 const noAccess = (body: string) => ({
@@ -74,7 +74,7 @@ export const loginHandler = async (event: APIGatewayProxyEvent): Promise<APIGate
     iat: Math.floor(Date.now() / 1000),
     exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7, // Expire after 1 week
   }
-  const token = createJWT(payload, secret);
+  const token = createJWT(payload, secret)
   const user = {
     firstName,
     lastName,
@@ -88,4 +88,4 @@ export const loginHandler = async (event: APIGatewayProxyEvent): Promise<APIGate
   }
 }
 
-export const handler = loginHandler;
+export const handler = loginHandler

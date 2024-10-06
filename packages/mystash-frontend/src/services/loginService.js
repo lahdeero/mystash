@@ -15,6 +15,7 @@ const register = async (information) => {
   console.debug(response.data)
   return response.data
 }
+
 const login = async (credentials) => {
   const response = await API.post(`${baseUrl}/login`, credentials)
   return response.data

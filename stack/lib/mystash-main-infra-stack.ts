@@ -132,6 +132,12 @@ export class MystashInfraStack extends cdk.Stack {
     const updateNoteIntegration = new apiGatewayIntegrations.HttpLambdaIntegration('LambdaIntegration', updateNoteHandler)
     const deleteNoteIntegration = new apiGatewayIntegrations.HttpLambdaIntegration('LambdaIntegration', deleteNoteHandler)
 
+    userDb.grantReadWriteData(loginHandler)
+    noteDb.grantWriteData(createNoteHandler)
+    noteDb.grantReadData(getNotesHandler)
+    noteDb.grantReadWriteData(updateNoteHandler)
+    noteDb.grantReadWriteData(deleteNoteHandler)
+
     /* -----------------------\
     | API GATEWAY             |
     \------------------------*/
@@ -176,11 +182,6 @@ export class MystashInfraStack extends cdk.Stack {
       integration: deleteNoteIntegration,
     })
 
-    userDb.grantReadWriteData(loginHandler)
-    noteDb.grantWriteData(createNoteHandler)
-    noteDb.grantReadData(getNotesHandler)
-    noteDb.grantReadWriteData(updateNoteHandler)
-    noteDb.grantReadWriteData(deleteNoteHandler)
 
     /* ----------\
     | FRONTEND   |
@@ -188,31 +189,47 @@ export class MystashInfraStack extends cdk.Stack {
 
     // Create an S3 bucket for hosting the React app
     const websiteBucket = new s3.Bucket(this, `${stackName}-website-bucket`, {
-      bucketName: `${stackName}-website-bucket`,
+      bucketName: `${stackName}-frontend-bucket`,
       versioned: true,
       websiteIndexDocument: 'index.html',
       websiteErrorDocument: 'index.html',
-      publicReadAccess: false, // Access is only provided via cloudfront
-      removalPolicy: cdk.RemovalPolicy.DESTROY
-    })
+      publicReadAccess: false, // Access is only provided via CloudFront
+      removalPolicy: cdk.RemovalPolicy.DESTROY,
+   })
 
     // Create an Origin Access Identity for CloudFront to access the S3 bucket
-    const originAccessIdentity = new cloudfront.OriginAccessIdentity(this, `${stackName}-OAI`)
+    const originAccessIdentity = new cloudfront.OriginAccessIdentity(this, `${stackName}-OAI`);
+
     // Grant CloudFront access to the S3 bucket
-    websiteBucket.grantRead(originAccessIdentity)
+    websiteBucket.grantRead(originAccessIdentity);
+
+    // // Create a CloudFront distribution to serve the React app
+    // const distribution = new cloudfront.Distribution(this, `${stackName}-WebDistribution`, {
+    //   defaultBehavior: {
+    //     origin: new origins.S3StaticWebsiteOrigin(websiteBucket),
+    //     cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
+    //   },
+    // })
+
+    // // Add a bucket policy to allow the OAI to read objects
+    // websiteBucket.addToResourcePolicy(new iam.PolicyStatement({
+    //   actions: ['s3:GetObject'],
+    //   resources: [`${websiteBucket.bucketArn}/*`],
+    //   principals: [originAccessIdentity.grantPrincipal], // Use the OAI's grantPrincipal
+    // }))
 
     // Create a CloudFront distribution to serve the React app
-    const distribution = new cloudfront.Distribution(this, `${stackName}-WebDistribution`, {
-      defaultBehavior: {
-        origin: new origins.S3StaticWebsiteOrigin(websiteBucket),
-        cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
-      },
+    const distribution = new cloudfront.CloudFrontWebDistribution(this, `${stackName}-WebDistribution`, {
+      originConfigs: [
+        {
+          s3OriginSource: {
+            s3BucketSource: websiteBucket,
+            originAccessIdentity,
+          },
+          behaviors: [{ isDefaultBehavior: true }],
+        },
+      ],
     })
-    websiteBucket.addToResourcePolicy(new iam.PolicyStatement({
-      actions: ['s3:GetObject'],
-      resources: [`${websiteBucket.bucketArn}/*`],
-      principals: [new iam.ArnPrincipal(`arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${distribution.distributionDomainName}`)]
-    }));
 
 
     // Deploy the React app to the S3 bucket

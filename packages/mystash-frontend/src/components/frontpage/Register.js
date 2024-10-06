@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
-import { actionForRegister, setLogin } from '../../reducers/userReducer'
+import { actionForRegister } from '../../reducers/userReducer'
 import { ClipLoader } from 'react-spinners'
 import { Navbar } from '../common/Navigation'
 import Input from '../common/Input'
@@ -74,7 +74,6 @@ const mapStateToProps = (store) => {
 }
 const mapDispatchToProps = {
   actionForRegister,
-  setLogin
 }
 export default connect(
   mapStateToProps,

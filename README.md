@@ -3,7 +3,7 @@ mystash
 
 [Mystash @ duckdns](https://mystash.duckdns.org)
 
-[Mystash @ AWS](https://d2i9hujvjf3jxs.cloudfront.net)
+[Mystash @ AWS](https://dn422ddfagn9t.cloudfront.net)
 
 [Docker repository](https://hub.docker.com/repository/docker/lahdeero/mystash-backend/general)
 

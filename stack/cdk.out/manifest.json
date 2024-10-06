@@ -1,0 +1,351 @@
+{
+  "version": "38.0.1",
+  "artifacts": {
+    "prodMystashInfraStack.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "prodMystashInfraStack.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "prodMystashInfraStack": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://234190327561/eu-north-1",
+      "properties": {
+        "templateFile": "prodMystashInfraStack.template.json",
+        "terminationProtection": false,
+        "validateOnSynth": false,
+        "notificationArns": [],
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::234190327561:role/cdk-hnb659fds-deploy-role-234190327561-eu-north-1",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::234190327561:role/cdk-hnb659fds-cfn-exec-role-234190327561-eu-north-1",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-234190327561-eu-north-1/0a484330a44f7aece1d9437a60594ed9e6b3b780be621bce037c140c583fd1fc.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "prodMystashInfraStack.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::234190327561:role/cdk-hnb659fds-lookup-role-234190327561-eu-north-1",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        },
+        "stackName": "mystash-prod-infra"
+      },
+      "dependencies": [
+        "prodMystashInfraStack.assets"
+      ],
+      "metadata": {
+        "/prodMystashInfraStack/mystash-prod-infra-users-table": [
+          {
+            "type": "aws:cdk:hasPhysicalName",
+            "data": {
+              "Ref": "mystashprodinfrauserstable5C27A88C"
+            }
+          }
+        ],
+        "/prodMystashInfraStack/mystash-prod-infra-users-table/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "mystashprodinfrauserstable5C27A88C"
+          }
+        ],
+        "/prodMystashInfraStack/mystash-prod-infra-notes-table": [
+          {
+            "type": "aws:cdk:hasPhysicalName",
+            "data": {
+              "Ref": "mystashprodinfranotestable52CB16B0"
+            }
+          }
+        ],
+        "/prodMystashInfraStack/mystash-prod-infra-notes-table/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "mystashprodinfranotestable52CB16B0"
+          }
+        ],
+        "/prodMystashInfraStack/mystash-prod-infra-login-lambda-handler/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "mystashprodinfraloginlambdahandlerServiceRoleA6984EB0"
+          }
+        ],
+        "/prodMystashInfraStack/mystash-prod-infra-login-lambda-handler/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "mystashprodinfraloginlambdahandlerServiceRoleDefaultPolicy6BDCC1DA"
+          }
+        ],
+        "/prodMystashInfraStack/mystash-prod-infra-login-lambda-handler/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "mystashprodinfraloginlambdahandler15C8D10F"
+          }
+        ],
+        "/prodMystashInfraStack/mystash-prod-infra-create-note-lambda-handler/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "mystashprodinfracreatenotelambdahandlerServiceRole6F351B80"
+          }
+        ],
+        "/prodMystashInfraStack/mystash-prod-infra-create-note-lambda-handler/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "mystashprodinfracreatenotelambdahandlerServiceRoleDefaultPolicyAD8B96D0"
+          }
+        ],
+        "/prodMystashInfraStack/mystash-prod-infra-create-note-lambda-handler/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "mystashprodinfracreatenotelambdahandler63BB1482"
+          }
+        ],
+        "/prodMystashInfraStack/mystash-prod-infra-get-notes-lambda-handler/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "mystashprodinfragetnoteslambdahandlerServiceRole52973951"
+          }
+        ],
+        "/prodMystashInfraStack/mystash-prod-infra-get-notes-lambda-handler/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "mystashprodinfragetnoteslambdahandlerServiceRoleDefaultPolicy97A43695"
+          }
+        ],
+        "/prodMystashInfraStack/mystash-prod-infra-get-notes-lambda-handler/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "mystashprodinfragetnoteslambdahandler620AD2F7"
+          }
+        ],
+        "/prodMystashInfraStack/mystash-prod-infra-update-note-lambda-handler/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "mystashprodinfraupdatenotelambdahandlerServiceRoleA6C539BE"
+          }
+        ],
+        "/prodMystashInfraStack/mystash-prod-infra-update-note-lambda-handler/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "mystashprodinfraupdatenotelambdahandlerServiceRoleDefaultPolicy58612299"
+          }
+        ],
+        "/prodMystashInfraStack/mystash-prod-infra-update-note-lambda-handler/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "mystashprodinfraupdatenotelambdahandler23C31DC6"
+          }
+        ],
+        "/prodMystashInfraStack/mystash-prod-infra-delete-note-lambda-handler/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "mystashprodinfradeletenotelambdahandlerServiceRoleFDC6999E"
+          }
+        ],
+        "/prodMystashInfraStack/mystash-prod-infra-delete-note-lambda-handler/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "mystashprodinfradeletenotelambdahandlerServiceRoleDefaultPolicy25504CB5"
+          }
+        ],
+        "/prodMystashInfraStack/mystash-prod-infra-delete-note-lambda-handler/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "mystashprodinfradeletenotelambdahandlerE530AB1E"
+          }
+        ],
+        "/prodMystashInfraStack/mystash-prod-infra-api-gateway/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "mystashprodinfraapigateway0196C599"
+          }
+        ],
+        "/prodMystashInfraStack/mystash-prod-infra-api-gateway/DefaultStage/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "mystashprodinfraapigatewayDefaultStageDD069E1D"
+          }
+        ],
+        "/prodMystashInfraStack/mystash-prod-infra-api-gateway/POST--api--login/LambdaIntegration/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "mystashprodinfraapigatewayPOSTapiloginLambdaIntegration05355894"
+          }
+        ],
+        "/prodMystashInfraStack/mystash-prod-infra-api-gateway/POST--api--login/LambdaIntegration-Permission": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "mystashprodinfraapigatewayPOSTapiloginLambdaIntegrationPermission47CDA50A"
+          }
+        ],
+        "/prodMystashInfraStack/mystash-prod-infra-api-gateway/POST--api--login/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "mystashprodinfraapigatewayPOSTapilogin40A97861"
+          }
+        ],
+        "/prodMystashInfraStack/mystash-prod-infra-api-gateway/POST--api--note/LambdaIntegration/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "mystashprodinfraapigatewayPOSTapinoteLambdaIntegration93765E63"
+          }
+        ],
+        "/prodMystashInfraStack/mystash-prod-infra-api-gateway/POST--api--note/LambdaIntegration-Permission": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "mystashprodinfraapigatewayPOSTapinoteLambdaIntegrationPermissionD3592562"
+          }
+        ],
+        "/prodMystashInfraStack/mystash-prod-infra-api-gateway/POST--api--note/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "mystashprodinfraapigatewayPOSTapinoteC07C62F3"
+          }
+        ],
+        "/prodMystashInfraStack/mystash-prod-infra-api-gateway/GET--api--note/LambdaIntegration/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "mystashprodinfraapigatewayGETapinoteLambdaIntegration65D828B7"
+          }
+        ],
+        "/prodMystashInfraStack/mystash-prod-infra-api-gateway/GET--api--note/LambdaIntegration-Permission": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "mystashprodinfraapigatewayGETapinoteLambdaIntegrationPermission064A861E"
+          }
+        ],
+        "/prodMystashInfraStack/mystash-prod-infra-api-gateway/GET--api--note/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "mystashprodinfraapigatewayGETapinote74B50E98"
+          }
+        ],
+        "/prodMystashInfraStack/mystash-prod-infra-api-gateway/PUT--api--note--{id}/LambdaIntegration/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "mystashprodinfraapigatewayPUTapinoteidLambdaIntegration53D4391C"
+          }
+        ],
+        "/prodMystashInfraStack/mystash-prod-infra-api-gateway/PUT--api--note--{id}/LambdaIntegration-Permission": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "mystashprodinfraapigatewayPUTapinoteidLambdaIntegrationPermission417B5232"
+          }
+        ],
+        "/prodMystashInfraStack/mystash-prod-infra-api-gateway/PUT--api--note--{id}/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "mystashprodinfraapigatewayPUTapinoteid66A4B6FA"
+          }
+        ],
+        "/prodMystashInfraStack/mystash-prod-infra-api-gateway/DELETE--api--note--{id}/LambdaIntegration/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "mystashprodinfraapigatewayDELETEapinoteidLambdaIntegrationCD813A98"
+          }
+        ],
+        "/prodMystashInfraStack/mystash-prod-infra-api-gateway/DELETE--api--note--{id}/LambdaIntegration-Permission": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "mystashprodinfraapigatewayDELETEapinoteidLambdaIntegrationPermission65FADB52"
+          }
+        ],
+        "/prodMystashInfraStack/mystash-prod-infra-api-gateway/DELETE--api--note--{id}/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "mystashprodinfraapigatewayDELETEapinoteid08A1984C"
+          }
+        ],
+        "/prodMystashInfraStack/mystash-prod-infra-website-bucket/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "mystashprodinfrawebsitebucketE6157B2F"
+          }
+        ],
+        "/prodMystashInfraStack/mystash-prod-infra-website-bucket/Policy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "mystashprodinfrawebsitebucketPolicyAE6BEB4A"
+          }
+        ],
+        "/prodMystashInfraStack/mystash-prod-infra-OAI/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "mystashprodinfraOAIE187B78A"
+          }
+        ],
+        "/prodMystashInfraStack/mystash-prod-infra-WebDistribution/CFDistribution": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "mystashprodinfraWebDistributionCFDistribution16A0F780"
+          }
+        ],
+        "/prodMystashInfraStack/mystash-prod-infra-DeployWebsite/AwsCliLayer/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "mystashprodinfraDeployWebsiteAwsCliLayerEB244B70"
+          }
+        ],
+        "/prodMystashInfraStack/mystash-prod-infra-DeployWebsite/CustomResource/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "mystashprodinfraDeployWebsiteCustomResource7975B7AC"
+          }
+        ],
+        "/prodMystashInfraStack/Custom::CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C": [
+          {
+            "type": "aws:cdk:is-custom-resource-handler-singleton",
+            "data": true
+          },
+          {
+            "type": "aws:cdk:is-custom-resource-handler-runtime-family",
+            "data": 2
+          }
+        ],
+        "/prodMystashInfraStack/Custom::CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRole89A01265"
+          }
+        ],
+        "/prodMystashInfraStack/Custom::CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRoleDefaultPolicy88902FDF"
+          }
+        ],
+        "/prodMystashInfraStack/Custom::CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C81C01536"
+          }
+        ],
+        "/prodMystashInfraStack/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/prodMystashInfraStack/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/prodMystashInfraStack/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "prodMystashInfraStack"
+    },
+    "Tree": {
+      "type": "cdk:tree",
+      "properties": {
+        "file": "tree.json"
+      }
+    }
+  }
+}

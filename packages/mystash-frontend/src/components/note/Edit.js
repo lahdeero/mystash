@@ -24,10 +24,12 @@ const ChipContainer = styled.div`
 `
 
 const Edit = ( { notes, match, errorMessage, history, modifyNote, notify, editNote, updateEditNote }) => {
-  const note = notes.find(({ id }) => id === parseInt(match.params.id))
+  const note = notes.find(({ id }) => id === match.params.id)
 
   useEffect(() => {
-    if (editNote.id === note.id) return
+    if (editNote.id === note.id) {
+      return
+    }
 
     updateEditNote({
       id: note.id,

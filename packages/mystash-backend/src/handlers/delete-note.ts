@@ -17,6 +17,7 @@ const deleteNoteHandler: APIGatewayProxyHandler = async (event: APIGatewayProxyE
   const queryCommand = new QueryCommand({
     TableName: process.env.NOTES_TABLE_NAME,
     KeyConditionExpression: "id = :id",
+    FilterExpression: "userId = :userId",
     ExpressionAttributeValues: {
       ":id": noteId,
       ":userId": userId,
@@ -37,17 +38,15 @@ const deleteNoteHandler: APIGatewayProxyHandler = async (event: APIGatewayProxyE
     Key: {
       id: noteId.toString()
     },
+    ReturnValues: 'ALL_OLD',
   })
-  await client.send(command)
-
-  const result = {
-    id: noteId
-  }
+  const result = await client.send(command)
+  console.log("result", result)
   return {
     statusCode: 200,
     headers: { "content-type": "application/json; charset=utf-8" },
-    body: JSON.stringify(result, null, 2),
-  };
-};
+    body: JSON.stringify(result.Attributes, null, 2),
+  }
+}
 
 export const handler = jwtMiddleware(deleteNoteHandler, process.env.SECRET)

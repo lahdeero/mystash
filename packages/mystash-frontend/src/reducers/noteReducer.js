@@ -76,7 +76,8 @@ export const modifyLocally = (noteObject) => {
 
 export const removeNote = (noteObject) => {
   return async (dispatch) => {
-    const delId = await noteService.erase(noteObject.id)
+    const { id: delId } = await noteService.erase(noteObject.id)
+    console.log('deleted id', delId)
     const removedNote = { ...noteObject, id: delId }
     setTimeout(() => {
       dispatch({
