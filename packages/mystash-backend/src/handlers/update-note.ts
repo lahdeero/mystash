@@ -37,7 +37,7 @@ const updateNoteHandler: APIGatewayProxyHandler = async (event: APIGatewayProxyE
       SET #title = :title,
       #content = :content,
       #tags = :tags,
-      #updated_at = :updated_at
+      #updatedAt = :updatedAt
     `
 
   const command = new UpdateCommand({
@@ -50,13 +50,13 @@ const updateNoteHandler: APIGatewayProxyHandler = async (event: APIGatewayProxyE
       '#title': 'title',
       '#content': 'content',
       '#tags': 'tags',
-      '#updated_at': 'updated_at',
+      '#updatedAt': 'updatedAt',
     },
     ExpressionAttributeValues: {
       ':title': title,
       ':content': content,
       ':tags': tags,
-      ':updated_at': new Date().toISOString(),
+      ':updatedAt': new Date().toISOString(),
   },
     ReturnValues: 'ALL_NEW',
   })

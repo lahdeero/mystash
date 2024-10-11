@@ -8,8 +8,6 @@ import * as lambda from "aws-cdk-lib/aws-lambda"
 import * as dynamoDb from "aws-cdk-lib/aws-dynamodb"
 import * as cloudfront from 'aws-cdk-lib/aws-cloudfront'
 import * as deployment from 'aws-cdk-lib/aws-s3-deployment'
-import * as origins from 'aws-cdk-lib/aws-cloudfront-origins'
-import * as iam from 'aws-cdk-lib/aws-iam';
 
 export class MystashInfraStack extends cdk.Stack {
   constructor(app: cdk.App, id: string, props: cdk.StackProps) {

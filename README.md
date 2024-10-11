@@ -1,11 +1,9 @@
 mystash
 ============
 
-[Mystash @ duckdns](https://mystash.duckdns.org)
+[Mystash @ 70511337](https://mystash.70511337.xyz)
 
-[Mystash @ AWS](https://dn422ddfagn9t.cloudfront.net)
-
-[Docker repository](https://hub.docker.com/repository/docker/lahdeero/mystash-backend/general)
+[Mystash @ Cloudfront](https://dn422ddfagn9t.cloudfront.net)
 
 ## Install
 
@@ -159,6 +157,7 @@ cdk bootstrap aws://AWS-ACCOUNT-ID-HERE/eu-north-1
 ```
 
 ```bash
+cd stack
 cdk synth --profile mystashapp-prod # creates cdk.out
 cdk diff --profile mystashapp-prod # compares difference between deployed stack
 cdk deploy --profile mystashapp-prod # deploys stack

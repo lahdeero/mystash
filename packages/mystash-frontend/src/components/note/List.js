@@ -91,9 +91,9 @@ const List = ( { notes, sortNotes, filter, loading } ) => {
     case '!ALPHABETIC':
       return compareStrings(a.title.toLowerCase().trim(), b.title.toLowerCase().trim(), false)
     case 'MODIFIED':
-      return compareDates(a.modified_date, b.modified_date)
+      return compareDates(a.updatedAt, b.updatedAt)
     case '!MODIFIED':
-      return compareDates(b.modified_date, a.modified_date)
+      return compareDates(b.updatedAt, a.updatedAt)
     case '!CREATED':
       return a.id - b.id
     default:
@@ -101,7 +101,8 @@ const List = ( { notes, sortNotes, filter, loading } ) => {
     }
   }
 
-  const filteredNotes = filterNotes([...notes].sort(sortFunction), filter.value)
+  console.log('notes', notes)
+  const filteredNotes = filterNotes(notes.sort(sortFunction), filter.value)
   const notesToShow = filteredNotes.slice((page - 1) * notesPerPage, (page - 1) * notesPerPage + notesPerPage)
   const showBottomPagination = notes.length > 7 ? true : false
 

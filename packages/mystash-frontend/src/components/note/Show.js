@@ -96,7 +96,7 @@ const Show = ({ notes, match, history, notify, removeNote }) => {
       <NoteWrapper>
         <div>
           <h2>{note.title}</h2>
-          <div>Updated at: {note.updated_at}</div>
+          <div>Updated at: {note.updatedAt}</div>
           <p>[{tags}]</p>
         </div>
         <NoteContent>

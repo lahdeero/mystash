@@ -14,15 +14,15 @@ const createNoteHandler: APIGatewayProxyHandler = async (event: APIGatewayProxyE
   }
 
   const parsedBody = JSON.parse(event.body)
-  const { title, content, tags } = parsedBody
+  const { title, content, tags, createdAt, updatedAt  } = parsedBody
 
   const item = {
     id: uuidv4(),
     title,
     content,
     tags,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
+    createdAt: createdAt ?? new Date().toISOString(),
+    updatedAt: updatedAt ?? new Date().toISOString(),
     userId
   }
   const command = new PutCommand({

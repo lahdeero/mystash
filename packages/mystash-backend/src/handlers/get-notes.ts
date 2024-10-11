@@ -1,7 +1,7 @@
 import type { APIGatewayProxyEvent, APIGatewayProxyHandler } from "aws-lambda"
 import { DynamoDB, DynamoDBClient } from "@aws-sdk/client-dynamodb"
 import { DynamoDBDocumentClient, QueryCommand } from "@aws-sdk/lib-dynamodb"
-import { jwtMiddleware, verifyJWT } from "../utils/jwt"
+import { jwtMiddleware } from "../utils/jwt"
 
 const getNotesHandler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent) => {
   const userId = event.requestContext.authorizer.userId

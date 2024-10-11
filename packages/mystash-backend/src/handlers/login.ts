@@ -31,7 +31,7 @@ const decryptData = (ciphertext: string, secret: string): string => {
 
 export const loginHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   const parsedBody = JSON.parse(event.body)
-  if (!(parsedBody.email && parsedBody.password)) {
+  if (!(parsedBody?.email && parsedBody?.password)) {
     return noAccess('Email and password are required')
   }
   const command = new QueryCommand({
@@ -45,7 +45,7 @@ export const loginHandler = async (event: APIGatewayProxyEvent): Promise<APIGate
   const data = await dynamoDb.send(command)
   console.log("data", {...data, password: "<REDACTED>"})
   const item = data.Items?.[0]
-  const dbPassword = item.password
+  const dbPassword = item?.password
   const invalidUserNameOrPassword = "Invalid username or password"
   if (!dbPassword) {
     return noAccess(invalidUserNameOrPassword)
