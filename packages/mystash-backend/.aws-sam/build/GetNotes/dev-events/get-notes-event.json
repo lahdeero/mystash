@@ -1,0 +1,9 @@
+{
+  "httpMethod": "GET",
+  "path": "/api/note",
+  "headers": {
+    "Content-Type": "application/json",
+    "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjhlMDQyMjE3LWE0ZjEtNDY0MC05YTBlLWI3YmNlYjg0NDY4YiIsImZpcnN0TmFtZSI6Ik1hdHRpIiwibGFzdE5hbWUiOiJNZWlrw6Rsw6RpbmVuIiwiZW1haWwiOiJ0ZXN0QGV4YW1wbGUuY29tIiwiaWF0IjoxNzI4NzMwNDMzLCJleHAiOjE3MjkzMzUyMzN9.a0xKdjFXWE5pN2xXb0h1ODVRMUZCN295dllGVEh4d0h6aTNoSk9uVVdMcz0"
+  },
+  "body": null
+}

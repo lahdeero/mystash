@@ -1,0 +1,128 @@
+Parameters:
+  Stage:
+    Type: String
+    Default: dev
+  DynamoDBTableName:
+    Type: String
+    Default: http://host.docker.internal:8000
+
+Globals:
+  Function:
+    Timeout: 10
+    MemorySize: 256
+
+Resources:
+  Register:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: dist/handlers/register.handler
+      Runtime: nodejs20.x
+      CodeUri: .
+      Environment:
+        Variables:
+          SECRET: "adjigopsjoifsdjfio1asdfg51kp423x"
+          DYNAMODB_ENDPOINT: "http://host.docker.internal:8000"
+          USERS_TABLE_NAME: "mystash-dev-users"
+          NOTES_TABLE_NAME: "mystash-dev-notes"
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /api/register
+            Method: post
+
+Resources:
+  Login:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: dist/handlers/login.handler
+      Runtime: nodejs20.x
+      CodeUri: .
+      Environment:
+        Variables:
+          SECRET: "adjigopsjoifsdjfio1asdfg51kp423x"
+          DYNAMODB_ENDPOINT: "http://host.docker.internal:8000"
+          USERS_TABLE_NAME: "mystash-dev-users"
+          NOTES_TABLE_NAME: "mystash-dev-notes"
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /api/login
+            Method: post
+
+  GetNotes:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: dist/handlers/get-notes.handler
+      Runtime: nodejs20.x
+      CodeUri: .
+      Environment:
+        Variables:
+          SECRET: "adjigopsjoifsdjfio1asdfg51kp423x"
+          DYNAMODB_ENDPOINT: "http://host.docker.internal:8000"
+          USERS_TABLE_NAME: "mystash-dev-users"
+          NOTES_TABLE_NAME: "mystash-dev-notes"
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /api/note
+            Method: get
+
+  CreateNote:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: dist/handlers/create-note.handler
+      Runtime: nodejs20.x
+      CodeUri: .
+      Environment:
+        Variables:
+          SECRET: "adjigopsjoifsdjfio1asdfg51kp423x"
+          DYNAMODB_ENDPOINT: "http://host.docker.internal:8000"
+          USERS_TABLE_NAME: "mystash-dev-users"
+          NOTES_TABLE_NAME: "mystash-dev-notes"
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /api/note
+            Method: post
+
+  UpdateNote:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: dist/handlers/update-note.handler
+      Runtime: nodejs20.x
+      CodeUri: .
+      Environment:
+        Variables:
+          SECRET: "adjigopsjoifsdjfio1asdfg51kp423x"
+          DYNAMODB_ENDPOINT: "http://host.docker.internal:8000"
+          USERS_TABLE_NAME: "mystash-dev-users"
+          NOTES_TABLE_NAME: "mystash-dev-notes"
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /api/note
+            Method: put
+
+  DeleteNote:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: dist/handlers/delete-note.handler
+      Runtime: nodejs20.x
+      CodeUri: .
+      Environment:
+        Variables:
+          SECRET: "adjigopsjoifsdjfio1asdfg51kp423x"
+          DYNAMODB_ENDPOINT: "http://host.docker.internal:8000"
+          USERS_TABLE_NAME: "mystash-dev-users"
+          NOTES_TABLE_NAME: "mystash-dev-notes"
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /api/note
+            Method: delete

@@ -5,143 +5,144 @@ mystash
 
 [Mystash @ Cloudfront](https://dn422ddfagn9t.cloudfront.net)
 
-## Install
 
-1. Setup postgres
-  - Install Postgresql (if not yet installed), recommended version: 9.6 or higher
-  - Connect to your postgresql server
 
-2. Setup database
-```
-create database mystashdb;
-create user mystashuser with encrypted password 'changeme';
-grant all privileges on database mystashdb to mystashuser;
-```
+## Install development environment
 
-3. Create environment file
-```
-cp .env.example .env
+### Backend
+- AWS SAM CLI is required
+- Docker is required
+
+```bash
+npm i
+npx tsc
 ```
 
-4. Set your own environment secrets!
-```
-nano .env
-```
-
-5. Install packages
-```
-npm run ci
-```
-
-6. Execute migrations
-```
-cd packages/mystash-backend
-./node_modules/.bin/knex migrate:latest
-cd ../..
-```
-
-## Run
-
-```
-npm run dev
+```bash
+aws dynamodb create-table \
+    --table-name mystash-dev-users \
+    --attribute-definitions \
+        AttributeName=id,AttributeType=S \
+    --key-schema \
+        AttributeName=id,KeyType=HASH \
+    --billing-mode PAY_PER_REQUEST \
+    --endpoint-url http://localhost:8000
 ```
 
 ## Development
 
-Seeds creates user
-``
-testi/salasana
-``
-```
-./node_modules/.bin/knex seed:run
+### Backend
+
+```bash
+docker run -p 8000:8000 amazon/dynamodb-local
+aws dynamodb list-tables --endpoint-url http://localhost:8000
+sam local invoke "Login" -e ./dev-events/login-event.json
+sam local invoke "GetNotes" -e ./dev-events/get-notes-event.json
 ```
 
-## Deploy
+Create users table
+```bash
+aws dynamodb create-table \
+    --table-name mystash-dev-users \
+    --attribute-definitions \
+        AttributeName=id,AttributeType=S \
+        AttributeName=email,AttributeType=S \
+    --key-schema \
+        AttributeName=id,KeyType=HASH \
+    --global-secondary-indexes \
+        '[{
+            "IndexName": "email-index",
+            "KeySchema": [
+                {
+                    "AttributeName": "email",
+                    "KeyType": "HASH"
+                }
+            ],
+            "Projection": {
+                "ProjectionType": "ALL"
+            },
+            "ProvisionedThroughput": {
+                "ReadCapacityUnits": 1,
+                "WriteCapacityUnits": 1
+            }
+        }]' \
+    --billing-mode PAY_PER_REQUEST \
+    --endpoint-url http://localhost:8000
+```
+
+Create notes table
+```bash
+aws dynamodb create-table \
+    --table-name mystash-dev-notes \
+    --attribute-definitions \
+        AttributeName=id,AttributeType=S \
+        AttributeName=userId,AttributeType=S \
+    --key-schema \
+        AttributeName=id,KeyType=HASH \
+    --global-secondary-indexes \
+        '[{
+            "IndexName": "user-id-index",
+            "KeySchema": [
+                {
+                    "AttributeName": "userId",
+                    "KeyType": "HASH"
+                }
+            ],
+            "Projection": {
+                "ProjectionType": "ALL"
+            },
+            "ProvisionedThroughput": {
+                "ReadCapacityUnits": 1,
+                "WriteCapacityUnits": 1
+            }
+        }]' \
+    --billing-mode PAY_PER_REQUEST \
+    --endpoint-url http://localhost:8000
+```
+
+List tables
+```bash
+aws dynamodb list-tables --endpoint-url http://localhost:8000
+```
+
+Delete table
+```bash
+aws dynamodb delete-table --table-name mystash-dev-users --endpoint-url http://localhost:8000
+```
+
+List items
+```bash
+aws dynamodb scan \
+    --table-name mystash-dev-users \
+    --endpoint-url http://localhost:8000
+```
+
+```bash
+aws dynamodb delete-item \
+    --table-name mystash-dev-users \
+    --key '{"id": {"S": "replace-this-uuid-with-real"}}' \
+    --endpoint-url http://localhost:8000
+```
+
+```bash
+export SAM_BUILD_MODE=run
+sam build --debug
+sam local start-api
+```
 
 ### Frontend
 
-frontend build/ equals backend public/
+npm start
 
-```bash
-1. npm run build # in frontend
-2. mv build public
-3. mv public ../mystash-backend
-```
+## Deploy
 
-## Production
+sam local invoke "Register" -e event.json
 
-```
-./node_modules/.bin/pm2 start src/index.js
-```
-
-## Docker
-
-### Build
-
-```bash
-docker build -t mystash-backend .
-docker run -p 8080:8080 --name="mystash-backend" --restart="on-failure" mystash-backend
-```
-
-### Debug
-
-```bash
-docker container exec -it mystash-backend bash
-node --inspect=0.0.0.0:9229 src/index.js
-```
-
-### Publish
-
-```
-docker push lahdeero/mystash-backend:tagname
-```
-
-## Psql
-
-### Debug
-
-```
-psql -U mystashuser -d mystashdb
-psql "postgres://mystashuser:changeme@localhost:5432/mystashdb"
-```
-
-## docker-compose .env for dev (OUTDATED)
-```
-FRONTEND_URL=http://localhost:3000
-BACKEND_URL=http://localhost:8080
-CALLBACK_URL=http://localhost:8080/api/login/github/callback
-DATABASE_URL=postgres://postgres:password@postgres:5432/postgres
-DOCKER_DATABASE_URL=postgres://mystashuser:password@postgres:5432/mystashdb
-SECRET=salaisuus
-JWT_KEY=salaisuus
-
-LOCATION=/home/lahdeero/sites/mystash-backend
-NPMCOMMAND=run watchd
-PORT=8080
-
-GITHUB_CLIENT_ID=xxxxxxxxxxxxx
-GITHUB_CLIENT_SECRET=xxxxxxxxxxx
-```
-
-In WSL1 locations was:
-```LOCATION=/c/Sites/mystash-backend/```
-
-Build & run:
-```bash
-docker-compose build
-docker-compose up
-```
-
-Connect to container:
-```bash
-docker container exec -it mystash-backend_backend_1 bash
-```
-
-## AWS CLI
+### Stack AWS CLI
 
 Must install [aws cli](https://aws.amazon.com/cli/) and [cdk](https://github.com/aws/aws-cdk/tree/main) before. If cdk synth gives some docker error make sure esbuild is installed!
 
-````bash
+```bash
 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 unzip awscliv2.zip
 sudo ./aws/install
@@ -158,7 +159,7 @@ cdk bootstrap aws://AWS-ACCOUNT-ID-HERE/eu-north-1
 
 ```bash
 cd stack
-cdk synth --profile mystashapp-prod # creates cdk.out
-cdk diff --profile mystashapp-prod # compares difference between deployed stack
-cdk deploy --profile mystashapp-prod # deploys stack
+cdk synth --profile mystashapp-prod
+cdk diff --profile mystashapp-prod
+cdk deploy --profile mystashapp-prod
 ```

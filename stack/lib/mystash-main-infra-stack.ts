@@ -180,7 +180,6 @@ export class MystashInfraStack extends cdk.Stack {
       integration: deleteNoteIntegration,
     })
 
-
     /* ----------\
     | FRONTEND   |
     \-----------*/
@@ -201,21 +200,6 @@ export class MystashInfraStack extends cdk.Stack {
     // Grant CloudFront access to the S3 bucket
     websiteBucket.grantRead(originAccessIdentity);
 
-    // // Create a CloudFront distribution to serve the React app
-    // const distribution = new cloudfront.Distribution(this, `${stackName}-WebDistribution`, {
-    //   defaultBehavior: {
-    //     origin: new origins.S3StaticWebsiteOrigin(websiteBucket),
-    //     cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
-    //   },
-    // })
-
-    // // Add a bucket policy to allow the OAI to read objects
-    // websiteBucket.addToResourcePolicy(new iam.PolicyStatement({
-    //   actions: ['s3:GetObject'],
-    //   resources: [`${websiteBucket.bucketArn}/*`],
-    //   principals: [originAccessIdentity.grantPrincipal], // Use the OAI's grantPrincipal
-    // }))
-
     // Create a CloudFront distribution to serve the React app
     const distribution = new cloudfront.CloudFrontWebDistribution(this, `${stackName}-WebDistribution`, {
       originConfigs: [
@@ -228,7 +212,6 @@ export class MystashInfraStack extends cdk.Stack {
         },
       ],
     })
-
 
     // Deploy the React app to the S3 bucket
     new deployment.BucketDeployment(this, `${stackName}-DeployWebsite`, {
