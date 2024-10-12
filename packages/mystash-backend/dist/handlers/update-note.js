@@ -40,17 +40,18 @@ exports.handler = void 0;
 var client_dynamodb_1 = require("@aws-sdk/client-dynamodb");
 var lib_dynamodb_1 = require("@aws-sdk/lib-dynamodb");
 var jwt_1 = require("../utils/jwt");
+var client = new client_dynamodb_1.DynamoDBClient({
+    endpoint: process.env.DYNAMODB_ENDPOINT || undefined,
+});
+var dynamoDb = lib_dynamodb_1.DynamoDBDocumentClient.from(client);
 var updateNoteHandler = function (event) { return __awaiter(void 0, void 0, void 0, function () {
-    var userId, noteId, client, parsedBody, title, content, tags, queryCommand, data, note, updateExpression, command, result;
+    var userId, noteId, parsedBody, title, content, tags, queryCommand, data, note, updateExpression, command, result;
     var _a;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
                 userId = event.requestContext.authorizer.userId;
                 noteId = event.pathParameters.id;
-                client = lib_dynamodb_1.DynamoDBDocumentClient.from(new client_dynamodb_1.DynamoDB({
-                    region: process.env.REGION,
-                }));
                 parsedBody = JSON.parse(event.body);
                 title = parsedBody.title, content = parsedBody.content, tags = parsedBody.tags;
                 queryCommand = new lib_dynamodb_1.QueryCommand({
@@ -94,7 +95,7 @@ var updateNoteHandler = function (event) { return __awaiter(void 0, void 0, void
                     },
                     ReturnValues: 'ALL_NEW',
                 });
-                return [4 /*yield*/, client.send(command)];
+                return [4 /*yield*/, dynamoDb.send(command)];
             case 2:
                 result = _b.sent();
                 return [2 /*return*/, {

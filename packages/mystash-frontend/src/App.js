@@ -88,6 +88,7 @@ const App = (props) => {
     return (
       <>
         <Content>
+          <Notification />
           <Frontpage actionForLogin={props.actionForLogin} init={init} />
         </Content>
         <Footer />

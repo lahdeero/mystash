@@ -11,9 +11,7 @@ const getUser = async () => {
 }
 
 const register = async (information) => {
-  const response = await API.post(`${baseUrl}/user`, information)
-  console.debug(response.data)
-  return response.data
+  await API.post(`${baseUrl}/register`, information)
 }
 
 const login = async (credentials) => {

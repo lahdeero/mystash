@@ -10,10 +10,10 @@ mystash
 ## Install development environment
 
 ### Backend
-- AWS SAM CLI is required
 - Docker is required
 
 ```bash
+npm install -g serverless
 npm i
 npx tsc
 ```
@@ -26,7 +26,7 @@ aws dynamodb create-table \
     --key-schema \
         AttributeName=id,KeyType=HASH \
     --billing-mode PAY_PER_REQUEST \
-    --endpoint-url http://localhost:8000
+    --endpoint-url http://localhost:8001
 ```
 
 ## Development
@@ -34,10 +34,10 @@ aws dynamodb create-table \
 ### Backend
 
 ```bash
-docker run -p 8000:8000 amazon/dynamodb-local
-aws dynamodb list-tables --endpoint-url http://localhost:8000
-sam local invoke "Login" -e ./dev-events/login-event.json
-sam local invoke "GetNotes" -e ./dev-events/get-notes-event.json
+docker run -p 8001:8000 amazon/dynamodb-local
+aws dynamodb list-tables --endpoint-url http://localhost:8001
+export SECRET=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+sls offline start # --verbose
 ```
 
 Create users table
@@ -67,7 +67,7 @@ aws dynamodb create-table \
             }
         }]' \
     --billing-mode PAY_PER_REQUEST \
-    --endpoint-url http://localhost:8000
+    --endpoint-url http://localhost:8001
 ```
 
 Create notes table
@@ -97,37 +97,31 @@ aws dynamodb create-table \
             }
         }]' \
     --billing-mode PAY_PER_REQUEST \
-    --endpoint-url http://localhost:8000
+    --endpoint-url http://localhost:8001
 ```
 
 List tables
 ```bash
-aws dynamodb list-tables --endpoint-url http://localhost:8000
+aws dynamodb list-tables --endpoint-url http://localhost:8001
 ```
 
 Delete table
 ```bash
-aws dynamodb delete-table --table-name mystash-dev-users --endpoint-url http://localhost:8000
+aws dynamodb delete-table --table-name mystash-dev-users --endpoint-url http://localhost:8001
 ```
 
 List items
 ```bash
 aws dynamodb scan \
     --table-name mystash-dev-users \
-    --endpoint-url http://localhost:8000
+    --endpoint-url http://localhost:8001
 ```
 
 ```bash
 aws dynamodb delete-item \
     --table-name mystash-dev-users \
     --key '{"id": {"S": "replace-this-uuid-with-real"}}' \
-    --endpoint-url http://localhost:8000
-```
-
-```bash
-export SAM_BUILD_MODE=run
-sam build --debug
-sam local start-api
+    --endpoint-url http://localhost:8001
 ```
 
 ### Frontend

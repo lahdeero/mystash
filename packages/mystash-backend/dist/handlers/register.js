@@ -46,6 +46,7 @@ var validation_1 = require("../utils/validation");
 var client = new client_dynamodb_1.DynamoDBClient({
     endpoint: process.env.DYNAMODB_ENDPOINT || undefined,
 });
+var dynamoDb = lib_dynamodb_1.DynamoDBDocumentClient.from(client);
 var checkEmailErrors = function (email) { return __awaiter(void 0, void 0, void 0, function () {
     var command, result;
     return __generator(this, function (_a) {
@@ -96,7 +97,7 @@ var registerHandler = function (event) { return __awaiter(void 0, void 0, void 0
                         lastName: lastName,
                     },
                 });
-                return [4 /*yield*/, client.send(command)];
+                return [4 /*yield*/, dynamoDb.send(command)];
             case 2:
                 _a.sent();
                 return [2 /*return*/, {

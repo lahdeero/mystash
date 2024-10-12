@@ -41,15 +41,16 @@ var client_dynamodb_1 = require("@aws-sdk/client-dynamodb");
 var lib_dynamodb_1 = require("@aws-sdk/lib-dynamodb");
 var uuid_1 = require("uuid");
 var jwt_1 = require("../utils/jwt");
+var client = new client_dynamodb_1.DynamoDBClient({
+    endpoint: process.env.DYNAMODB_ENDPOINT || undefined,
+});
+var dynamoDb = lib_dynamodb_1.DynamoDBDocumentClient.from(client);
 var createNoteHandler = function (event) { return __awaiter(void 0, void 0, void 0, function () {
-    var userId, client, parsedBody, title, content, tags, createdAt, updatedAt, item, command;
+    var userId, parsedBody, title, content, tags, createdAt, updatedAt, item, command;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 userId = event.requestContext.authorizer.userId;
-                client = lib_dynamodb_1.DynamoDBDocumentClient.from(new client_dynamodb_1.DynamoDB({
-                    region: process.env.REGION,
-                }));
                 if (!event.body) {
                     throw new Error('Event has no body!');
                 }
@@ -68,7 +69,7 @@ var createNoteHandler = function (event) { return __awaiter(void 0, void 0, void
                     TableName: process.env.NOTES_TABLE_NAME,
                     Item: item,
                 });
-                return [4 /*yield*/, client.send(command)];
+                return [4 /*yield*/, dynamoDb.send(command)];
             case 1:
                 _a.sent();
                 return [2 /*return*/, {

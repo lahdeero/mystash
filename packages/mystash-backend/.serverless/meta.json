@@ -1,0 +1,140 @@
+{
+  "/mnt/d/Sites/mystash/packages/mystash-backend": {
+    "versionSfCore": null,
+    "versionFramework": "4.4.5",
+    "isWithinCompose": false,
+    "isCompose": false,
+    "composeOrgName": null,
+    "composeServiceName": null,
+    "servicePath": "/mnt/d/Sites/mystash/packages/mystash-backend",
+    "serviceConfigFileName": "serverless.yaml",
+    "service": {
+      "service": "mystash",
+      "provider": {
+        "name": "aws",
+        "runtime": "nodejs20.x",
+        "region": "eu-north-1",
+        "stage": "",
+        "environment": {
+          "SECRET": "<REDACTED>",
+          "DYNAMODB_ENDPOINT": "http://host.docker.internal:8001",
+          "USERS_TABLE_NAME": "mystash-dev-users",
+          "NOTES_TABLE_NAME": "mystash-dev-notes"
+        }
+      },
+      "functions": {
+        "register": {
+          "handler": "dist/handlers/register.handler",
+          "events": [
+            {
+              "http": {
+                "path": "api/register",
+                "method": "post"
+              }
+            }
+          ]
+        },
+        "login": {
+          "handler": "dist/handlers/login.handler",
+          "events": [
+            {
+              "http": {
+                "path": "api/login",
+                "method": "post"
+              }
+            }
+          ]
+        },
+        "getNotes": {
+          "handler": "dist/handlers/get-notes.handler",
+          "events": [
+            {
+              "http": {
+                "path": "api/note",
+                "method": "get"
+              }
+            }
+          ]
+        },
+        "createNote": {
+          "handler": "dist/handlers/create-note.handler",
+          "events": [
+            {
+              "http": {
+                "path": "api/note",
+                "method": "post"
+              }
+            }
+          ]
+        },
+        "updateNote": {
+          "handler": "dist/handlers/update-note.handler",
+          "events": [
+            {
+              "http": {
+                "path": "api/note/{id}",
+                "method": "put"
+              }
+            }
+          ]
+        },
+        "deleteNote": {
+          "handler": "dist/handlers/delete-note.handler",
+          "events": [
+            {
+              "http": {
+                "path": "api/note/{id}",
+                "method": "delete"
+              }
+            }
+          ]
+        }
+      },
+      "plugins": [
+        "serverless-offline"
+      ],
+      "custom": {
+        "serverless-offline": {
+          "noPrependStageInUrl": true,
+          "httpPort": 8000,
+          "lambdaTimeout": 30
+        }
+      }
+    },
+    "serviceRawFile": "service: mystash\n\nprovider:\n  name: aws\n  runtime: nodejs20.x\n  region: eu-north-1\n  stage: ''\n  environment:\n    SECRET: ${env:SECRET}\n    DYNAMODB_ENDPOINT: \"http://host.docker.internal:8001\"\n    USERS_TABLE_NAME: mystash-dev-users\n    NOTES_TABLE_NAME: mystash-dev-notes\n\nfunctions:\n  register:\n    handler: dist/handlers/register.handler\n    events:\n      - http:\n          path: api/register\n          method: post\n\n  login:\n    handler: dist/handlers/login.handler\n    events:\n      - http:\n          path: api/login\n          method: post\n\n  getNotes:\n    handler: dist/handlers/get-notes.handler\n    events:\n      - http:\n          path: api/note\n          method: get\n\n  createNote:\n    handler: dist/handlers/create-note.handler\n    events:\n      - http:\n          path: api/note\n          method: post\n\n  updateNote:\n    handler: dist/handlers/update-note.handler\n    events:\n      - http:\n          path: api/note/{id}\n          method: put\n\n  deleteNote:\n    handler: dist/handlers/delete-note.handler\n    events:\n      - http:\n          path: api/note/{id}\n          method: delete\n\nplugins:\n  - serverless-offline\n\ncustom:\n  serverless-offline:\n    noPrependStageInUrl: true\n    httpPort: 8000\n    lambdaTimeout: 30\n",
+    "command": [
+      "offline",
+      "start"
+    ],
+    "options": {},
+    "error": {
+      "message": "Cannot resolve '${env:SECRET}' variable at 'provider.environment.SECRET'. No value is available for this variable, and no default value was provided. Please check your variable definitions or provide a default value.",
+      "stack": "Error: Cannot resolve '${env:SECRET}' variable at 'provider.environment.SECRET'. No value is available for this variable, and no default value was provided. Please check your variable definitions or provide a default value.\n    at _ResolverManager.resolve (file:///home/eero/.serverless/releases/4.4.5/package/dist/sf-core.js:655:56022)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async #handlePlaceholderNode (file:///home/eero/.serverless/releases/4.4.5/package/dist/sf-core.js:655:54452)\n    at async file:///home/eero/.serverless/releases/4.4.5/package/dist/sf-core.js:655:52444\n    at async processNodeAndHandleCompletion (file:///home/eero/.serverless/releases/4.4.5/package/dist/sf-core.js:655:43086)",
+      "code": "MISSING_VARIABLE_RESULT"
+    },
+    "machineId": "0491e7f8d2fb4649cb7c3bb91a7ddbc8",
+    "stage": "dev",
+    "accessKeyV2": "<REDACTED>",
+    "accessKeyV1": "<REDACTED>",
+    "orgId": "9df4e937-350f-4bb7-9496-1b976adb71f7",
+    "orgName": "harrasteorganisaatio",
+    "userId": "3Pzvky7fpJkW12RRKY",
+    "dashboard": {
+      "isEnabledForService": false,
+      "requiredAuthentication": false,
+      "orgFeaturesInUse": null,
+      "orgObservabilityIntegrations": null,
+      "serviceAppId": null,
+      "serviceProvider": null,
+      "instanceParameters": null
+    },
+    "userName": "harrasteorganisaatio",
+    "subscription": null,
+    "userEmail": "eero.lahdenpera@gmail.com",
+    "serviceProviderAwsCfStackId": null,
+    "serviceProviderAwsCfStackCreated": null,
+    "serviceProviderAwsCfStackUpdated": null,
+    "serviceProviderAwsCfStackStatus": null,
+    "serviceProviderAwsCfStackOutputs": null
+  }
+}
