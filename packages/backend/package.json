@@ -8,7 +8,7 @@
   "scripts": {
     "start": "sls offline start",
     "dev": "./setup-dev-backend.sh && SECRET=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx sls offline start",
-    "test": "CHOKIDAR_USEPOLLING=true vitest ${CI:+--watch}",
+    "test": "CHOKIDAR_USEPOLLING=true vitest ${CI:+--watch=false}",
     "lint": "eslint ."
   },
   "dependencies": {
