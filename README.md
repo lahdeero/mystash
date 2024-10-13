@@ -120,7 +120,7 @@ aws dynamodb scan \
 ```bash
 aws dynamodb delete-item \
     --table-name mystash-dev-users \
-    --key '{"id": {"S": "replace-this-uuid-with-real"}}' \
+    --key '{"id": {"S": "replace-this-with-real-uuid"}}' \
     --endpoint-url http://localhost:8001
 ```
 
@@ -153,6 +153,7 @@ cdk bootstrap aws://AWS-ACCOUNT-ID-HERE/eu-north-1
 
 ```bash
 cd stack
+export AWS_PROFILE=mystashapp-prod
 cdk synth --profile mystashapp-prod
 cdk diff --profile mystashapp-prod
 cdk deploy --profile mystashapp-prod
