@@ -1,12 +1,12 @@
 {
-  "/mnt/d/Sites/mystash/packages/mystash-backend": {
+  "/mnt/d/Sites/mystash/packages/backend": {
     "versionSfCore": null,
     "versionFramework": "4.4.5",
     "isWithinCompose": false,
     "isCompose": false,
     "composeOrgName": null,
     "composeServiceName": null,
-    "servicePath": "/mnt/d/Sites/mystash/packages/mystash-backend",
+    "servicePath": "/mnt/d/Sites/mystash/packages/backend",
     "serviceConfigFileName": "serverless.yaml",
     "service": {
       "service": "mystash",

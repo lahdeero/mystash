@@ -70,7 +70,7 @@ export class MystashInfraStack extends cdk.Stack {
       {
         runtime: lambda.Runtime.NODEJS_20_X,
         handler: "handler",
-        entry: "../packages/mystash-backend/src/handlers/login.ts",
+        entry: "../packages/backend/src/handlers/login.ts",
         functionName: `${stackName}-login-lambda`,
         environment,
       }
@@ -82,7 +82,7 @@ export class MystashInfraStack extends cdk.Stack {
       {
         runtime: lambda.Runtime.NODEJS_20_X,
         handler: "handler",
-        entry: "../packages/mystash-backend/src/handlers/create-note.ts",
+        entry: "../packages/backend/src/handlers/create-note.ts",
         functionName: `${stackName}-create-note-lambda`,
         environment,
       }
@@ -94,7 +94,7 @@ export class MystashInfraStack extends cdk.Stack {
       {
         runtime: lambda.Runtime.NODEJS_20_X,
         handler: "handler",
-        entry: "../packages/mystash-backend/src/handlers/get-notes.ts",
+        entry: "../packages/backend/src/handlers/get-notes.ts",
         functionName: `${stackName}-get-notes-lambda`,
         environment,
       }
@@ -106,7 +106,7 @@ export class MystashInfraStack extends cdk.Stack {
       {
         runtime: lambda.Runtime.NODEJS_20_X,
         handler: "handler",
-        entry: "../packages/mystash-backend/src/handlers/update-note.ts",
+        entry: "../packages/backend/src/handlers/update-note.ts",
         functionName: `${stackName}-update-note-lambda`,
         environment,
       }
@@ -118,7 +118,7 @@ export class MystashInfraStack extends cdk.Stack {
       {
         runtime: lambda.Runtime.NODEJS_20_X,
         handler: "handler",
-        entry: "../packages/mystash-backend/src/handlers/delete-note.ts",
+        entry: "../packages/backend/src/handlers/delete-note.ts",
         functionName: `${stackName}-delete-note-lambda`,
         environment,
       }
@@ -215,7 +215,7 @@ export class MystashInfraStack extends cdk.Stack {
 
     // Deploy the React app to the S3 bucket
     new deployment.BucketDeployment(this, `${stackName}-DeployWebsite`, {
-      sources: [deployment.Source.asset('../packages/mystash-frontend/build')],
+      sources: [deployment.Source.asset('../packages/frontend/build')],
       destinationBucket: websiteBucket,
       distribution,
       distributionPaths: ['/*'],
