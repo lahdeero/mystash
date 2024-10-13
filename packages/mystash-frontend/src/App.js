@@ -16,7 +16,7 @@ import Settings from './components/Settings'
 import Notification from './components/Notification'
 import { noteInitialization, clearNotes } from './reducers/noteReducer'
 import { notify } from './reducers/notificationReducer'
-import { actionForLogin, setLogin, actionForLogout } from './reducers/userReducer'
+import { actionForLogin, actionForLogout } from './reducers/userReducer'
 import useFilter from './hooks/useFilter'
 
 
@@ -88,6 +88,7 @@ const App = (props) => {
     return (
       <>
         <Content>
+          <Notification />
           <Frontpage actionForLogin={props.actionForLogin} init={init} />
         </Content>
         <Footer />
@@ -104,7 +105,6 @@ const mapStateToProps = (store) => {
 }
 const mapDispatchToProps = {
   noteInitialization,
-  setLogin,
   actionForLogin,
   actionForLogout,
   clearNotes,

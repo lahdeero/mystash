@@ -1,0 +1,64 @@
+service: mystash
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: eu-north-1
+  stage: ''
+  environment:
+    SECRET: ${env:SECRET}
+    DYNAMODB_ENDPOINT: "http://host.docker.internal:8001"
+    USERS_TABLE_NAME: mystash-dev-users
+    NOTES_TABLE_NAME: mystash-dev-notes
+
+functions:
+  register:
+    handler: dist/handlers/register.handler
+    events:
+      - http:
+          path: api/register
+          method: post
+
+  login:
+    handler: dist/handlers/login.handler
+    events:
+      - http:
+          path: api/login
+          method: post
+
+  getNotes:
+    handler: dist/handlers/get-notes.handler
+    events:
+      - http:
+          path: api/note
+          method: get
+
+  createNote:
+    handler: dist/handlers/create-note.handler
+    events:
+      - http:
+          path: api/note
+          method: post
+
+  updateNote:
+    handler: dist/handlers/update-note.handler
+    events:
+      - http:
+          path: api/note/{id}
+          method: put
+
+  deleteNote:
+    handler: dist/handlers/delete-note.handler
+    events:
+      - http:
+          path: api/note/{id}
+          method: delete
+
+plugins:
+  - serverless-offline
+
+custom:
+  serverless-offline:
+    noPrependStageInUrl: true
+    httpPort: 8000
+    lambdaTimeout: 30

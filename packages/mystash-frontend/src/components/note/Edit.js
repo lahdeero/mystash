@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { withRouter } from 'react-router-dom'
 import Textarea from 'react-textarea-autosize'
 import { connect } from 'react-redux'
@@ -24,11 +24,8 @@ const ChipContainer = styled.div`
 `
 
 const Edit = ( { notes, match, errorMessage, history, modifyNote, notify, editNote, updateEditNote }) => {
-  const note = notes.find(({ id }) => id === parseInt(match.params.id))
-
-  useEffect(() => {
-    if (editNote.id === note.id) return
-
+  const note = notes.find(({ id }) => id === match.params.id)
+  if (!editNote?.id || editNote.id !== note.id) {
     updateEditNote({
       id: note.id,
       title: note.title,
@@ -37,7 +34,7 @@ const Edit = ( { notes, match, errorMessage, history, modifyNote, notify, editNo
       newTags: note.tags.filter(tag => tag !== null),
       tagText: ''
     })
-  }, [note, editNote.id, updateEditNote])
+  }
 
   const handleSubmit = async (event) => {
     event.preventDefault()

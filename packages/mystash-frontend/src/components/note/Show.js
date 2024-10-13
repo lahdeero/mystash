@@ -38,9 +38,9 @@ const ImageWrapper = styled.div`
 `
 
 const Show = ({ notes, match, history, notify, removeNote }) => {
-  const note = notes.find(({ id }) => id === parseInt(match.params.id))
+  const note = notes.find((note) => note.id === match.params.id)
   if (!note) {
-    return (<div />)
+    return (<div>Could not find note</div>)
   }
 
   const [file1, setFile1] = useState(null)
@@ -66,7 +66,8 @@ const Show = ({ notes, match, history, notify, removeNote }) => {
     event.preventDefault()
     if (window.confirm(`Are you sure you want to delete '${note.title}' ?`)) {
       const removedNote = await removeNote(note)
-      if (typeof (removedNote.id) === 'number') {
+      console.log('removedNote', removedNote)
+      if (removedNote.id.length > 0) {
         notify(`you deleted '${removedNote.title}'`)
         history.push('/')
       }
@@ -95,7 +96,7 @@ const Show = ({ notes, match, history, notify, removeNote }) => {
       <NoteWrapper>
         <div>
           <h2>{note.title}</h2>
-          <div>Updated at: {note.updated_at}</div>
+          <div>Updated at: {note.updatedAt}</div>
           <p>[{tags}]</p>
         </div>
         <NoteContent>

@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
-import { actionForRegister, setLogin } from '../../reducers/userReducer'
+import { actionForRegister } from '../../reducers/userReducer'
+import { notify as notifyReducer, errorMessage as errorMessageReducer } from '../../reducers/notificationReducer'
 import { ClipLoader } from 'react-spinners'
 import { Navbar } from '../common/Navigation'
 import Input from '../common/Input'
@@ -10,9 +11,9 @@ import Container from '../common/Container'
 import TextContainer from '../common/TextContainer'
 
 const Register = (props) => {
-  const [firstname, setFirstname] = useState('')
-  const [lastname, setLastname] = useState('')
-  const [username, setUsername] = useState('')
+  const { notify, errorMessage } = props
+  const [firstName, setFirstName] = useState('')
+  const [lastName, setLastName] = useState('')
   const [password, setPassword] = useState('')
   const [email, setEmail] = useState('')
   const [error, setError] = useState('')
@@ -23,15 +24,17 @@ const Register = (props) => {
     setLoading(true)
     try {
       await props.actionForRegister({
-        realname: `${firstname} ${lastname}`,
-        username: username,
-        password: password,
-        email: email
+        firstName,
+        lastName,
+        password,
+        email
       })
-      props.init()
+      notify(`Registered successfully with email: ${email}`)
+      props.togglePage(event)
     } catch (exception) {
       setLoading(false)
       console.error(exception)
+      errorMessage('Registration failed')
       setError('Could not register..')
       setTimeout(() => {
         setError('')
@@ -49,9 +52,8 @@ const Register = (props) => {
           {error && <div className="error">{error}</div>}
           <form onSubmit={handleRegister}>
             <div>
-              <Input onChange={(event) => setFirstname(event.target.value)} name="firstname" label="First Name" ><Icon>accessibility</Icon></Input>
-              <Input onChange={(event) => setLastname(event.target.value)} name="lastname" s={6} label="Last name" ><Icon>accessibility_new</Icon></Input>
-              <Input onChange={(event) => setUsername(event.target.value)} name="username" s={12} label="Username(*)" ><Icon>account_circle</Icon></Input>
+              <Input onChange={(event) => setFirstName(event.target.value)} name="firstname" label="First Name" ><Icon>accessibility</Icon></Input>
+              <Input onChange={(event) => setLastName(event.target.value)} name="lastname" s={6} label="Last name" ><Icon>accessibility_new</Icon></Input>
               <Input onChange={(event) => setPassword(event.target.value)} name="password" type="password" label="Password(*)" s={12} ><Icon>https</Icon></Input>
               <Input onChange={(event) => setEmail(event.target.value)} name="email" type="email" label="Email" s={12} ><Icon>email</Icon></Input>
             </div>
@@ -74,7 +76,8 @@ const mapStateToProps = (store) => {
 }
 const mapDispatchToProps = {
   actionForRegister,
-  setLogin
+  notify: notifyReducer,
+  errorMessage: errorMessageReducer
 }
 export default connect(
   mapStateToProps,

@@ -1,3 +1,3 @@
-const versionResolver = '0.51'
+const versionResolver = '0.6 alpha'
 
 export default versionResolver
