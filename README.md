@@ -18,17 +18,6 @@ npm i
 npx tsc
 ```
 
-```bash
-aws dynamodb create-table \
-    --table-name mystash-dev-users \
-    --attribute-definitions \
-        AttributeName=id,AttributeType=S \
-    --key-schema \
-        AttributeName=id,KeyType=HASH \
-    --billing-mode PAY_PER_REQUEST \
-    --endpoint-url http://localhost:8001
-```
-
 ## Development
 
 ### Backend
@@ -110,17 +99,32 @@ Delete table
 aws dynamodb delete-table --table-name mystash-dev-users --endpoint-url http://localhost:8001
 ```
 
-List items
+List users
 ```bash
 aws dynamodb scan \
     --table-name mystash-dev-users \
     --endpoint-url http://localhost:8001
 ```
 
+List notes
+```bash
+aws dynamodb scan \
+    --table-name mystash-dev-notes \
+    --endpoint-url http://localhost:8001
+```
+
+
 ```bash
 aws dynamodb delete-item \
     --table-name mystash-dev-users \
     --key '{"id": {"S": "replace-this-with-real-uuid"}}' \
+    --endpoint-url http://localhost:8001
+```
+
+```bash
+aws dynamodb delete-item \
+    --table-name mystash-dev-notes \
+    --key '{"id": {"S": "0de4eafa-4752-4535-aab0-79a3a9592b95"}}' \
     --endpoint-url http://localhost:8001
 ```
 

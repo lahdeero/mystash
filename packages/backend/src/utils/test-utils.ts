@@ -1,11 +1,13 @@
-import { APIGatewayProxyEvent } from "aws-lambda";
+import { APIGatewayProxyEvent } from "aws-lambda"
 
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE'
 type Body = string | null
 
-export const getEvent = (body: Body, httpMethod: HttpMethod): APIGatewayProxyEvent => ({
+export const getEvent = (body = null, httpMethod = 'GET'): APIGatewayProxyEvent => ({
   body,
-  headers: {},
+  headers: {
+    authorization: 'Bearer bar'
+  },
   multiValueHeaders: {},
   httpMethod,
   isBase64Encoded: false,

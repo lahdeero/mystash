@@ -9,7 +9,7 @@ const client = new DynamoDBClient({
 })
 const dynamoDb = DynamoDBDocumentClient.from(client)
 
-const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+const getNotesHandler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   const userId = event.requestContext.authorizer.userId
   const command = new QueryCommand({
     TableName: process.env.NOTES_TABLE_NAME,
@@ -28,4 +28,4 @@ const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Pro
   }
 }
 
-export const getNotesHandler = jwtMiddleware(handler, process.env.SECRET!)
+export const handler = jwtMiddleware(getNotesHandler, process.env.SECRET!)

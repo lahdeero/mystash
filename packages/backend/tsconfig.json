@@ -1,8 +1,12 @@
 {
   "compilerOptions": {
+    "moduleResolution": "node",
     "outDir": "dist",
-    "types": ["node", "vitest/globals"],
+    "types": ["vitest/globals", "@types/aws-lambda", "@types/node"],
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
   },
-  "include": ["src"],
-  "exclude": ["dist", "**/tests/*.test.ts"],
+  "include": ["src", "vitest-globals.d.ts"],
+  "exclude": ["dist", "**/*.test.ts"],
 }

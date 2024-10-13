@@ -1,6 +1,6 @@
 import { Note } from '../types/types'
-import { getContext } from '../utils/test-utils'
-import { getNotesHandler} from './get-notes'
+import { getContext, getEvent } from '../utils/test-utils'
+import { handler} from './get-notes'
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda'
 
 afterEach(() => {
@@ -32,16 +32,8 @@ vi.mock('@aws-sdk/lib-dynamodb', () => ({
 describe('get-notes', () => {
   describe('getNotesHandler', () => {
     test('should return notes', async () => {
-      const event = {
-        requestContext: {
-          authorizer: { userId: "user-123" },
-        },
-        headers: {
-          authorization: 'Bearer bar'
-        }
-      } as unknown as APIGatewayProxyEvent
       const bar = vi.fn()
-      const result = await getNotesHandler(event, getContext(), bar) as APIGatewayProxyResult
+      const result = await handler(getEvent(), getContext(), bar) as APIGatewayProxyResult
       expect(result.statusCode).toBe(200)
       expect(result.body).toBe(JSON.stringify(testNotes, null, 2))
     })

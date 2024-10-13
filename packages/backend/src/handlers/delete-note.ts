@@ -1,7 +1,7 @@
-import type { APIGatewayProxyEvent, APIGatewayProxyHandler } from "aws-lambda";
-import { DynamoDB, DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { DeleteCommand, DynamoDBDocumentClient, QueryCommand } from "@aws-sdk/lib-dynamodb";
-import { jwtMiddleware } from "../utils/jwt";
+import type { APIGatewayProxyEvent, APIGatewayProxyHandler } from "aws-lambda"
+import { DynamoDB, DynamoDBClient } from "@aws-sdk/client-dynamodb"
+import { DeleteCommand, DynamoDBDocumentClient, QueryCommand } from "@aws-sdk/lib-dynamodb"
+import { jwtMiddleware } from "../utils/jwt"
 
 const client = new DynamoDBClient({
   endpoint: process.env.DYNAMODB_ENDPOINT || undefined,

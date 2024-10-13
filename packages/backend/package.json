@@ -1,6 +1,5 @@
 {
   "name": "mystash-backend",
-  "type": "module",
   "repository": {
     "type": "git",
     "url": "https://github.com/lahdeero/mystash"
@@ -8,8 +7,8 @@
   "description": "check README.md",
   "scripts": {
     "start": "sls offline start",
-    "dev": "sls offline start",
-    "test": "CHOKIDAR_USEPOLLING=true vitest --watch",
+    "dev": "./setup-dev-backend.sh && SECRET=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx sls offline start",
+    "test": "CHOKIDAR_USEPOLLING=true vitest ${CI:+--watch}",
     "lint": "eslint ."
   },
   "dependencies": {
@@ -24,10 +23,10 @@
     "@types/aws-lambda": "^8.10.145",
     "@types/node": "^22.7.5",
     "@types/uuid": "^10.0.0",
-    "eslint": "^8.5.0",
+    "@typescript-eslint/eslint-plugin": "^8.8.1",
+    "eslint": "^8.57.1",
     "serverless-offline": "^14.3.2",
-    "typescript": "^5.6.3",
-    "vite": "^5.4.8",
+    "typescript": "^5.5.4",
     "vitest": "^2.1.2"
   }
 }
