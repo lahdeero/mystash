@@ -1,11 +1,9 @@
 mystash
 ============
 
-[Mystash @ 70511337](https://mystash.70511337.xyz)
+[Mystash @ https://mystash.70511337.xyz/](https://mystash.70511337.xyz/)
 
 [Mystash @ Cloudfront](https://dn422ddfagn9t.cloudfront.net)
-
-
 
 ## Install development environment
 
@@ -15,7 +13,6 @@ mystash
 ```bash
 npm install -g serverless
 npm i
-npx tsc
 ```
 
 ## Development
@@ -23,71 +20,16 @@ npx tsc
 ### Backend
 
 ```bash
-docker run -p 8001:8000 amazon/dynamodb-local
-aws dynamodb list-tables --endpoint-url http://localhost:8001
-export SECRET=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx # Must have 32 chars
-sls offline start # --verbose
+npm run dev
 ```
 
-Create users table
+### Frontend
+
 ```bash
-aws dynamodb create-table \
-    --table-name mystash-dev-users \
-    --attribute-definitions \
-        AttributeName=id,AttributeType=S \
-        AttributeName=email,AttributeType=S \
-    --key-schema \
-        AttributeName=id,KeyType=HASH \
-    --global-secondary-indexes \
-        '[{
-            "IndexName": "email-index",
-            "KeySchema": [
-                {
-                    "AttributeName": "email",
-                    "KeyType": "HASH"
-                }
-            ],
-            "Projection": {
-                "ProjectionType": "ALL"
-            },
-            "ProvisionedThroughput": {
-                "ReadCapacityUnits": 1,
-                "WriteCapacityUnits": 1
-            }
-        }]' \
-    --billing-mode PAY_PER_REQUEST \
-    --endpoint-url http://localhost:8001
+npm start
 ```
 
-Create notes table
-```bash
-aws dynamodb create-table \
-    --table-name mystash-dev-notes \
-    --attribute-definitions \
-        AttributeName=id,AttributeType=S \
-        AttributeName=userId,AttributeType=S \
-    --key-schema \
-        AttributeName=id,KeyType=HASH \
-    --global-secondary-indexes \
-        '[{
-            "IndexName": "user-id-index",
-            "KeySchema": [
-                {
-                    "AttributeName": "userId",
-                    "KeyType": "HASH"
-                }
-            ],
-            "Projection": {
-                "ProjectionType": "ALL"
-            },
-            "ProvisionedThroughput": {
-                "ReadCapacityUnits": 1,
-                "WriteCapacityUnits": 1
-            }
-        }]' \
-    --billing-mode PAY_PER_REQUEST \
-    --endpoint-url http://localhost:8001
-```
+## Debug
 
 List tables
 ```bash
@@ -127,10 +69,6 @@ aws dynamodb delete-item \
     --key '{"id": {"S": "0de4eafa-4752-4535-aab0-79a3a9592b95"}}' \
     --endpoint-url http://localhost:8001
 ```
-
-### Frontend
-
-npm start
 
 ## Deploy
 

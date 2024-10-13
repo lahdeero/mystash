@@ -72,7 +72,7 @@ aws dynamodb put-item \
     }' \
     --endpoint-url http://localhost:8001
 
-# echo "Seed the notes table..."
+echo "Seed the notes table..."
 aws dynamodb put-item \
     --table-name mystash-dev-notes \
     --item '{
