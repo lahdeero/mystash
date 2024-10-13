@@ -1,18 +1,16 @@
-import type { APIGatewayProxyEvent, APIGatewayProxyHandler } from "aws-lambda"
-import { DynamoDB, DynamoDBClient } from "@aws-sdk/client-dynamodb"
+import type { APIGatewayProxyEvent, APIGatewayProxyHandler, APIGatewayProxyResult } from "aws-lambda"
+import { DynamoDBClient } from "@aws-sdk/client-dynamodb"
 import { DynamoDBDocumentClient, QueryCommand } from "@aws-sdk/lib-dynamodb"
 import { jwtMiddleware } from "../utils/jwt"
+import { GetNotesResponse } from "../types/types"
 
 const client = new DynamoDBClient({
   endpoint: process.env.DYNAMODB_ENDPOINT || undefined,
 })
 const dynamoDb = DynamoDBDocumentClient.from(client)
 
-const getNotesHandler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent) => {
+const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   const userId = event.requestContext.authorizer.userId
-  // const client: DynamoDBClient = DynamoDBDocumentClient.from(new DynamoDB({
-  //   region: process.env.REGION,
-  // }))
   const command = new QueryCommand({
     TableName: process.env.NOTES_TABLE_NAME,
     IndexName: "user-id-index",
@@ -22,11 +20,12 @@ const getNotesHandler: APIGatewayProxyHandler = async (event: APIGatewayProxyEve
     },
   })
   const data = await dynamoDb.send(command)
+  const response = data.Items as GetNotesResponse
   return {
     statusCode: 200,
     headers: { "content-type": "application/json; charset=utf-8" },
-    body: JSON.stringify(data.Items, null, 2),
+    body: JSON.stringify(response, null, 2),
   }
 }
 
-export const handler = jwtMiddleware(getNotesHandler, process.env.SECRET!)
+export const getNotesHandler = jwtMiddleware(handler, process.env.SECRET!)

@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "outDir": "dist",
-
+    "types": ["node", "vitest/globals"],
   },
   "include": ["src"],
   "exclude": ["dist", "**/tests/*.test.ts"],

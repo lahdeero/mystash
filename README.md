@@ -36,7 +36,7 @@ aws dynamodb create-table \
 ```bash
 docker run -p 8001:8000 amazon/dynamodb-local
 aws dynamodb list-tables --endpoint-url http://localhost:8001
-export SECRET=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+export SECRET=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx # Must have 32 chars
 sls offline start # --verbose
 ```
 
