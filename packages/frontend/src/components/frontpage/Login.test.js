@@ -15,7 +15,7 @@ describe('login', () => {
 
   it('renders welcome message', () => {
     expect(screen.getByText('mystash')).toBeInTheDocument()
-    expect(screen.getByText('username:')).toBeInTheDocument()
+    expect(screen.getByText('email:')).toBeInTheDocument()
     expect(screen.getByText('password:')).toBeInTheDocument()
     expect(screen.getByText('Dont have account?')).toBeInTheDocument()
   })
