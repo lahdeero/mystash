@@ -1,7 +1,9 @@
+import { vi, describe, test, expect } from 'vitest'
+import { afterEach } from 'node:test'
 import { Note } from '../types/types'
 import { getContext, getEvent } from '../utils/test-utils'
 import { handler} from './get-notes'
-import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda'
+import { APIGatewayProxyResult } from 'aws-lambda'
 
 afterEach(() => {
   vi.resetAllMocks()
