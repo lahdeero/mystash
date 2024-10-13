@@ -1,12 +1,15 @@
-import { APIGatewayProxyEvent } from "aws-lambda"
+import { APIGatewayProxyEvent } from 'aws-lambda'
 
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE'
 type Body = string | null
 
-export const getEvent = (body = null, httpMethod = 'GET'): APIGatewayProxyEvent => ({
+export const getEvent = (
+  body = null,
+  httpMethod = 'GET'
+): APIGatewayProxyEvent => ({
   body,
   headers: {
-    authorization: 'Bearer bar'
+    authorization: 'Bearer bar',
   },
   multiValueHeaders: {},
   httpMethod,
@@ -55,7 +58,8 @@ export const getContext = () => ({
   callbackWaitsForEmptyEventLoop: false,
   functionName: 'testFunction',
   functionVersion: '1',
-  invokedFunctionArn: 'arn:aws:lambda:us-west-2:123456789012:function:testFunction',
+  invokedFunctionArn:
+    'arn:aws:lambda:us-west-2:123456789012:function:testFunction',
   memoryLimitInMB: '128',
   awsRequestId: 'testRequestId',
   logGroupName: '/aws/lambda/testFunction',

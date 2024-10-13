@@ -1,10 +1,14 @@
-import type { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda"
-import { DynamoDBClient } from "@aws-sdk/client-dynamodb"
-import { DynamoDBDocumentClient, PutCommand, QueryCommand } from "@aws-sdk/lib-dynamodb"
-import { v4 as uuidv } from "uuid"
-import { noAccess } from "../utils/http"
-import { encryptData } from "../utils/cryptography"
-import { emailPattern } from "../utils/validation"
+import type { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda'
+import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
+import {
+  DynamoDBDocumentClient,
+  PutCommand,
+  QueryCommand,
+} from '@aws-sdk/lib-dynamodb'
+import { v4 as uuidv } from 'uuid'
+import { noAccess } from '../utils/http'
+import { encryptData } from '../utils/cryptography'
+import { emailPattern } from '../utils/validation'
 
 const client = new DynamoDBClient({
   endpoint: process.env.DYNAMODB_ENDPOINT || undefined,
@@ -27,7 +31,9 @@ const checkEmailErrors = async (email: string): Promise<string | null> => {
   return result.Items && result.Items.length > 0 ? 'Email already exists' : null
 }
 
-export const registerHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+export const registerHandler = async (
+  event: APIGatewayProxyEvent
+): Promise<APIGatewayProxyResult> => {
   const parsedBody = JSON.parse(event.body)
   const { firstName, lastName, email, password } = parsedBody
   if (!(firstName && lastName && email && password)) {
@@ -53,7 +59,7 @@ export const registerHandler = async (event: APIGatewayProxyEvent): Promise<APIG
   await dynamoDb.send(command)
   return {
     statusCode: 201,
-    headers: { "content-type": "application/json; charset=utf-8" },
+    headers: { 'content-type': 'application/json; charset=utf-8' },
     body: '',
   }
 }

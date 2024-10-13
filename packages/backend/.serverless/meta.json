@@ -90,9 +90,7 @@
           ]
         }
       },
-      "plugins": [
-        "serverless-offline"
-      ],
+      "plugins": ["serverless-offline"],
       "custom": {
         "serverless-offline": {
           "noPrependStageInUrl": true,
@@ -102,10 +100,7 @@
       }
     },
     "serviceRawFile": "service: mystash\n\nprovider:\n  name: aws\n  runtime: nodejs20.x\n  region: eu-north-1\n  stage: ''\n  environment:\n    SECRET: ${env:SECRET}\n    DYNAMODB_ENDPOINT: \"http://host.docker.internal:8001\"\n    USERS_TABLE_NAME: mystash-dev-users\n    NOTES_TABLE_NAME: mystash-dev-notes\n\nfunctions:\n  register:\n    handler: dist/handlers/register.handler\n    events:\n      - http:\n          path: api/register\n          method: post\n\n  login:\n    handler: dist/handlers/login.handler\n    events:\n      - http:\n          path: api/login\n          method: post\n\n  getNotes:\n    handler: dist/handlers/get-notes.handler\n    events:\n      - http:\n          path: api/note\n          method: get\n\n  createNote:\n    handler: dist/handlers/create-note.handler\n    events:\n      - http:\n          path: api/note\n          method: post\n\n  updateNote:\n    handler: dist/handlers/update-note.handler\n    events:\n      - http:\n          path: api/note/{id}\n          method: put\n\n  deleteNote:\n    handler: dist/handlers/delete-note.handler\n    events:\n      - http:\n          path: api/note/{id}\n          method: delete\n\nplugins:\n  - serverless-offline\n\ncustom:\n  serverless-offline:\n    noPrependStageInUrl: true\n    httpPort: 8000\n    lambdaTimeout: 30\n",
-    "command": [
-      "offline",
-      "start"
-    ],
+    "command": ["offline", "start"],
     "options": {},
     "error": {
       "message": "Cannot resolve '${env:SECRET}' variable at 'provider.environment.SECRET'. No value is available for this variable, and no default value was provided. Please check your variable definitions or provide a default value.",

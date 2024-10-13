@@ -1,14 +1,20 @@
-import type { APIGatewayProxyEvent, APIGatewayProxyHandler } from "aws-lambda"
-import { DynamoDB, DynamoDBClient } from "@aws-sdk/client-dynamodb"
-import { DynamoDBDocumentClient, QueryCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb"
-import { jwtMiddleware } from "../utils/jwt"
+import type { APIGatewayProxyEvent, APIGatewayProxyHandler } from 'aws-lambda'
+import { DynamoDB, DynamoDBClient } from '@aws-sdk/client-dynamodb'
+import {
+  DynamoDBDocumentClient,
+  QueryCommand,
+  UpdateCommand,
+} from '@aws-sdk/lib-dynamodb'
+import { jwtMiddleware } from '../utils/jwt'
 
 const client = new DynamoDBClient({
   endpoint: process.env.DYNAMODB_ENDPOINT || undefined,
 })
 const dynamoDb = DynamoDBDocumentClient.from(client)
 
-const updateNoteHandler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent) => {
+const updateNoteHandler: APIGatewayProxyHandler = async (
+  event: APIGatewayProxyEvent
+) => {
   const userId = event.requestContext.authorizer.userId
   const noteId = event.pathParameters.id
 
@@ -18,11 +24,11 @@ const updateNoteHandler: APIGatewayProxyHandler = async (event: APIGatewayProxyE
   // check if note id belongs to user
   const queryCommand = new QueryCommand({
     TableName: process.env.NOTES_TABLE_NAME,
-    KeyConditionExpression: "id = :id",
-    FilterExpression: "userId = :userId",
+    KeyConditionExpression: 'id = :id',
+    FilterExpression: 'userId = :userId',
     ExpressionAttributeValues: {
-      ":id": noteId,
-      ":userId": userId,
+      ':id': noteId,
+      ':userId': userId,
     },
   })
   const data = await client.send(queryCommand)
@@ -30,8 +36,8 @@ const updateNoteHandler: APIGatewayProxyHandler = async (event: APIGatewayProxyE
   if (!note || note.userId !== userId) {
     return {
       statusCode: 404,
-      headers: { "content-type": "application/json; charset=utf-8" },
-      body: JSON.stringify({ message: "Note not found" }, null, 2),
+      headers: { 'content-type': 'application/json; charset=utf-8' },
+      body: JSON.stringify({ message: 'Note not found' }, null, 2),
     }
   }
 
@@ -45,7 +51,7 @@ const updateNoteHandler: APIGatewayProxyHandler = async (event: APIGatewayProxyE
   const command = new UpdateCommand({
     TableName: process.env.NOTES_TABLE_NAME,
     Key: {
-      id: noteId
+      id: noteId,
     },
     UpdateExpression: updateExpression.trim(),
     ExpressionAttributeNames: {
@@ -59,14 +65,14 @@ const updateNoteHandler: APIGatewayProxyHandler = async (event: APIGatewayProxyE
       ':content': content,
       ':tags': tags,
       ':updatedAt': new Date().toISOString(),
-  },
+    },
     ReturnValues: 'ALL_NEW',
   })
   const result = await dynamoDb.send(command)
 
   return {
     statusCode: 200,
-    headers: { "content-type": "application/json; charset=utf-8" },
+    headers: { 'content-type': 'application/json; charset=utf-8' },
     body: JSON.stringify(result.Attributes, null, 2),
   }
 }

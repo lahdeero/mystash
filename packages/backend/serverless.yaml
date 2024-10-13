@@ -7,7 +7,7 @@ provider:
   stage: ''
   environment:
     SECRET: ${env:SECRET}
-    DYNAMODB_ENDPOINT: "http://host.docker.internal:8001"
+    DYNAMODB_ENDPOINT: 'http://host.docker.internal:8001'
     USERS_TABLE_NAME: mystash-dev-users
     NOTES_TABLE_NAME: mystash-dev-notes
 
