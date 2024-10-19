@@ -58,6 +58,34 @@ export class MystashInfraStack extends cdk.Stack {
       projectionType: dynamoDb.ProjectionType.ALL,
     })
 
+    const fileDb = new dynamoDb.Table(this, `${stackName}-files-table`, {
+      tableName: `${stackName}-mystashfilesdb`,
+      partitionKey: {
+        name: 'id',
+        type: dynamoDb.AttributeType.STRING,
+      },
+    })
+    fileDb.addGlobalSecondaryIndex({
+      indexName: 'note-id-index',
+      partitionKey: {
+        name: 'noteId',
+        type: dynamoDb.AttributeType.STRING,
+      },
+      projectionType: dynamoDb.ProjectionType.ALL,
+    })
+
+    /* ----------\
+    | FILES      |
+    \-----------*/
+    const fileBucketName = `${stackName}-files-bucket`
+    const filesBucket = new s3.Bucket(this, fileBucketName, {
+      versioned: true,
+      removalPolicy: cdk.RemovalPolicy.RETAIN,
+      autoDeleteObjects: false,
+      publicReadAccess: false,
+      blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
+    })
+
     /*-----------------\
     | LAMBDA HANDLERS  |
     \-----------------*/
@@ -82,6 +110,9 @@ export class MystashInfraStack extends cdk.Stack {
       PRIMARY_KEY: 'id',
       NOTES_TABLE_NAME: noteDb.tableName,
       USERS_TABLE_NAME: userDb.tableName,
+      FILES_TABLE_NAME: fileDb.tableName,
+      FILE_BUCKET_NAME: fileBucketName,
+      S3_ENDPOINT: filesBucket.bucketRegionalDomainName,
       GITHUB_CLIENT_ID: githubClientId,
       GITHUB_CLIENT_SECRET: githubClientSecret,
       GITHUB_REDIRECT_URI: 'https://mystash.70511337.xyz/',
@@ -168,11 +199,34 @@ export class MystashInfraStack extends cdk.Stack {
         environment,
       }
     )
+    const uploadFileHandler = new lambdaNodeJs.NodejsFunction(
+      this,
+      `${stackName}-upload-file-lambda-handler`,
+      {
+        runtime: lambda.Runtime.NODEJS_20_X,
+        handler: 'handler',
+        entry: '../packages/backend/src/handlers/upload-file.ts',
+        functionName: `${stackName}-upload-file-lambda`,
+        timeout: cdk.Duration.seconds(30),
+        environment,
+      }
+    )
+    const downloadFileHandler = new lambdaNodeJs.NodejsFunction(
+      this,
+      `${stackName}-download-file-lambda-handler`,
+      {
+        runtime: lambda.Runtime.NODEJS_20_X,
+        handler: 'handler',
+        entry: '../packages/backend/src/handlers/download-file.ts',
+        functionName: `${stackName}-download-file-lambda`,
+        timeout: cdk.Duration.seconds(30),
+        environment,
+      }
+    )
 
     /*------------------------\
     | LAMBDA DB ACCESS        |
     \------------------------*/
-
     userDb.grantReadWriteData(loginHandler)
     userDb.grantReadWriteData(githubVerifyHandler)
 
@@ -181,10 +235,12 @@ export class MystashInfraStack extends cdk.Stack {
     noteDb.grantReadWriteData(updateNoteHandler)
     noteDb.grantReadWriteData(deleteNoteHandler)
 
+    fileDb.grantWriteData(uploadFileHandler)
+    fileDb.grantReadData(downloadFileHandler)
+
     /*------------------------\
     | API GATEWAY             |
     \------------------------*/
-
     const loginIntegration = new apiGatewayIntegrations.HttpLambdaIntegration(
       'LambdaIntegration',
       loginHandler
@@ -273,7 +329,6 @@ export class MystashInfraStack extends cdk.Stack {
     /* ----------\
     | FRONTEND   |
     \-----------*/
-
     // Create an S3 bucket for hosting the React app
     const websiteBucket = new s3.Bucket(this, `${stackName}-website-bucket`, {
       bucketName: `${stackName}-frontend-bucket`,

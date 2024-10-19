@@ -5,11 +5,15 @@ provider:
   runtime: nodejs20.x
   region: eu-north-1
   stage: ''
+  timeout: 30
   environment:
     SECRET: ${env:MYSTASH_SECRET}
-    DYNAMODB_ENDPOINT: 'http://host.docker.internal:8001'
+    DYNAMODB_ENDPOINT: http://host.docker.internal:8001
     USERS_TABLE_NAME: mystash-dev-users
     NOTES_TABLE_NAME: mystash-dev-notes
+    FILES_TABLE_NAME: mystash-dev-files
+    FILE_BUCKET: mystash-dev-infra-files-bucket
+    S3_ENDPOINT: http://localhost:4566
     GITHUB_CLIENT_ID: ${env:GITHUB_CLIENT_ID}
     GITHUB_CLIENT_SECRET: ${env:GITHUB_CLIENT_SECRET}
     GITHUB_REDIRECT_URI: ${env:GITHUB_REDIRECT_URI}
@@ -71,6 +75,20 @@ functions:
           path: api/note/{id}
           method: delete
 
+  uploadFile:
+    handler: dist/handlers/upload-file.handler
+    events:
+      - http:
+          path: api/file
+          method: post
+
+  downloadFile:
+    handler: dist/handlers/download-file.handler
+    events:
+      - http:
+          path: api/file
+          method: get
+
 plugins:
   - serverless-offline
 
@@ -78,5 +96,4 @@ custom:
   serverless-offline:
     noPrependStageInUrl: true
     httpPort: 8000
-    lambdaTimeout: 30
     debug: true

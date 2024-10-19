@@ -18,6 +18,7 @@ export const loginHandler = async (
   if (!(parsedBody?.email && parsedBody?.password)) {
     return noAccess('Email and password are required')
   }
+  console.log('Login attempt with password', { email: parsedBody.email })
   const command = new QueryCommand({
     TableName: process.env.USERS_TABLE_NAME,
     IndexName: 'email-index',

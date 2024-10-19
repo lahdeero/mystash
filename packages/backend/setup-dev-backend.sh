@@ -4,9 +4,13 @@
 
 echo "Start DynamoDB Local in Docker..."
 docker run -d --name dynamodb-local -p 8001:8000 amazon/dynamodb-local
+docker run -d --name s3-local -p 4566:4566 -e SERVICES=s3 localstack/localstack
 
 echo "Transpile typescript..."
 npx tsc
+
+echo "Create s3 bucket..."
+aws --endpoint-url=http://localhost:4566 s3 mb s3://mystash-dev-infra-files-bucket
 
 echo "Create the users table..."
 aws dynamodb create-table \
@@ -81,6 +85,34 @@ aws dynamodb create-table \
     --billing-mode PAY_PER_REQUEST \
     --endpoint-url http://localhost:8001 > dev-init.log 2>&1
 
+echo "Create the files table..."
+aws dynamodb create-table \
+    --table-name mystash-dev-files \
+    --attribute-definitions \
+        AttributeName=id,AttributeType=S \
+        AttributeName=noteId,AttributeType=S \
+    --key-schema \
+        AttributeName=id,KeyType=HASH \
+    --global-secondary-indexes \
+        '[{
+            "IndexName": "note-id-index",
+            "KeySchema": [
+                {
+                    "AttributeName": "noteId",
+                    "KeyType": "HASH"
+                }
+            ],
+            "Projection": {
+                "ProjectionType": "ALL"
+            },
+            "ProvisionedThroughput": {
+                "ReadCapacityUnits": 1,
+                "WriteCapacityUnits": 1
+            }
+        }]' \
+    --billing-mode PAY_PER_REQUEST \
+    --endpoint-url http://localhost:8001 > dev-init.log 2>&1
+
 echo "Seed the users table..."
 aws dynamodb put-item \
     --table-name mystash-dev-users \
@@ -110,11 +142,8 @@ aws dynamodb put-item \
     }' \
     --endpoint-url http://localhost:8001 > dev-init.log 2>&1
 
-echo setup environment variables
-# Load .env file
+echo Setup environment variables...
 source .env
-
-# Export the variables (this step may not be necessary as source automatically loads them into the environment)
 export MYSTASH_SECRET
 export GITHUB_CLIENT_ID
 export GITHUB_CLIENT_SECRET
