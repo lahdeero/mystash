@@ -19,5 +19,10 @@ const login = async (credentials) => {
   return response.data
 }
 
-const loginService = { getUser, register, login }
+const githubVerify = async (code) => {
+  const response = await API.post(`${baseUrl}/login/github/verify`, { code })
+  return response.data
+}
+
+const loginService = { getUser, register, login, githubVerify }
 export default loginService

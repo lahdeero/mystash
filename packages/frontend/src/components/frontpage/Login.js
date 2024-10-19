@@ -29,7 +29,7 @@ const LoginSeparator = styled.div`
 
   span {
     background-color: ${Colors.Background};
-    padding:0 10px;
+    padding: 0 10px;
   }
 `
 
@@ -51,7 +51,7 @@ const Login = (props) => {
 
   const backendUrl = resolveUrl()
   console.debug('backend url:', backendUrl)
-  const githubLoginUrl = `${backendUrl}/api/login/github`
+  const githubLoginUrl = `${backendUrl}/api/login/github/init`
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -59,7 +59,7 @@ const Login = (props) => {
       setLoading(true)
       await props.actionForLogin({
         email,
-        password
+        password,
       })
     } catch (exception) {
       console.error(exception)
@@ -74,16 +74,22 @@ const Login = (props) => {
 
   return (
     <div>
-      <Navbar className="indigo" brand='mystash' href={process.env.PUBLIC_URL} right>
-      </Navbar>
+      <Navbar
+        className="indigo"
+        brand="mystash"
+        href={process.env.PUBLIC_URL}
+        right
+      ></Navbar>
       <Container>
         <FlexItem>
           <a href={githubLoginUrl}>
             <img src={githubLoginImage} alt="Login with GitHub" />
           </a>
         </FlexItem>
-        <LoginSeparator><span>OR</span></LoginSeparator>
-        <ClipLoader loading={loading} color='blue' />
+        <LoginSeparator>
+          <span>OR</span>
+        </LoginSeparator>
+        <ClipLoader loading={loading} color="blue" />
         {error !== '' ? <ErrorText>{error}</ErrorText> : <div></div>}
         <form onSubmit={handleLogin}>
           <div>
@@ -94,7 +100,9 @@ const Login = (props) => {
               autoComplete="off"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
-            ><Icon>account_circle</Icon></Input>
+            >
+              <Icon>account_circle</Icon>
+            </Input>
           </div>
           <div>
             password:
@@ -104,15 +112,20 @@ const Login = (props) => {
               autoComplete="off"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
-            ><Icon>https</Icon></Input>
+            >
+              <Icon>https</Icon>
+            </Input>
           </div>
           <Button type="submit">Login</Button>
         </form>
         <Suggestion>
-          Dont have account? <a onClick={props.togglePage} href="/register">Register</a>
+          Dont have account?{' '}
+          <a onClick={props.togglePage} href="/register">
+            Register
+          </a>
         </Suggestion>
       </Container>
-    </div >
+    </div>
   )
 }
 

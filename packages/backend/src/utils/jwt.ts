@@ -7,6 +7,7 @@ import {
   Context,
 } from 'aws-lambda'
 import { createHmac } from 'crypto'
+import { User, UserDbItem, UserToken } from '../types/types'
 
 const base64UrlEncode = (input: string): string => {
   return Buffer.from(input)
@@ -97,11 +98,10 @@ export const jwtMiddleware = (
       if (!event.requestContext) {
         event.requestContext = {} as APIGatewayEventRequestContext
       }
+      if (!userId) {
+        throw new Error('Invalid JWT')
+      }
       event.requestContext.authorizer = { userId } // Store userId in event for later use
-      console.log(
-        'event.requestContext.authorizer:',
-        event.requestContext.authorizer
-      )
     } catch (error) {
       callback(null, {
         statusCode: 401,
@@ -115,4 +115,28 @@ export const jwtMiddleware = (
     }
     return result
   }
+}
+
+export const createToken = (dbUser?: UserDbItem): UserToken => {
+  if (!dbUser.id) {
+    throw new Error('User ID missing')
+  }
+  const { id, firstName, lastName, email, tier } = dbUser
+  const payload = {
+    id,
+    firstName,
+    lastName,
+    email,
+    tier,
+    iat: Math.floor(Date.now() / 1000),
+    exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7, // Expire after 1 week
+  }
+  const token = createJWT(payload, process.env.SECRET!)
+  const user: User = {
+    firstName,
+    lastName,
+    tier,
+    email,
+  }
+  return { token, user }
 }

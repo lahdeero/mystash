@@ -6,10 +6,13 @@ provider:
   region: eu-north-1
   stage: ''
   environment:
-    SECRET: ${env:SECRET}
+    SECRET: ${env:MYSTASH_SECRET}
     DYNAMODB_ENDPOINT: 'http://host.docker.internal:8001'
     USERS_TABLE_NAME: mystash-dev-users
     NOTES_TABLE_NAME: mystash-dev-notes
+    GITHUB_CLIENT_ID: ${env:GITHUB_CLIENT_ID}
+    GITHUB_CLIENT_SECRET: ${env:GITHUB_CLIENT_SECRET}
+    GITHUB_REDIRECT_URI: ${env:GITHUB_REDIRECT_URI}
 
 functions:
   register:
@@ -24,6 +27,20 @@ functions:
     events:
       - http:
           path: api/login
+          method: post
+
+  githubLogin:
+    handler: dist/handlers/github-login.handler
+    events:
+      - http:
+          path: api/login/github/init
+          method: get
+
+  githubVerify:
+    handler: dist/handlers/github-verify.handler
+    events:
+      - http:
+          path: api/login/github/verify
           method: post
 
   getNotes:
@@ -62,3 +79,4 @@ custom:
     noPrependStageInUrl: true
     httpPort: 8000
     lambdaTimeout: 30
+    debug: true

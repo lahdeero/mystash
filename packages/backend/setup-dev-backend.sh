@@ -1,7 +1,11 @@
-echo "Start DynamoDB Local in Docker..."
-docker run -p 8001:8000 amazon/dynamodb-local
+#!/bin/bash
 
-echo "Compile typescript..."
+# TODO: Logging to dev-init.log doesnt work
+
+echo "Start DynamoDB Local in Docker..."
+docker run -d --name dynamodb-local -p 8001:8000 amazon/dynamodb-local
+
+echo "Transpile typescript..."
 npx tsc
 
 echo "Create the users table..."
@@ -10,6 +14,7 @@ aws dynamodb create-table \
     --attribute-definitions \
         AttributeName=id,AttributeType=S \
         AttributeName=email,AttributeType=S \
+        AttributeName=githubId,AttributeType=N \
     --key-schema \
         AttributeName=id,KeyType=HASH \
     --global-secondary-indexes \
@@ -28,9 +33,25 @@ aws dynamodb create-table \
                 "ReadCapacityUnits": 1,
                 "WriteCapacityUnits": 1
             }
+        },
+        {
+            "IndexName": "github-id-index",
+            "KeySchema": [
+                {
+                    "AttributeName": "githubId",
+                    "KeyType": "HASH"
+                }
+            ],
+            "Projection": {
+                "ProjectionType": "ALL"
+            },
+            "ProvisionedThroughput": {
+                "ReadCapacityUnits": 1,
+                "WriteCapacityUnits": 1
+            }
         }]' \
     --billing-mode PAY_PER_REQUEST \
-    --endpoint-url http://localhost:8001
+    --endpoint-url http://localhost:8001 > dev-init.log 2>&1
 
 echo "Create the notes table..."
 aws dynamodb create-table \
@@ -58,7 +79,7 @@ aws dynamodb create-table \
             }
         }]' \
     --billing-mode PAY_PER_REQUEST \
-    --endpoint-url http://localhost:8001
+    --endpoint-url http://localhost:8001 > dev-init.log 2>&1
 
 echo "Seed the users table..."
 aws dynamodb put-item \
@@ -70,7 +91,7 @@ aws dynamodb put-item \
         "email": {"S": "test@example.com"},
         "password": {"S": "2dc6e6c891c0e3acfa5b312c0da3e26e"}
     }' \
-    --endpoint-url http://localhost:8001
+    --endpoint-url http://localhost:8001 > dev-init.log 2>&1
 
 echo "Seed the notes table..."
 aws dynamodb put-item \
@@ -87,4 +108,14 @@ aws dynamodb put-item \
         "createdAt": {"S": "2024-10-13T17:30:31.222Z"},
         "updatedAt": {"S": "2024-10-13T17:30:31.222Z"}
     }' \
-    --endpoint-url http://localhost:8001
+    --endpoint-url http://localhost:8001 > dev-init.log 2>&1
+
+echo setup environment variables
+# Load .env file
+source .env
+
+# Export the variables (this step may not be necessary as source automatically loads them into the environment)
+export MYSTASH_SECRET
+export GITHUB_CLIENT_ID
+export GITHUB_CLIENT_SECRET
+export GITHUB_REDIRECT_URI

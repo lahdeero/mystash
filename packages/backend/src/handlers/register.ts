@@ -9,6 +9,7 @@ import { v4 as uuidv } from 'uuid'
 import { noAccess } from '../utils/http'
 import { encryptData } from '../utils/cryptography'
 import { emailPattern } from '../utils/validation'
+import { Tier } from '../types/types'
 
 const client = new DynamoDBClient({
   endpoint: process.env.DYNAMODB_ENDPOINT || undefined,
@@ -54,6 +55,7 @@ export const registerHandler = async (
       password: encryptedPassword,
       firstName,
       lastName,
+      tier: Tier.Free,
     },
   })
   await dynamoDb.send(command)
