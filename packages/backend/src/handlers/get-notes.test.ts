@@ -34,11 +34,10 @@ vi.mock('@aws-sdk/lib-dynamodb', () => ({
 describe('get-notes', () => {
   describe('getNotesHandler', () => {
     test('should return notes', async () => {
-      const bar = vi.fn()
       const result = (await handler(
         getEvent(),
         getContext(),
-        bar
+        vi.fn()
       )) as APIGatewayProxyResult
       expect(result.statusCode).toBe(200)
       expect(result.body).toBe(JSON.stringify(testNotes, null, 2))

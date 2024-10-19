@@ -65,7 +65,6 @@ export const jwtMiddleware = (
     context: Context,
     callback: Callback
   ) => {
-    console.log('Lambda event:', JSON.stringify(event, null, 2))
     const authorization =
       event.headers.Authorization || event.headers.authorization
 
