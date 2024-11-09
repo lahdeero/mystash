@@ -8,8 +8,15 @@ import { notify, errorMessage } from '../../reducers/notificationReducer'
 import Container from '../common/Container'
 import Button from '../common/Button'
 
-const Upload = ({ notes, match, modifyLocally, notify, errorMessage, history }) => {
-  const note = notes.find(({ id }) => id === parseInt(match.params.id))
+const Upload = ({
+  notes,
+  match,
+  modifyLocally,
+  notify,
+  errorMessage,
+  history,
+}) => {
+  const note = notes.find(({ id }) => id === match.params.id)
   const [file, setFile] = useState()
 
   const handleChange = (event) => {
@@ -24,15 +31,8 @@ const Upload = ({ notes, match, modifyLocally, notify, errorMessage, history }) 
     }
 
     const formData = new FormData()
-    formData.append(
-      'note_id',
-      note.id,
-    )
-    formData.append(
-      'picture',
-      file,
-      file.name
-    )
+    formData.append('noteId', note.id)
+    formData.append('fileData', file, file.name)
 
     let created
     try {
@@ -48,7 +48,7 @@ const Upload = ({ notes, match, modifyLocally, notify, errorMessage, history }) 
         console.log('newFiles', newFiles)
         modifyLocally({
           ...note,
-          files: newFiles
+          files: newFiles,
         })
       }
       history.push(`/notes/${note.id}`)
@@ -57,9 +57,7 @@ const Upload = ({ notes, match, modifyLocally, notify, errorMessage, history }) 
 
   return (
     <Container>
-      <div>
-        Upload file:
-      </div>
+      <div>Upload file:</div>
       <div>
         <form>
           <div>
@@ -72,7 +70,6 @@ const Upload = ({ notes, match, modifyLocally, notify, errorMessage, history }) 
       </div>
     </Container>
   )
-
 }
 
 const mapStateToProps = (store) => {
@@ -83,10 +80,7 @@ const mapStateToProps = (store) => {
 const mapDispatchToProps = {
   modifyLocally,
   notify,
-  errorMessage
+  errorMessage,
 }
 
-export default withRouter(connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Upload))
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Upload))

@@ -4,7 +4,9 @@ import { APIGatewayEvent, Context, Callback, Handler } from 'aws-lambda'
 import { DynamoDBDocumentClient, PutCommand } from '@aws-sdk/lib-dynamodb'
 import { v4 as uuidv4 } from 'uuid'
 import { lookup } from 'mime-types'
+import Busboy from 'busboy'
 import { jwtMiddleware } from '../utils/jwt'
+import { FileType } from '../types/types'
 
 const client = new DynamoDBClient({
   endpoint: process.env.DYNAMODB_ENDPOINT || undefined,
@@ -22,11 +24,52 @@ const uploadFileHandler: Handler<APIGatewayEvent, any> = async (
   _callback: Callback
 ) => {
   try {
-    const parsedBody = JSON.parse(event.body)
-    const { noteId, title, fileName, fileContent } = parsedBody
-    if (!fileName || !fileContent) {
-      throw new Error('Missing fileName or fileContent')
+    if (!event.headers['Content-Type'].startsWith('multipart/form-data')) {
+      throw new Error('Unsupported content type')
     }
+
+    // const busboy = new Busboy({ headers: event.headers })
+    const headers = {
+      ...event.headers,
+      'content-type':
+        event.headers['Content-Type'] ?? event.headers['content-Type'],
+    }
+    const busboy = Busboy({ headers })
+    let fileContent: Buffer | undefined
+    let fileName: string | undefined
+    let noteId: string | undefined
+    let title: string | undefined
+
+    await new Promise((resolve, reject) => {
+      busboy.on('file', (fieldname, file, info) => {
+        if (fieldname === 'fileData') {
+          fileName = info.filename
+          const buffers: any[] = []
+          file.on('data', (data) => buffers.push(data))
+          file.on('end', () => {
+            fileContent = Buffer.concat(buffers)
+          })
+        }
+      })
+
+      busboy.on('field', (fieldname, value) => {
+        if (fieldname === 'noteId') {
+          noteId = value
+        } else if (fieldname === 'title') {
+          title = value
+        }
+      })
+
+      busboy.on('finish', resolve)
+      busboy.on('error', reject)
+
+      busboy.write(
+        event.body as string,
+        event.isBase64Encoded ? 'base64' : 'utf8'
+      )
+      busboy.end()
+    })
+
     const mimeType = lookup(fileName)
     if (!mimeType) {
       return {
@@ -41,11 +84,11 @@ const uploadFileHandler: Handler<APIGatewayEvent, any> = async (
     const fileUploadCommand = new PutObjectCommand({
       Bucket: process.env.FILE_BUCKET,
       Key: id,
-      Body: Buffer.from(fileContent, 'base64'), // Assuming fileContent is base64 encoded
+      Body: fileContent,
     })
     const { ETag: eTag } = await s3Client.send(fileUploadCommand)
 
-    const item = {
+    const item: FileType = {
       id,
       fileName,
       mimeType,

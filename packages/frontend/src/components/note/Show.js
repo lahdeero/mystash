@@ -3,16 +3,18 @@ import { Buffer } from 'buffer'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import ReactMarkddown from 'react-markdown'
+import styled from 'styled-components'
+import { ClipLoader } from 'react-spinners'
+
 import { removeNote } from '../../reducers/noteReducer'
 import { notify, errorMessage } from '../../reducers/notificationReducer'
-import styled from 'styled-components'
-
 import Button from '../common/Button'
 import Container from '../common/Container'
 import Colors from '../../layout/colors'
 import { useEffect } from 'react'
 import fileService from '../../services/fileService'
-import detectMimeType from '../../utils/detectMimeType'
+
+const IMAGE_MIME_TYPES = ['image/jpeg', 'image/png', 'image/gif']
 
 const NoteContent = styled.div`
   margin: 1rem 0;
@@ -30,37 +32,94 @@ const ContentWrapper = styled.div`
   word-break: break-all;
 `
 
-const ImageWrapper = styled.div`
+const FilesWrapper = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 1rem;
+`
+
+const ImagesWrapper = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 1rem;
+`
+
+const DataFilesWrapper = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 1rem;
+}
+`
+
+const ImagePreview = styled.div`
   img {
-    width: 100%;
-    max-height: 1080px;
+    max-width: 320px;
+    max-height: 240px;
   }
 `
 
 const Show = ({ notes, match, history, notify, removeNote }) => {
   const note = notes.find((note) => note.id === match.params.id)
   if (!note) {
-    return (<div>Could not find note</div>)
+    return <div>Could not find note</div>
   }
 
-  const [file1, setFile1] = useState(null)
+  const [dataFilesInfo, setDataFilesInfo] = useState([])
+  const [imagesInfo, setImagesInfo] = useState([])
+  const [images, setImages] = useState([])
+  const [loading, setLoading] = useState(false)
+
+  const scanFiles = async (noteId) => {
+    setLoading(true)
+    try {
+      const rawResponse = await fileService.scanFiles(noteId)
+      const images = rawResponse.filter((file) =>
+        IMAGE_MIME_TYPES.includes(file.mimeType)
+      )
+      const dataFiles = rawResponse.filter(
+        (file) => !IMAGE_MIME_TYPES.includes(file.mimeType)
+      )
+      setImagesInfo(images)
+      setDataFilesInfo(dataFiles)
+    } catch (e) {
+      console.error(e)
+      notify('Could not scan files')
+    }
+    setLoading(false)
+  }
 
   const fetchFile = async (fileId) => {
+    setLoading(true)
     const rawResponse = await fileService.getOne(fileId)
     const b64Response = Buffer.from(rawResponse, 'binary').toString('base64')
-    if (detectMimeType(b64Response)) {
-      setFile1(b64Response)
-    }
+    setLoading(false)
+    return b64Response
   }
 
   useEffect(() => {
-    if (note.files && note.files.length > 0) {
-      const filteredFiles = note.files.filter(n => n) // Remove nulls
-      if (filteredFiles && filteredFiles.length > 0) {
-        fetchFile(filteredFiles[0])
-      }
-    }
-  }, [])
+    scanFiles(note.id)
+  }, [note.id])
+
+  useEffect(() => {
+    imagesInfo.forEach(async (image) => {
+      const b64Response = await fetchFile(image.id)
+      const img = document.createElement('img')
+      img.id = image.id
+      img.src = `data:${image.mimeType};base64,${b64Response}`
+      img.alt = image.title ?? image.fileName
+      const uniqueImages = [...images, img].filter(
+        (image, index, self) =>
+          index === self.findIndex((img) => img.id === image.id)
+      )
+      setImages(uniqueImages)
+    })
+  }, [imagesInfo])
 
   const deleteNote = async (event) => {
     event.preventDefault()
@@ -91,6 +150,8 @@ const Show = ({ notes, match, history, notify, removeNote }) => {
     </ContentWrapper>
   )
 
+  console.log('imagesInfo', imagesInfo)
+
   return (
     <Container>
       <NoteWrapper>
@@ -100,12 +161,30 @@ const Show = ({ notes, match, history, notify, removeNote }) => {
           <p>[{tags}]</p>
         </div>
         <NoteContent>
-          {markdown ? <ReactMarkddown>{text}</ReactMarkddown> : <RenderContent />}
+          {markdown ? (
+            <ReactMarkddown>{text}</ReactMarkddown>
+          ) : (
+            <RenderContent />
+          )}
         </NoteContent>
       </NoteWrapper>
-      <ImageWrapper>
-        { file1 && <img src={`data:image/png;base64,${file1}`} /> }
-      </ImageWrapper>
+      <FilesWrapper>
+        <ClipLoader loading={loading} color="blue" />
+        <ImagesWrapper>
+          {images.map((img) => {
+            return (
+              <ImagePreview key={img.id}>
+                <img src={img.src} alt={img.alt ?? 'Image'} />
+              </ImagePreview>
+            )
+          })}
+        </ImagesWrapper>
+        <DataFilesWrapper>
+          {dataFilesInfo.map((file) => {
+            return <div key={file.id}>{file.fileName}</div>
+          })}
+        </DataFilesWrapper>
+      </FilesWrapper>
       <div className="note-action-buttons">
         <Link to={`/notes/edit/${note.id}`}>
           <Button>EDIT</Button>
@@ -113,7 +192,9 @@ const Show = ({ notes, match, history, notify, removeNote }) => {
         <Link to={`/notes/upload/${note.id}`}>
           <Button>ADD FILE</Button>
         </Link>
-        <Button onClick={deleteNote} danger={true}>DELETE</Button>
+        <Button onClick={deleteNote} danger={true}>
+          DELETE
+        </Button>
       </div>
     </Container>
   )
@@ -127,12 +208,9 @@ const mapStateToProps = (store) => {
 const mapDispatchToProps = {
   removeNote,
   notify,
-  errorMessage
+  errorMessage,
 }
 
-const ConnectedShowNote = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Show)
+const ConnectedShowNote = connect(mapStateToProps, mapDispatchToProps)(Show)
 
 export default ConnectedShowNote

@@ -73,6 +73,14 @@ export class MystashInfraStack extends cdk.Stack {
       },
       projectionType: dynamoDb.ProjectionType.ALL,
     })
+    fileDb.addGlobalSecondaryIndex({
+      indexName: 'user-id-index',
+      partitionKey: {
+        name: 'userId',
+        type: dynamoDb.AttributeType.STRING,
+      },
+      projectionType: dynamoDb.ProjectionType.ALL,
+    })
 
     /* ----------\
     | FILES      |

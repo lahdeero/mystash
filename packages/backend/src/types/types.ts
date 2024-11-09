@@ -24,7 +24,24 @@ export type Note = {
   createdAt: string
 }
 
+export type FileType = {
+  id: string
+  fileName: string
+  mimeType: string
+  eTag: string
+  title?: string
+  createdAt: string
+  updatedAt: string
+  noteId: string
+  userId: string
+}
+
 export type GetNotesResponse = Note[]
+
+export type GetNoteFilesResponse = {
+  noteId: string
+  files: FileType[]
+}
 
 export enum Tier {
   Free = 'free',

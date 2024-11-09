@@ -75,6 +75,13 @@ functions:
           path: api/note/{id}
           method: delete
 
+  getNoteFiles:
+    handler: dist/handlers/get-note-files.handler
+    events:
+      - http:
+          path: api/note/files/{id}
+          method: get
+
   uploadFile:
     handler: dist/handlers/upload-file.handler
     events:
@@ -86,7 +93,7 @@ functions:
     handler: dist/handlers/download-file.handler
     events:
       - http:
-          path: api/file
+          path: api/file/{id}
           method: get
 
 plugins:
