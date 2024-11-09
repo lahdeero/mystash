@@ -33,7 +33,7 @@ const create = async (fileInfo) => {
 }
 
 const upload = async (file, uploadUrl) => {
-  const response = await axios.put(uploadUrl, file, getRequestConfig())
+  const response = await axios.put(uploadUrl, file)
   return response.data
 }
 

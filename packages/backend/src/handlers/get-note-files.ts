@@ -10,8 +10,8 @@ import { DynamoDBDocumentClient, QueryCommand } from '@aws-sdk/lib-dynamodb'
 import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 
-import { jwtMiddleware } from '../utils/jwt.js'
-import { FileInfo, GetNoteFilesResponse } from '../types/types'
+import { jwtMiddleware } from '../utils/index.js'
+import { FileInfo, GetNoteFilesResponse } from '../types/types.js'
 
 const client = new DynamoDBClient({
   endpoint: process.env.DYNAMODB_ENDPOINT || undefined,
@@ -27,7 +27,7 @@ const getFileUrl = async (userId: string, fileName: string) => {
   const url = await getSignedUrl(
     s3,
     new GetObjectCommand({
-      Bucket: process.env.FILE_BUCKET,
+      Bucket: process.env.FILES_BUCKET_NAME,
       Key: `${userId}/${fileName}`,
     }),
     { expiresIn: 3600 }

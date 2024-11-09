@@ -5,7 +5,7 @@ import {
 } from '@aws-sdk/lib-dynamodb'
 import { v4 as uuidv } from 'uuid'
 
-import { GitHubUser, Tier, UserDbItem } from '../types/types'
+import { GitHubUser, Tier, UserDbItem } from '../types/types.js'
 
 export const createUser = async (
   data: GitHubUser,

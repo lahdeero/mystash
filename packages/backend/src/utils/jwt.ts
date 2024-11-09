@@ -7,7 +7,7 @@ import {
 } from 'aws-lambda'
 import { createHmac } from 'crypto'
 
-import { User, UserDbItem, UserToken } from '../types/types'
+import { User, UserDbItem, UserToken } from '../types/types.js'
 
 const base64UrlEncode = (input: string): string => {
   return Buffer.from(input)

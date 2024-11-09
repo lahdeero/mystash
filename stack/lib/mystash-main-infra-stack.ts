@@ -9,6 +9,7 @@ import * as dynamoDb from 'aws-cdk-lib/aws-dynamodb'
 import * as cloudfront from 'aws-cdk-lib/aws-cloudfront'
 import * as deployment from 'aws-cdk-lib/aws-s3-deployment'
 import * as ssm from 'aws-cdk-lib/aws-ssm'
+import * as iam from 'aws-cdk-lib/aws-iam'
 
 export class MystashInfraStack extends cdk.Stack {
   constructor(app: cdk.App, id: string, props: cdk.StackProps) {
@@ -85,14 +86,30 @@ export class MystashInfraStack extends cdk.Stack {
     /* ----------\
     | FILES      |
     \-----------*/
-    const fileBucketName = `${stackName}-files-bucket`
-    const filesBucket = new s3.Bucket(this, fileBucketName, {
+    const filesBucket = new s3.Bucket(this, `${stackName}-files-bucket`, {
       versioned: true,
       removalPolicy: cdk.RemovalPolicy.RETAIN,
       autoDeleteObjects: false,
-      publicReadAccess: false,
-      blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
+      cors: [
+        {
+          allowedOrigins: ['*'],
+          allowedMethods: [s3.HttpMethods.GET, s3.HttpMethods.PUT],
+          allowedHeaders: ['*'],
+        },
+      ],
     })
+
+    // IAM Role and Policy for generating signed URLs
+    const signedUrlRole = new iam.Role(this, 'SignedUrlRole', {
+      assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),
+    })
+
+    signedUrlRole.addToPolicy(
+      new iam.PolicyStatement({
+        actions: ['s3:GetObject', 's3:PutObject'],
+        resources: [filesBucket.arnForObjects('*')],
+      })
+    )
 
     /*-----------------\
     | LAMBDA HANDLERS  |
@@ -119,8 +136,8 @@ export class MystashInfraStack extends cdk.Stack {
       NOTES_TABLE_NAME: noteDb.tableName,
       USERS_TABLE_NAME: userDb.tableName,
       FILES_TABLE_NAME: fileDb.tableName,
-      FILE_BUCKET_NAME: fileBucketName,
-      S3_ENDPOINT: filesBucket.bucketRegionalDomainName,
+      FILES_BUCKET_NAME: filesBucket.bucketName,
+      S3_ENDPOINT: `https://${filesBucket.bucketRegionalDomainName}`,
       GITHUB_CLIENT_ID: githubClientId,
       GITHUB_CLIENT_SECRET: githubClientSecret,
       GITHUB_REDIRECT_URI: 'https://mystash.70511337.xyz/',
@@ -130,6 +147,17 @@ export class MystashInfraStack extends cdk.Stack {
         .slice(0, 32),
     }
 
+    const registerHandler = new lambdaNodeJs.NodejsFunction(
+      this,
+      `${stackName}-register-lambda-handler`,
+      {
+        runtime: lambda.Runtime.NODEJS_20_X,
+        handler: 'handler',
+        entry: '../packages/backend/src/handlers/register.ts',
+        functionName: `${stackName}-register-lambda`,
+        environment,
+      }
+    )
     const loginHandler = new lambdaNodeJs.NodejsFunction(
       this,
       `${stackName}-login-lambda-handler`,
@@ -160,6 +188,17 @@ export class MystashInfraStack extends cdk.Stack {
         handler: 'handler',
         entry: '../packages/backend/src/handlers/get-notes.ts',
         functionName: `${stackName}-get-notes-lambda`,
+        environment,
+      }
+    )
+    const getNoteFilesHandler = new lambdaNodeJs.NodejsFunction(
+      this,
+      `${stackName}-get-note-files-lambda-handler`,
+      {
+        runtime: lambda.Runtime.NODEJS_20_X,
+        handler: 'handler',
+        entry: '../packages/backend/src/handlers/get-note-files.ts',
+        functionName: `${stackName}-get-note-files-lambda`,
         environment,
       }
     )
@@ -219,14 +258,14 @@ export class MystashInfraStack extends cdk.Stack {
         environment,
       }
     )
-    const downloadFileHandler = new lambdaNodeJs.NodejsFunction(
+    const deleteFileHandler = new lambdaNodeJs.NodejsFunction(
       this,
-      `${stackName}-download-file-lambda-handler`,
+      `${stackName}-delete-file-lambda-handler`,
       {
         runtime: lambda.Runtime.NODEJS_20_X,
         handler: 'handler',
-        entry: '../packages/backend/src/handlers/download-file.ts',
-        functionName: `${stackName}-download-file-lambda`,
+        entry: '../packages/backend/src/handlers/delete-file.ts',
+        functionName: `${stackName}-delete-file-lambda`,
         timeout: cdk.Duration.seconds(30),
         environment,
       }
@@ -235,6 +274,7 @@ export class MystashInfraStack extends cdk.Stack {
     /*------------------------\
     | LAMBDA DB ACCESS        |
     \------------------------*/
+    userDb.grantReadWriteData(registerHandler)
     userDb.grantReadWriteData(loginHandler)
     userDb.grantReadWriteData(githubVerifyHandler)
 
@@ -243,12 +283,25 @@ export class MystashInfraStack extends cdk.Stack {
     noteDb.grantReadWriteData(updateNoteHandler)
     noteDb.grantReadWriteData(deleteNoteHandler)
 
+    fileDb.grantReadData(getNoteFilesHandler)
     fileDb.grantWriteData(uploadFileHandler)
-    fileDb.grantReadData(downloadFileHandler)
+    fileDb.grantReadWriteData(deleteFileHandler)
+
+    /*------------------------\
+    | LAMBDA S3 ACCESS        |
+    \------------------------*/
+
+    filesBucket.grantReadWrite(uploadFileHandler)
+    filesBucket.grantRead(getNoteFilesHandler)
 
     /*------------------------\
     | API GATEWAY             |
     \------------------------*/
+    const registerIntegration =
+      new apiGatewayIntegrations.HttpLambdaIntegration(
+        'LambdaIntegration',
+        registerHandler
+      )
     const loginIntegration = new apiGatewayIntegrations.HttpLambdaIntegration(
       'LambdaIntegration',
       loginHandler
@@ -262,6 +315,11 @@ export class MystashInfraStack extends cdk.Stack {
       new apiGatewayIntegrations.HttpLambdaIntegration(
         'LambdaIntegration',
         getNotesHandler
+      )
+    const getNoteFilesIntegration =
+      new apiGatewayIntegrations.HttpLambdaIntegration(
+        'LambdaIntegration',
+        getNoteFilesHandler
       )
     const updateNoteIntegration =
       new apiGatewayIntegrations.HttpLambdaIntegration(
@@ -283,6 +341,16 @@ export class MystashInfraStack extends cdk.Stack {
         'LambdaIntegration',
         githubVerifyHandler
       )
+    const uploadFileIntegration =
+      new apiGatewayIntegrations.HttpLambdaIntegration(
+        'LambdaIntegration',
+        uploadFileHandler
+      )
+    const deleteFileIntegration =
+      new apiGatewayIntegrations.HttpLambdaIntegration(
+        'LambdaIntegration',
+        deleteFileHandler
+      )
 
     const api = new apigateway.HttpApi(this, `${stackName}-api-gateway`, {
       description: 'Mystash API gateway',
@@ -299,6 +367,11 @@ export class MystashInfraStack extends cdk.Stack {
     })
 
     api.addRoutes({
+      path: '/api/register',
+      methods: [apigateway.HttpMethod.POST],
+      integration: registerIntegration,
+    })
+    api.addRoutes({
       path: '/api/login',
       methods: [apigateway.HttpMethod.POST],
       integration: loginIntegration,
@@ -312,6 +385,11 @@ export class MystashInfraStack extends cdk.Stack {
       path: '/api/note',
       methods: [apigateway.HttpMethod.GET],
       integration: getNotesIntegration,
+    })
+    api.addRoutes({
+      path: '/api/note/files/{id}',
+      methods: [apigateway.HttpMethod.GET],
+      integration: getNoteFilesIntegration,
     })
     api.addRoutes({
       path: '/api/note/{id}',
@@ -332,6 +410,16 @@ export class MystashInfraStack extends cdk.Stack {
       path: '/api/login/github/verify',
       methods: [apigateway.HttpMethod.POST],
       integration: githubVerifyIntegration,
+    })
+    api.addRoutes({
+      path: '/api/file',
+      methods: [apigateway.HttpMethod.POST],
+      integration: uploadFileIntegration,
+    })
+    api.addRoutes({
+      path: '/api/file/{id}',
+      methods: [apigateway.HttpMethod.DELETE],
+      integration: deleteFileIntegration,
     })
 
     /* ----------\

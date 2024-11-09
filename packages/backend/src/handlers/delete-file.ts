@@ -6,7 +6,7 @@ import {
   QueryCommand,
 } from '@aws-sdk/lib-dynamodb'
 
-import { jwtMiddleware } from '../utils/jwt.js'
+import { jwtMiddleware } from '../utils/index.js'
 
 const client = new DynamoDBClient({
   endpoint: process.env.DYNAMODB_ENDPOINT || undefined,

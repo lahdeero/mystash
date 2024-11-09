@@ -17,7 +17,7 @@ provider:
     USERS_TABLE_NAME: mystash-dev-users
     NOTES_TABLE_NAME: mystash-dev-notes
     FILES_TABLE_NAME: mystash-dev-files
-    FILE_BUCKET: mystash-dev-infra-files-bucket
+    FILES_BUCKET_NAME: mystash-dev-infra-files-bucket
     S3_ENDPOINT: http://localhost:4566
     GITHUB_CLIENT_ID: ${env:GITHUB_CLIENT_ID}
     GITHUB_CLIENT_SECRET: ${env:GITHUB_CLIENT_SECRET}
@@ -93,13 +93,6 @@ functions:
       - http:
           path: api/file
           method: post
-
-  downloadFile:
-    handler: dist/handlers/download-file.handler
-    events:
-      - http:
-          path: api/file/{id}
-          method: get
 
   deleteFile:
     handler: dist/handlers/delete-file.handler

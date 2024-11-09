@@ -5,7 +5,7 @@ import { DynamoDBDocumentClient, PutCommand } from '@aws-sdk/lib-dynamodb'
 import { v4 as uuidv4 } from 'uuid'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 
-import { FileInfo } from '../types/types'
+import { FileInfo } from '../types/types.js'
 import { exntensionToMimeType, jwtMiddleware } from '../utils/index.js'
 
 const client = new DynamoDBClient({
@@ -23,6 +23,7 @@ const uploadFileHandler: Handler<APIGatewayEvent, any> = async (
   _context: Context,
   _callback: Callback
 ) => {
+  console.log('process.env.S3_ENDPOINT', process.env.S3_ENDPOINT)
   const userId = event.requestContext.authorizer.userId
   const parsedBody = JSON.parse(event.body)
   const { title, fileName, noteId } = parsedBody
@@ -62,7 +63,7 @@ const uploadFileHandler: Handler<APIGatewayEvent, any> = async (
     const uploadUrl = await getSignedUrl(
       s3Client,
       new PutObjectCommand({
-        Bucket: process.env.FILE_BUCKET,
+        Bucket: process.env.FILES_BUCKET_NAME,
         Key: `${userId}/${fileName}`,
       }),
       { expiresIn: 60 }
@@ -76,7 +77,6 @@ const uploadFileHandler: Handler<APIGatewayEvent, any> = async (
       body: JSON.stringify(body),
     }
   } catch (error) {
-    console.error('Error uploading file', error)
     return {
       statusCode: 500,
       body: JSON.stringify({ error: 'Error uploading file' }),

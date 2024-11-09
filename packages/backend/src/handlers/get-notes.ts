@@ -6,8 +6,8 @@ import type {
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
 import { DynamoDBDocumentClient, QueryCommand } from '@aws-sdk/lib-dynamodb'
 
-import { jwtMiddleware } from '../utils/jwt.js'
-import { GetNotesResponse } from '../types/types'
+import { jwtMiddleware } from '../utils/index.js'
+import { GetNotesResponse } from '../types/types.js'
 
 const client = new DynamoDBClient({
   endpoint: process.env.DYNAMODB_ENDPOINT || undefined,
