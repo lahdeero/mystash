@@ -1,11 +1,14 @@
 {
   "compilerOptions": {
+    "module": "ESNext",
+    "target": "ESNext",
     "moduleResolution": "node",
     "outDir": "dist",
+    "rootDir": "src",
     "types": ["vitest/globals", "@types/aws-lambda", "@types/node"],
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
   },
   "include": ["src", "vitest-globals.d.ts"],
   "exclude": ["dist", "**/*.test.ts"]

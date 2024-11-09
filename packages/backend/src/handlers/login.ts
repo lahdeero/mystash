@@ -1,10 +1,9 @@
 import type { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda'
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
 import { DynamoDBDocumentClient, QueryCommand } from '@aws-sdk/lib-dynamodb'
-import { createJWT, createToken } from '../utils/jwt'
-import { noAccess } from '../utils/http'
-import { decryptData } from '../utils/cryptography'
-import { UserDbItem } from '../types/types'
+
+import { createToken, noAccess, decryptData } from '../utils/index.js'
+import { UserDbItem } from '../types/types.js'
 
 const client = new DynamoDBClient({
   endpoint: process.env.DYNAMODB_ENDPOINT || undefined,
@@ -18,6 +17,7 @@ export const loginHandler = async (
   if (!(parsedBody?.email && parsedBody?.password)) {
     return noAccess('Email and password are required')
   }
+  console.log('Login attempt with password', { email: parsedBody.email })
   const command = new QueryCommand({
     TableName: process.env.USERS_TABLE_NAME,
     IndexName: 'email-index',

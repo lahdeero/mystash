@@ -34,7 +34,7 @@ const App = (props) => {
 
   const getToken = async (code) => {
     // eslint-disable-next-line
-    const { token, user: _user } = await loginService.githubLogin(code)
+    const { token, user: _user } = await loginService.githubVerify(code)
     window.localStorage.setItem(MS_TOKEN, token)
   }
 

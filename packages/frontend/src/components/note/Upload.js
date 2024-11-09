@@ -8,8 +8,15 @@ import { notify, errorMessage } from '../../reducers/notificationReducer'
 import Container from '../common/Container'
 import Button from '../common/Button'
 
-const Upload = ({ notes, match, modifyLocally, notify, errorMessage, history }) => {
-  const note = notes.find(({ id }) => id === parseInt(match.params.id))
+const Upload = ({
+  notes,
+  match,
+  modifyLocally,
+  notify,
+  errorMessage,
+  history,
+}) => {
+  const note = notes.find(({ id }) => id === match.params.id)
   const [file, setFile] = useState()
 
   const handleChange = (event) => {
@@ -23,20 +30,20 @@ const Upload = ({ notes, match, modifyLocally, notify, errorMessage, history }) 
       return
     }
 
-    const formData = new FormData()
-    formData.append(
-      'note_id',
-      note.id,
-    )
-    formData.append(
-      'picture',
-      file,
-      file.name
-    )
-
     let created
     try {
-      created = await fileService.create(formData)
+      if (!file) {
+        errorMessage('No file selected!')
+        return
+      }
+      const fileData = {
+        fileName: file.name,
+        title: 'Test file',
+        noteId: note.id,
+      }
+      const { uploadUrl } = await fileService.create(fileData)
+      console.log('uploadUrl', uploadUrl)
+      created = await fileService.upload(file, uploadUrl)
       notify('File successfully uploaded!')
     } catch (exception) {
       errorMessage('Error while uploading file')
@@ -48,7 +55,7 @@ const Upload = ({ notes, match, modifyLocally, notify, errorMessage, history }) 
         console.log('newFiles', newFiles)
         modifyLocally({
           ...note,
-          files: newFiles
+          files: newFiles,
         })
       }
       history.push(`/notes/${note.id}`)
@@ -57,13 +64,11 @@ const Upload = ({ notes, match, modifyLocally, notify, errorMessage, history }) 
 
   return (
     <Container>
-      <div>
-        Upload file:
-      </div>
+      <div>Upload file:</div>
       <div>
         <form>
           <div>
-            <input type="file" onChange={handleChange} />
+            <input type="file" onChange={handleChange} max={1} />
           </div>
           <div>
             <Button onClick={handleSubmit}>UPLOAD</Button>
@@ -72,7 +77,6 @@ const Upload = ({ notes, match, modifyLocally, notify, errorMessage, history }) 
       </div>
     </Container>
   )
-
 }
 
 const mapStateToProps = (store) => {
@@ -83,10 +87,7 @@ const mapStateToProps = (store) => {
 const mapDispatchToProps = {
   modifyLocally,
   notify,
-  errorMessage
+  errorMessage,
 }
 
-export default withRouter(connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Upload))
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Upload))

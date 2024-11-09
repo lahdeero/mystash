@@ -9,10 +9,20 @@ mystash
 
 ### Backend
 - Docker is required
+- Serverless is required
+- AWS CLI is required
 
 ```bash
 npm install -g serverless
 npm i
+aws configure --profile mystashapp-dev
+```
+
+Add or update ~/.aws/config
+```bash
+[default]
+s3 =
+    endpoint_url = http://localhost:4566
 ```
 
 ## Development
@@ -55,6 +65,13 @@ aws dynamodb scan \
     --endpoint-url http://localhost:8001
 ```
 
+List files
+```bash
+aws dynamodb scan \
+    --table-name mystash-dev-files \
+    --endpoint-url http://localhost:8001
+```
+
 
 ```bash
 aws dynamodb delete-item \
@@ -68,6 +85,11 @@ aws dynamodb delete-item \
     --table-name mystash-dev-notes \
     --key '{"id": {"S": "0de4eafa-4752-4535-aab0-79a3a9592b95"}}' \
     --endpoint-url http://localhost:8001
+```
+
+```bash
+aws --endpoint-url=http://localhost:4566 s3 ls
+aws --endpoint-url=http://localhost:4566 s3 ls s3://mystash-dev-infra-files-bucket --recursive
 ```
 
 ## Deploy
