@@ -23,14 +23,26 @@ const getOne = async (fileId) => {
   return response.data
 }
 
-const create = async (newFileObject) => {
-  console.log('newFileObject', newFileObject)
+const create = async (fileInfo) => {
   const response = await axios.post(
     `${baseUrl}/file`,
-    newFileObject,
+    fileInfo,
     getRequestConfig()
   )
   return response.data
 }
 
-export default { scanFiles, getOne, create }
+const upload = async (file, uploadUrl) => {
+  const response = await axios.put(uploadUrl, file, getRequestConfig())
+  return response.data
+}
+
+const deleteFile = async (fileId) => {
+  const response = await axios.delete(
+    `${baseUrl}/file/${fileId}`,
+    getRequestConfig()
+  )
+  return response.data
+}
+
+export default { scanFiles, getOne, create, upload, deleteFile }

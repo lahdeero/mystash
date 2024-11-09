@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { Buffer } from 'buffer'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import ReactMarkddown from 'react-markdown'
@@ -64,6 +63,17 @@ const ImagePreview = styled.div`
   }
 `
 
+const FilePreview = styled.div`
+  display: flex;
+  img {
+    max-width: 320px;
+    max-height: 240px;
+  }
+  div {
+    margin-left: 1rem;
+  }
+`
+
 const Show = ({ notes, match, history, notify, removeNote }) => {
   const note = notes.find((note) => note.id === match.params.id)
   if (!note) {
@@ -72,7 +82,6 @@ const Show = ({ notes, match, history, notify, removeNote }) => {
 
   const [dataFilesInfo, setDataFilesInfo] = useState([])
   const [imagesInfo, setImagesInfo] = useState([])
-  const [images, setImages] = useState([])
   const [loading, setLoading] = useState(false)
 
   const scanFiles = async (noteId) => {
@@ -94,32 +103,9 @@ const Show = ({ notes, match, history, notify, removeNote }) => {
     setLoading(false)
   }
 
-  const fetchFile = async (fileId) => {
-    setLoading(true)
-    const rawResponse = await fileService.getOne(fileId)
-    const b64Response = Buffer.from(rawResponse, 'binary').toString('base64')
-    setLoading(false)
-    return b64Response
-  }
-
   useEffect(() => {
     scanFiles(note.id)
   }, [note.id])
-
-  useEffect(() => {
-    imagesInfo.forEach(async (image) => {
-      const b64Response = await fetchFile(image.id)
-      const img = document.createElement('img')
-      img.id = image.id
-      img.src = `data:${image.mimeType};base64,${b64Response}`
-      img.alt = image.title ?? image.fileName
-      const uniqueImages = [...images, img].filter(
-        (image, index, self) =>
-          index === self.findIndex((img) => img.id === image.id)
-      )
-      setImages(uniqueImages)
-    })
-  }, [imagesInfo])
 
   const deleteNote = async (event) => {
     event.preventDefault()
@@ -129,6 +115,21 @@ const Show = ({ notes, match, history, notify, removeNote }) => {
       if (removedNote.id.length > 0) {
         notify(`you deleted '${removedNote.title}'`)
         history.push('/')
+      }
+    }
+  }
+
+  const deleteFile = async (fileId, type) => {
+    if (window.confirm('Are you sure you want to delete this file?')) {
+      try {
+        await fileService.deleteFile(fileId)
+        notify('File successfully deleted!')
+        type === 'image'
+          ? setImagesInfo(imagesInfo.filter((img) => img.id !== fileId))
+          : setDataFilesInfo(dataFilesInfo.filter((file) => file.id !== fileId))
+      } catch (e) {
+        console.error(e)
+        notify('Could not delete file')
       }
     }
   }
@@ -171,18 +172,30 @@ const Show = ({ notes, match, history, notify, removeNote }) => {
       <FilesWrapper>
         <ClipLoader loading={loading} color="blue" />
         <ImagesWrapper>
-          {images.map((img) => {
+          {imagesInfo.map((img) => {
             return (
               <ImagePreview key={img.id}>
-                <img src={img.src} alt={img.alt ?? 'Image'} />
+                <div>
+                  <button onClick={() => deleteFile(img.id, 'image')}>X</button>
+                </div>
+                <a href={img.url} target="_blank" rel="noreferrer">
+                  <img src={img.url} alt={img.fileName} />
+                </a>
               </ImagePreview>
             )
           })}
         </ImagesWrapper>
         <DataFilesWrapper>
-          {dataFilesInfo.map((file) => {
-            return <div key={file.id}>{file.fileName}</div>
-          })}
+          {dataFilesInfo.map((file) => (
+            <FilePreview key={file.id}>
+              <a href={file.url} target="_blank" rel="noreferrer">
+                <div key={file.id}>{file.fileName}</div>
+              </a>
+              <div>
+                <button onClick={() => deleteFile(file.id, 'file')}>X</button>
+              </div>
+            </FilePreview>
+          ))}
         </DataFilesWrapper>
       </FilesWrapper>
       <div className="note-action-buttons">

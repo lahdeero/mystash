@@ -3,8 +3,9 @@ import {
   PutCommand,
   QueryCommand,
 } from '@aws-sdk/lib-dynamodb'
-import { GitHubUser, Tier, UserDbItem } from '../types/types'
 import { v4 as uuidv } from 'uuid'
+
+import { GitHubUser, Tier, UserDbItem } from '../types/types'
 
 export const createUser = async (
   data: GitHubUser,

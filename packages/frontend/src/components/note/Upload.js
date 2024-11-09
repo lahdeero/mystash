@@ -30,13 +30,20 @@ const Upload = ({
       return
     }
 
-    const formData = new FormData()
-    formData.append('noteId', note.id)
-    formData.append('fileData', file, file.name)
-
     let created
     try {
-      created = await fileService.create(formData)
+      if (!file) {
+        errorMessage('No file selected!')
+        return
+      }
+      const fileData = {
+        fileName: file.name,
+        title: 'Test file',
+        noteId: note.id,
+      }
+      const { uploadUrl } = await fileService.create(fileData)
+      console.log('uploadUrl', uploadUrl)
+      created = await fileService.upload(file, uploadUrl)
       notify('File successfully uploaded!')
     } catch (exception) {
       errorMessage('Error while uploading file')
@@ -61,7 +68,7 @@ const Upload = ({
       <div>
         <form>
           <div>
-            <input type="file" onChange={handleChange} />
+            <input type="file" onChange={handleChange} max={1} />
           </div>
           <div>
             <Button onClick={handleSubmit}>UPLOAD</Button>

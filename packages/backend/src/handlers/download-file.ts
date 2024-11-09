@@ -6,9 +6,10 @@ import {
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
 import { APIGatewayEvent, Context, Callback, Handler } from 'aws-lambda'
 import { DynamoDBDocumentClient, GetCommand } from '@aws-sdk/lib-dynamodb'
-import { jwtMiddleware } from '../utils/jwt'
 import * as stream from 'stream'
-import { FileType } from '../types/types'
+
+import { jwtMiddleware } from '../utils/jwt.js'
+import { FileInfo } from '../types/types'
 
 const client = new DynamoDBClient({
   endpoint: process.env.DYNAMODB_ENDPOINT || undefined,
@@ -38,7 +39,7 @@ const downloadFileHandler: Handler<APIGatewayEvent, any> = async (
       Key: { id: fileId },
     })
     const fileMetadata = await dynamoDb.send(getFileCommand)
-    const item = fileMetadata.Item as FileType | undefined
+    const item = fileMetadata.Item as FileInfo | undefined
     if (!item) {
       return {
         statusCode: 404,

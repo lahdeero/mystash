@@ -6,6 +6,7 @@ import {
   QueryCommand,
 } from '@aws-sdk/lib-dynamodb'
 import { v4 as uuidv } from 'uuid'
+
 import { noAccess } from '../utils/http'
 import { encryptData } from '../utils/cryptography'
 import { emailPattern } from '../utils/validation'

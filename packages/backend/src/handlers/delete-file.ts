@@ -13,7 +13,7 @@ const client = new DynamoDBClient({
 })
 const dynamoDb = DynamoDBDocumentClient.from(client)
 
-const deleteNoteHandler: APIGatewayProxyHandler = async (
+const deleteFileHandler: APIGatewayProxyHandler = async (
   event: APIGatewayProxyEvent
 ) => {
   const userId = event.requestContext.authorizer.userId
@@ -21,31 +21,31 @@ const deleteNoteHandler: APIGatewayProxyHandler = async (
     throw new Error('Event has no body!')
   }
 
-  const noteId = event.pathParameters.id
-  // check if note id belongs to user
+  const fileId = event.pathParameters.id
+  // check that file id belongs to user
   const queryCommand = new QueryCommand({
-    TableName: process.env.NOTES_TABLE_NAME,
+    TableName: process.env.FILES_TABLE_NAME,
     KeyConditionExpression: 'id = :id',
     FilterExpression: 'userId = :userId',
     ExpressionAttributeValues: {
-      ':id': noteId,
+      ':id': fileId,
       ':userId': userId,
     },
   })
   const data = await client.send(queryCommand)
-  const note = data.Items?.[0]
-  if (!note || note.userId !== userId) {
+  const file = data.Items?.[0]
+  if (!file || file.userId !== userId) {
     return {
       statusCode: 404,
       headers: { 'content-type': 'application/json; charset=utf-8' },
-      body: JSON.stringify({ message: 'Note not found' }, null, 2),
+      body: JSON.stringify({ message: 'File not found' }, null, 2),
     }
   }
 
   const command = new DeleteCommand({
-    TableName: process.env.NOTES_TABLE_NAME,
+    TableName: process.env.FILES_TABLE_NAME,
     Key: {
-      id: noteId.toString(),
+      id: fileId.toString(),
     },
     ReturnValues: 'ALL_OLD',
   })
@@ -58,4 +58,4 @@ const deleteNoteHandler: APIGatewayProxyHandler = async (
   }
 }
 
-export const handler = jwtMiddleware(deleteNoteHandler, process.env.SECRET!)
+export const handler = jwtMiddleware(deleteFileHandler, process.env.SECRET!)

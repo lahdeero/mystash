@@ -24,23 +24,23 @@ export type Note = {
   createdAt: string
 }
 
-export type FileType = {
+export type FileInfo = {
   id: string
   fileName: string
   mimeType: string
-  eTag: string
   title?: string
   createdAt: string
   updatedAt: string
   noteId: string
   userId: string
+  url?: string
 }
 
 export type GetNotesResponse = Note[]
 
 export type GetNoteFilesResponse = {
   noteId: string
-  files: FileType[]
+  files: FileInfo[]
 }
 
 export enum Tier {

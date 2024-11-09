@@ -5,7 +5,8 @@ import type {
 } from 'aws-lambda'
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
 import { DynamoDBDocumentClient, QueryCommand } from '@aws-sdk/lib-dynamodb'
-import { jwtMiddleware } from '../utils/jwt'
+
+import { jwtMiddleware } from '../utils/jwt.js'
 import { GetNotesResponse } from '../types/types'
 
 const client = new DynamoDBClient({

@@ -6,6 +6,11 @@ provider:
   region: eu-north-1
   stage: ''
   timeout: 30
+  apiGateway:
+    binaryMediaTypes:
+      - 'application/octet-stream'
+      - 'image/png'
+      - 'image/jpeg'
   environment:
     SECRET: ${env:MYSTASH_SECRET}
     DYNAMODB_ENDPOINT: http://host.docker.internal:8001
@@ -95,6 +100,13 @@ functions:
       - http:
           path: api/file/{id}
           method: get
+
+  deleteFile:
+    handler: dist/handlers/delete-file.handler
+    events:
+      - http:
+          path: api/file/{id}
+          method: delete
 
 plugins:
   - serverless-offline

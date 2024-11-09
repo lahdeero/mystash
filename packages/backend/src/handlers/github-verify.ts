@@ -1,8 +1,9 @@
 import type { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda'
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
 import { DynamoDBDocumentClient, PutCommand } from '@aws-sdk/lib-dynamodb'
-import { noAccess } from '../utils/http'
 import axios from 'axios'
+
+import { noAccess } from '../utils/http'
 import { GitHubUser, Tier, UserDbItem } from '../types/types'
 import { createToken } from '../utils/jwt'
 import { createUser, searchGithubUser } from '../services/user-service'

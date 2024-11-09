@@ -1,9 +1,10 @@
 import { vi, describe, test, expect } from 'vitest'
 import { afterEach } from 'node:test'
+import { APIGatewayProxyResult } from 'aws-lambda'
+
 import { Note } from '../types/types'
 import { getContext, getEvent } from '../utils/test-utils'
 import { handler } from './get-notes'
-import { APIGatewayProxyResult } from 'aws-lambda'
 
 let testNotes: Note[]
 

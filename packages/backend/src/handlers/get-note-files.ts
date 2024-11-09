@@ -7,13 +7,33 @@ import {
   APIGatewayProxyResult,
 } from 'aws-lambda'
 import { DynamoDBDocumentClient, QueryCommand } from '@aws-sdk/lib-dynamodb'
-import { jwtMiddleware } from '../utils/jwt'
-import { FileType, GetNoteFilesResponse } from '../types/types'
+import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3'
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
+
+import { jwtMiddleware } from '../utils/jwt.js'
+import { FileInfo, GetNoteFilesResponse } from '../types/types'
 
 const client = new DynamoDBClient({
   endpoint: process.env.DYNAMODB_ENDPOINT || undefined,
 })
 const dynamoDb = DynamoDBDocumentClient.from(client)
+const s3 = new S3Client({
+  region: process.env.REGION,
+  endpoint: process.env.S3_ENDPOINT,
+  forcePathStyle: true, // Required for LocalStack
+})
+
+const getFileUrl = async (userId: string, fileName: string) => {
+  const url = await getSignedUrl(
+    s3,
+    new GetObjectCommand({
+      Bucket: process.env.FILE_BUCKET,
+      Key: `${userId}/${fileName}`,
+    }),
+    { expiresIn: 3600 }
+  )
+  return url
+}
 
 const getNoteFiles: Handler<APIGatewayEvent, any> = async (
   event: APIGatewayEvent,
@@ -37,10 +57,19 @@ const getNoteFiles: Handler<APIGatewayEvent, any> = async (
     },
   })
   const data = await dynamoDb.send(command)
+  const files: FileInfo[] = await Promise.all(
+    data.Items.map(async (item) => {
+      const file = item as FileInfo
+      return {
+        ...file,
+        url: await getFileUrl(userId, file.fileName),
+      }
+    })
+  )
 
   const response: GetNoteFilesResponse = {
     noteId,
-    files: data.Items as FileType[],
+    files,
   }
   return {
     statusCode: 200,

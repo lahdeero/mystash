@@ -5,7 +5,7 @@
     "tsconfigRootDir": "./packages/backend",
     "sourceType": "module"
   },
-  "plugins": ["@typescript-eslint"],
+  "plugins": ["@typescript-eslint", "import"],
   "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
   "ignorePatterns": [
     "dist/",
@@ -18,6 +18,17 @@
     "semi": ["error", "never"],
     "@typescript-eslint/no-unused-vars": ["off", { "argsIgnorePattern": "^_" }],
     "@typescript-eslint/no-explicit-any": "off",
-    "@typescript-eslint/no-floating-promises": "error"
+    "@typescript-eslint/no-floating-promises": "error",
+    "import/order": [
+      "warn",
+      {
+        "groups": [
+          ["builtin", "external"],
+          ["internal"],
+          ["sibling", "parent", "index"]
+        ],
+        "newlines-between": "always"
+      }
+    ]
   }
 }

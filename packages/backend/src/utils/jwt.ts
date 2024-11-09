@@ -2,11 +2,11 @@ import {
   APIGatewayEventRequestContext,
   APIGatewayProxyEvent,
   APIGatewayProxyHandler,
-  APIGatewayProxyResult,
   Callback,
   Context,
 } from 'aws-lambda'
 import { createHmac } from 'crypto'
+
 import { User, UserDbItem, UserToken } from '../types/types'
 
 const base64UrlEncode = (input: string): string => {

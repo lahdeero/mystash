@@ -12,6 +12,17 @@ npx tsc
 echo "Create s3 bucket..."
 aws --endpoint-url=http://localhost:4566 s3 mb s3://mystash-dev-infra-files-bucket
 
+echo "Set S3 CORS policy..."
+aws --endpoint-url=http://localhost:4566 s3api put-bucket-cors --bucket mystash-dev-infra-files-bucket --cors-configuration '{
+  "CORSRules": [
+    {
+      "AllowedOrigins": ["*"],
+      "AllowedMethods": ["GET", "PUT"],
+      "AllowedHeaders": ["*"]
+    }
+  ]
+}'
+
 echo "Create the users table..."
 aws dynamodb create-table \
     --table-name mystash-dev-users \
