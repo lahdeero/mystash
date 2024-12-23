@@ -25,6 +25,9 @@ export class MystashInfraStack extends cdk.Stack {
         name: 'id',
         type: dynamoDb.AttributeType.STRING,
       },
+      billingMode: dynamoDb.BillingMode.PROVISIONED,
+      readCapacity: 1,
+      writeCapacity: 1,
     })
     userDb.addGlobalSecondaryIndex({
       indexName: 'email-index',
@@ -33,6 +36,8 @@ export class MystashInfraStack extends cdk.Stack {
         type: dynamoDb.AttributeType.STRING,
       },
       projectionType: dynamoDb.ProjectionType.ALL,
+      writeCapacity: 1,
+      readCapacity: 1,
     })
     userDb.addGlobalSecondaryIndex({
       indexName: 'github-id-index',
@@ -41,6 +46,8 @@ export class MystashInfraStack extends cdk.Stack {
         type: dynamoDb.AttributeType.NUMBER,
       },
       projectionType: dynamoDb.ProjectionType.ALL,
+      writeCapacity: 1,
+      readCapacity: 1,
     })
 
     const noteDb = new dynamoDb.Table(this, `${stackName}-notes-table`, {
@@ -49,6 +56,9 @@ export class MystashInfraStack extends cdk.Stack {
         name: 'id',
         type: dynamoDb.AttributeType.STRING,
       },
+      billingMode: dynamoDb.BillingMode.PROVISIONED,
+      readCapacity: 3,
+      writeCapacity: 3,
     })
     noteDb.addGlobalSecondaryIndex({
       indexName: 'user-id-index',
@@ -57,6 +67,8 @@ export class MystashInfraStack extends cdk.Stack {
         type: dynamoDb.AttributeType.STRING,
       },
       projectionType: dynamoDb.ProjectionType.ALL,
+      writeCapacity: 2,
+      readCapacity: 2,
     })
 
     const fileDb = new dynamoDb.Table(this, `${stackName}-files-table`, {
@@ -65,6 +77,9 @@ export class MystashInfraStack extends cdk.Stack {
         name: 'id',
         type: dynamoDb.AttributeType.STRING,
       },
+      billingMode: dynamoDb.BillingMode.PROVISIONED,
+      readCapacity: 1,
+      writeCapacity: 1,
     })
     fileDb.addGlobalSecondaryIndex({
       indexName: 'note-id-index',
@@ -73,6 +88,8 @@ export class MystashInfraStack extends cdk.Stack {
         type: dynamoDb.AttributeType.STRING,
       },
       projectionType: dynamoDb.ProjectionType.ALL,
+      writeCapacity: 1,
+      readCapacity: 1,
     })
     fileDb.addGlobalSecondaryIndex({
       indexName: 'user-id-index',
@@ -81,6 +98,8 @@ export class MystashInfraStack extends cdk.Stack {
         type: dynamoDb.AttributeType.STRING,
       },
       projectionType: dynamoDb.ProjectionType.ALL,
+      writeCapacity: 1,
+      readCapacity: 1,
     })
 
     /* ----------\
