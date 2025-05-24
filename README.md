@@ -96,11 +96,7 @@ aws --endpoint-url=http://localhost:4566 s3 ls s3://mystash-dev-infra-files-buck
 
 ## CDK
 
-sam local invoke "Register" -e event.json
-
-### Stack AWS CLI
-
-# Setup
+### Setup stack AWS CLI
 
 Must install [aws cli](https://aws.amazon.com/cli/) and [cdk](https://github.com/aws/aws-cdk/tree/main) before. If cdk synth gives some docker error make sure esbuild is installed!
 
@@ -108,12 +104,15 @@ Must install [aws cli](https://aws.amazon.com/cli/) and [cdk](https://github.com
 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 unzip awscliv2.zip
 sudo ./aws/install
-npm i -g aws-cdk
 ```
+
+### Install CDK
 
 ```bash
 npm install -g aws-cdk
 ```
+
+### Prepare AWS environment
 
 ```bash
 export AWS_PROFILE=mystashapp-prod
