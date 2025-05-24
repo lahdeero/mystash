@@ -13,8 +13,7 @@ import { TextAreaWrapper } from '../common/TextArea'
 import FormElement from '../common/FormElement'
 import TagComponent from './TagComponent'
 
-
-const Form = (props: any) => {
+const Create = (props: any) => {
   const { currentNote, createNote, updateCurrentNote, clearCurrentNote, notify, errorMessage } = props
   const [tags, setTags] = useState([])
   const navigate = useNavigate()
@@ -58,7 +57,9 @@ const Form = (props: any) => {
 
       <FormElement id="noteform">
         <div>
-          Title<br />
+          <div>
+            Title
+          </div>
           <Input name='title' value={currentNote.title} onChange={handleChange} type="text" />
         </div>
         <TextAreaWrapper>
@@ -67,13 +68,9 @@ const Form = (props: any) => {
           </label>
           <Textarea className="note-edit" value={currentNote.content} onChange={handleContent} minRows={10} />
         </TextAreaWrapper>
-        <br />
       </FormElement>
-
       <TagComponent tags={tags} setTags={setTags} notify={notify} currentNote={currentNote} updateCurrentNote={updateCurrentNote} errorMessage={errorMessage} handleChange={handleChange} />
-
       <div>
-        <br />
         <Button form="noteform" type="submit" onClick={handleSubmit}>Create</Button>
       </div>
     </Container>
@@ -94,4 +91,4 @@ const mapDispatchToProps = {
   errorMessage,
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Form)
+export default connect(mapStateToProps, mapDispatchToProps)(Create)

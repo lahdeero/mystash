@@ -17,7 +17,7 @@ import { actionForLogin, actionForLogout } from './reducers/userReducer'
 import useFilter from './hooks/useFilter'
 import loginService from './services/loginService'
 import List from './components/note/List'
-import Form from './components/note/Form'
+import Create from './components/note/Create'
 import Settings from './components/Settings'
 
 const Content = styled.div`
@@ -89,7 +89,7 @@ const App = (props: any) => {
           <Routes>
             <Route path="/" element={<List filter={filter} loading={loading} />} />
             <Route path="/login" element={<Frontpage />} />
-            <Route path="/create" element={<Form />} />
+            <Route path="/create" element={<Create />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/notes/:id" element={<Show />} />
             <Route path="/notes/edit/:id" element={<Edit />} />
