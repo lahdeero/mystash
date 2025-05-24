@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import ReactMarkddown from 'react-markdown'
 import styled from 'styled-components'
 import { ClipLoader } from 'react-spinners'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 
 import { removeNote } from '../../reducers/noteReducer'
 import { notify, errorMessage } from '../../reducers/notificationReducer'
@@ -75,8 +75,9 @@ const FilePreview = styled.div`
   }
 `
 
-const Show = ({ notes, match, history, notify, removeNote }: any) => {
+const Show = ({ notes, notify, removeNote }: any) => {
   const { id } = useParams<{ id: string }>()
+  const navigate = useNavigate()
   const note = notes.find((note: any) => note.id === id)
 
   const [dataFilesInfo, setDataFilesInfo] = useState([])
@@ -113,7 +114,7 @@ const Show = ({ notes, match, history, notify, removeNote }: any) => {
       console.log('removedNote', removedNote)
       if (removedNote.id.length > 0) {
         notify(`you deleted '${removedNote.title}'`)
-        history.push('/')
+        navigate('/')
       }
     }
   }

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import Textarea from 'react-textarea-autosize'
 import { connect } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 
 import { createNote } from '../../reducers/noteReducer'
 import { updateCurrentNote, clearCurrentNote } from '../../reducers/currentNoteReducer'
@@ -16,6 +17,7 @@ import TagComponent from './TagComponent'
 const Form = (props) => {
   const { currentNote, createNote, updateCurrentNote, clearCurrentNote, notify, errorMessage } = props
   const [tags, setTags] = useState([])
+  const navigate = useNavigate()
 
   const handleSubmit = (event) => {
     event.preventDefault()
@@ -25,13 +27,13 @@ const Form = (props) => {
         content: currentNote.content,
         tags: currentNote.tagText.length > 2 ? tags.concat(currentNote.tagText.split(';')) : tags
       }
-      if (noteObject.tags.length >= 0) {
+      if (noteObject.tags.length <= 0) {
         notify('Add atleast one tag')
         return
       }
       clearCurrentNote()
       createNote(noteObject).then(() => {
-        props.history.push('/')
+        navigate('/')
       }, notify(`you created '${noteObject.title}'`))
     } catch (exception) {
       console.error(exception)
