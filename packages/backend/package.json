@@ -36,6 +36,6 @@
     "prettier": "^3.3.3",
     "serverless-offline": "^14.3.2",
     "typescript": "^5.5.4",
-    "vitest": "^2.1.2"
+    "vitest": "^3.1.4"
   }
 }
