@@ -1,9 +1,10 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import ReactMarkddown from 'react-markdown'
 import styled from 'styled-components'
 import { ClipLoader } from 'react-spinners'
+import { useParams } from 'react-router-dom'
 
 import { removeNote } from '../../reducers/noteReducer'
 import { notify, errorMessage } from '../../reducers/notificationReducer'
@@ -75,10 +76,8 @@ const FilePreview = styled.div`
 `
 
 const Show = ({ notes, match, history, notify, removeNote }: any) => {
-  const note = notes.find((note: any) => note.id === match.params.id)
-  if (!note) {
-    return <div>Could not find note</div>
-  }
+  const { id } = useParams<{ id: string }>()
+  const note = notes.find((note: any) => note.id === id)
 
   const [dataFilesInfo, setDataFilesInfo] = useState([])
   const [imagesInfo, setImagesInfo] = useState([])
@@ -151,8 +150,9 @@ const Show = ({ notes, match, history, notify, removeNote }: any) => {
     </ContentWrapper>
   )
 
-  console.log('imagesInfo', imagesInfo)
-
+  if (!note) {
+    return <div>Could not find note</div>
+  }
   return (
     <Container>
       <NoteWrapper>

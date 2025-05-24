@@ -25,11 +25,10 @@ const store = configureStore({
 const rootEl = document.getElementById('root')
 if (!rootEl) throw new Error('Root element not found')
 const root = createRoot(rootEl)
-// TODO: Upgrade react-router-dom to v6 and remove the @ts-ignore
-// @ts-ignore
-root.render(<BrowserRouter>
-    <Provider store={store}>
+root.render(
+  <Provider store={store}>
+    <BrowserRouter>
       <App />
-    </Provider>
-  </BrowserRouter>
+    </BrowserRouter>
+  </Provider>
 )

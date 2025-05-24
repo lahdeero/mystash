@@ -1,4 +1,4 @@
-import { Link, useHistory } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { connect } from 'react-redux'
 import Filter from './Filter'
 import { Navbar, NavItem } from './common/Navigation'
@@ -9,11 +9,11 @@ type Props = {
 }
 
 const Menu = (props: Props) => {
-  const history = useHistory()
+  const navigate = useNavigate()
 
   const clickHome = () => {
     props.filter.setFilter('')
-    history.push('/')
+    navigate('/')
   }
 
   const Logo = () => <div onClick={clickHome}>mystash</div>

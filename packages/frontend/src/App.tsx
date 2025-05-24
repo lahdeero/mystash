@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { BrowserRouter as Router, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { connect } from 'react-redux'
 import queryString from 'query-string'
 import styled from 'styled-components'
@@ -33,7 +33,6 @@ const App = (props: any) => {
   const [loading, setLoading] = useState(true)
 
   const getToken = async (code: any) => {
-    // eslint-disable-next-line
     const { token, user: _user } = await loginService.githubVerify(code)
     window.localStorage.setItem(MS_TOKEN, token)
   }
@@ -49,7 +48,6 @@ const App = (props: any) => {
       }
     }
     if (parsed.token) {
-      // TODO: Remove JSON.stringify
       window.localStorage.setItem(MS_TOKEN, JSON.stringify(parsed.token))
       callback()
     } else if (parsed.code) {
@@ -61,7 +59,6 @@ const App = (props: any) => {
     callback()
   }, [props.user])
 
-  // eslint-disable-next-line
   const init = async () => {
     try {
       setLoading(true)
@@ -88,22 +85,16 @@ const App = (props: any) => {
       <>
         <Content>
           <Notification />
-          <Router basename={process.env.PUBLIC_URL}>
-            <div>
-              <Menu filter={filter} handleLogout={handleLogout} />
-              <Route
-                exact
-                path="/"
-                render={() => <List filter={filter} loading={loading} />}
-              />
-              <Route path="/login" render={() => <Frontpage />} />
-              <Route path="/create" render={() => <Form />} />
-              <Route path="/settings" render={() => <Settings />} />
-              <Route exact path="/notes/:id" component={Show} />
-              <Route exact path="/notes/edit/:id" component={Edit} />
-              <Route exact path="/notes/upload/:id" component={Upload} />
-            </div>
-          </Router>
+          <Menu filter={filter} handleLogout={handleLogout} />
+          <Routes>
+            <Route path="/" element={<List filter={filter} loading={loading} />} />
+            <Route path="/login" element={<Frontpage />} />
+            <Route path="/create" element={<Form />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="/notes/:id" element={<Show />} />
+            <Route path="/notes/edit/:id" element={<Edit />} />
+            <Route path="/notes/upload/:id" element={<Upload />} />
+          </Routes>
         </Content>
         <Footer />
       </>
@@ -121,12 +112,11 @@ const App = (props: any) => {
   }
 }
 
-const mapStateToProps = (store: any) => {
-  return {
-    notes: store.notes,
-    user: store.user,
-  }
-}
+const mapStateToProps = (store: any) => ({
+  notes: store.notes,
+  user: store.user,
+})
+
 const mapDispatchToProps = {
   noteInitialization,
   actionForLogin,

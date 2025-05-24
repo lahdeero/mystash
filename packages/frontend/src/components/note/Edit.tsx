@@ -1,5 +1,6 @@
 import Textarea from 'react-textarea-autosize'
 import { connect } from 'react-redux'
+import { useParams, useNavigate } from 'react-router-dom'
 
 import { modifyNote } from '../../reducers/noteReducer'
 import { updateEditNote, clearEditNote } from '../../reducers/editNoteReducer'
@@ -21,8 +22,10 @@ const ChipContainer = styled.div`
   display: flex;
 `
 
-const Edit = ( { notes, match, errorMessage, history, modifyNote, notify, editNote, updateEditNote }: any) => {
-  const note = notes.find(({ id }: any) => id === match.params.id)
+const Edit = ( { notes, errorMessage, modifyNote, notify, editNote, updateEditNote }: any) => {
+  const { id } = useParams<{ id: string }>()
+  const navigate = useNavigate()
+  const note = notes.find((note: any) => note.id === id)
   if (!editNote?.id || editNote.id !== note.id) {
     updateEditNote({
       id: note.id,
@@ -45,7 +48,7 @@ const Edit = ( { notes, match, errorMessage, history, modifyNote, notify, editNo
       }
       await modifyNote(noteObject)
       await notify(`you modified '${noteObject.title}'`)
-      history.push('/')
+      navigate('/')
     } catch (exception) {
       console.error(exception)
       errorMessage('ERROR WHILE EDITING NOTE')
@@ -144,6 +147,7 @@ const mapStateToProps = (store: any) => {
     editNote: store.editNote,
   }
 }
+
 const mapDispatchToProps = {
   updateEditNote,
   clearEditNote,

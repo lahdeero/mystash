@@ -1,4 +1,4 @@
-import noteService from '../services/noteService.js'
+import noteService from '../services/noteService'
 
 const noteReducer = (store = [], action: any) => {
   switch (action.type) {

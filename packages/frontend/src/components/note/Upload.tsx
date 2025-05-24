@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { connect } from 'react-redux'
+import { useParams, useNavigate } from 'react-router-dom'
 
 import fileService from '../../services/fileService'
 import { modifyLocally } from '../../reducers/noteReducer'
@@ -7,22 +8,20 @@ import { notify, errorMessage } from '../../reducers/notificationReducer'
 import Container from '../common/Container'
 import Button from '../common/Button'
 
-const Upload = ({
-  notes,
-  match,
-  modifyLocally,
-  notify,
-  errorMessage,
-  history,
-}) => {
-  const note = notes.find(({ id }) => id === match.params.id)
-  const [file, setFile] = useState()
+const Upload = ({ notes, modifyLocally, notify, errorMessage }) => {
+  const { id } = useParams()
+  const navigate = useNavigate()
 
-  const handleChange = (event) => {
-    setFile(event.target.files[0])
+  const note = notes.find(({ id: noteId }) => noteId === id)
+  const [file, setFile] = useState<File | null>(null)
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files.length > 0) {
+      setFile(event.target.files[0])
+    }
   }
 
-  const handleSubmit = async (event: any) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
     if (!file) {
       errorMessage('No file selected')
@@ -31,17 +30,12 @@ const Upload = ({
 
     let created
     try {
-      if (!file) {
-        errorMessage('No file selected!')
-        return
-      }
       const fileData = {
-        fileName: 'undefined', // TODO: Why file.name is not available here?
+        fileName: file.name,
         title: 'Test file',
         noteId: note.id,
       }
       const { uploadUrl } = await fileService.create(fileData)
-      console.log('uploadUrl', uploadUrl)
       created = await fileService.upload(file, uploadUrl)
       notify('File successfully uploaded!')
     } catch (exception) {
@@ -51,13 +45,12 @@ const Upload = ({
       if (created) {
         const noteFiles = note.files || []
         const newFiles = [...noteFiles, created.id]
-        console.log('newFiles', newFiles)
         modifyLocally({
           ...note,
           files: newFiles,
         })
       }
-      history.push(`/notes/${note.id}`)
+      navigate(`/notes/${note.id}`)
     }
   }
 
@@ -78,11 +71,10 @@ const Upload = ({
   )
 }
 
-const mapStateToProps = (store) => {
-  return {
-    notes: store.notes,
-  }
-}
+const mapStateToProps = (store) => ({
+  notes: store.notes,
+})
+
 const mapDispatchToProps = {
   modifyLocally,
   notify,
