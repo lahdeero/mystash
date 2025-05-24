@@ -118,7 +118,7 @@ const Input: React.FC<InputProps> = ({
         {image}
         {clear && (
           <button className="clear-input" onClick={handleClear}>
-            <img alt="clear filter" src={ClearIcon} />
+            <img src={ClearIcon} alt="Clear" />
           </button>
         )}
       </>

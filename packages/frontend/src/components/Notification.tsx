@@ -60,7 +60,7 @@ const Notification = ({ notification, hideNotification }) => {
     <NotificationWrapper className="notification-wrapper">
       <ContentSpan>{text}</ContentSpan>
       <HideButton className="hide-notification" onClick={handleClear}>
-        <ClearIcon />
+        <img src={ClearIcon} alt="Clear" />
       </HideButton>
     </NotificationWrapper>
   )
