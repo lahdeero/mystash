@@ -14,12 +14,12 @@ import FormElement from '../common/FormElement'
 import TagComponent from './TagComponent'
 
 
-const Form = (props) => {
+const Form = (props: any) => {
   const { currentNote, createNote, updateCurrentNote, clearCurrentNote, notify, errorMessage } = props
   const [tags, setTags] = useState([])
   const navigate = useNavigate()
 
-  const handleSubmit = (event) => {
+  const handleSubmit = (event: any) => {
     event.preventDefault()
     try {
       const noteObject = {
@@ -41,12 +41,12 @@ const Form = (props) => {
     }
   }
 
-  const handleChange = (event) => {
+  const handleChange = (event: any) => {
     updateCurrentNote({
       [event.target.name]: event.target.value
     })
   }
-  const handleContent = (event) => {
+  const handleContent = (event: any) => {
     updateCurrentNote({
       content: event.target.value
     })
@@ -81,7 +81,7 @@ const Form = (props) => {
   )
 }
 
-const mapStateToProps = (store) => {
+const mapStateToProps = (store: any) => {
   return {
     currentNote: store.currentNote,
   }
