@@ -27,6 +27,8 @@ s3 =
 
 ## Development
 
+Login: test@example.com / salasana
+
 ### Backend
 
 ```bash
