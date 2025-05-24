@@ -85,18 +85,18 @@ const List = ( { notes, sortNotes, filter, loading }: any ) => {
 
   const sortFunction = (a: any, b: any) => {
     switch (sortNotes) {
-    case 'ALPHABETIC':
-      return compareStrings(a.title.toLowerCase().trim(), b.title.toLowerCase().trim(), true)
-    case '!ALPHABETIC':
-      return compareStrings(a.title.toLowerCase().trim(), b.title.toLowerCase().trim(), false)
-    case 'MODIFIED':
-      return compareDates(a.updatedAt, b.updatedAt)
-    case '!MODIFIED':
-      return compareDates(b.updatedAt, a.updatedAt)
-    case '!CREATED':
-      return a.id - b.id
-    default:
-      return b.id - a.id
+      case 'ALPHABETIC':
+        return compareStrings(a.title.toLowerCase().trim(), b.title.toLowerCase().trim(), true)
+      case '!ALPHABETIC':
+        return compareStrings(a.title.toLowerCase().trim(), b.title.toLowerCase().trim(), false)
+      case 'MODIFIED':
+        return compareDates(a.updatedAt, b.updatedAt)
+      case '!MODIFIED':
+        return compareDates(b.updatedAt, a.updatedAt)
+      case '!CREATED':
+        return a.id - b.id
+      default:
+        return b.id - a.id
     }
   }
 

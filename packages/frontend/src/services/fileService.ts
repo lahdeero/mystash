@@ -45,4 +45,5 @@ const deleteFile = async (fileId: any) => {
   return response.data
 }
 
-export default { scanFiles, getOne, create, upload, deleteFile }
+const fileService = { scanFiles, getOne, create, upload, deleteFile }
+export default fileService

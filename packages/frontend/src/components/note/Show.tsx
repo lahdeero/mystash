@@ -84,28 +84,27 @@ const Show = ({ notes, notify, removeNote }: any) => {
   const [imagesInfo, setImagesInfo] = useState([])
   const [loading, setLoading] = useState(false)
 
-  const scanFiles = async (noteId: any) => {
-    setLoading(true)
-    try {
-      const rawResponse = await fileService.scanFiles(noteId)
-      const images = rawResponse.filter((file: any) =>
-        IMAGE_MIME_TYPES.includes(file.mimeType)
-      )
-      const dataFiles = rawResponse.filter(
-        (file: any) => !IMAGE_MIME_TYPES.includes(file.mimeType)
-      )
-      setImagesInfo(images)
-      setDataFilesInfo(dataFiles)
-    } catch (e) {
-      console.error(e)
-      notify('Could not scan files')
-    }
-    setLoading(false)
-  }
-
   useEffect(() => {
+    const scanFiles = async (noteId: any) => {
+      setLoading(true)
+      try {
+        const rawResponse = await fileService.scanFiles(noteId)
+        const images = rawResponse.filter((file: any) =>
+          IMAGE_MIME_TYPES.includes(file.mimeType)
+        )
+        const dataFiles = rawResponse.filter(
+          (file: any) => !IMAGE_MIME_TYPES.includes(file.mimeType)
+        )
+        setImagesInfo(images)
+        setDataFilesInfo(dataFiles)
+      } catch (e) {
+        console.error(e)
+        notify('Could not scan files')
+      }
+      setLoading(false)
+    }
     scanFiles(note.id)
-  }, [note.id])
+  }, [note.id, notify])
 
   const deleteNote = async (event: any) => {
     event.preventDefault()

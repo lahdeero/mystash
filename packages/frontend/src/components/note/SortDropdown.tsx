@@ -20,16 +20,16 @@ const DropdownWrapper = styled.div`
 const SortDropdown = ({ sortNotes, sortAlphabetic, sortCreated, sortModified }: any) => {
   const handleChange = (event: any) => {
     switch (event.target.value) {
-    case 'ALPHABETIC':
-      sortAlphabetic()
-      break
-    case 'CREATED':
-      sortCreated()
-      break
-    case 'MODIFIED':
-      sortModified()
-      break
-    default:
+      case 'ALPHABETIC':
+        sortAlphabetic()
+        break
+      case 'CREATED':
+        sortCreated()
+        break
+      case 'MODIFIED':
+        sortModified()
+        break
+      default:
     }
   }
 
