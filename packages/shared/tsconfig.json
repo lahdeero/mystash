@@ -4,13 +4,14 @@
     "target": "ESNext",
     "moduleResolution": "node",
     "outDir": "dist",
-    "rootDir": "src",
-    "types": ["vitest/globals", "@types/aws-lambda", "@types/node"],
+    "rootDir": ".",
+    "types": ["@types/node"],
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "composite": true
   },
-  "include": ["src", "vitest-globals.d.ts"],
-  "exclude": ["dist", "**/*.test.ts"],
-  "references": [{ "path": "../shared" }]
+  "include": ["**/*.ts"],
+  "exclude": ["dist", "**/*.test.ts"]
 }
