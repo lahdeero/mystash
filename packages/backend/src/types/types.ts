@@ -7,13 +7,6 @@ export type UserDbItem = {
   tier: string
 }
 
-export type User = {
-  email: string
-  firstName: string
-  lastName: string
-  tier: string
-}
-
 export type FileInfo = {
   id: string
   fileName: string
@@ -35,11 +28,6 @@ export enum Tier {
   Free = 'free',
   Premium = 'premium',
   Admin = 'admin',
-}
-
-export type UserToken = {
-  token: string
-  user: User
 }
 
 export type GitHubUser = {

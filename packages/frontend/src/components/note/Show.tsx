@@ -110,7 +110,6 @@ const Show = ({ notes, notify, removeNote }: any) => {
     event.preventDefault()
     if (window.confirm(`Are you sure you want to delete '${note.title}' ?`)) {
       const removedNote = await removeNote(note)
-      console.log('removedNote', removedNote)
       if (removedNote.id.length > 0) {
         notify(`you deleted '${removedNote.title}'`)
         navigate('/')

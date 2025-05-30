@@ -23,7 +23,6 @@ const uploadFileHandler: Handler<APIGatewayEvent, any> = async (
   _context: Context,
   _callback: Callback
 ) => {
-  console.log('process.env.S3_ENDPOINT', process.env.S3_ENDPOINT)
   const userId = event.requestContext.authorizer.userId
   const parsedBody = JSON.parse(event.body)
   const { title, fileName, noteId } = parsedBody

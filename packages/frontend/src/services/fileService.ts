@@ -1,30 +1,28 @@
-import axios from 'axios'
+import axios, { AxiosResponse } from 'axios'
 import { resolveUrl } from '../utils/environmentResolvers'
 import getRequestConfig from '../utils/requestConfigResolver'
 
 const backendUrl = resolveUrl()
 const baseUrl = backendUrl + '/api'
 
-const scanFiles = async (noteId: any) => {
-  const response = await axios.get(
+const scanFiles = async (noteId: any): Promise<any> => {
+  const response: AxiosResponse<any> = await axios.get(
     `${baseUrl}/note/files/${noteId}`,
     getRequestConfig()
   )
-  console.log('response.data', response.data)
-
   return response.data.files
 }
 
-const getOne = async (fileId: any) => {
-  const response = await axios.get(
+const getOne = async (fileId: any): Promise<any> => {
+  const response: AxiosResponse<any> = await axios.get(
     `${baseUrl}/file/${fileId}`,
     getRequestConfig({ responseType: 'arraybuffer' })
   )
   return response.data
 }
 
-const create = async (fileInfo: any) => {
-  const response = await axios.post(
+const create = async (fileInfo: any): Promise<any> => {
+  const response: AxiosResponse<any> = await axios.post(
     `${baseUrl}/file`,
     fileInfo,
     getRequestConfig()
@@ -32,13 +30,13 @@ const create = async (fileInfo: any) => {
   return response.data
 }
 
-const upload = async (file: any, uploadUrl: any) => {
-  const response = await axios.put(uploadUrl, file)
+const upload = async (file: any, uploadUrl: any): Promise<any> => {
+  const response: AxiosResponse<any> = await axios.put(uploadUrl, file)
   return response.data
 }
 
-const deleteFile = async (fileId: any) => {
-  const response = await axios.delete(
+const deleteFile = async (fileId: any): Promise<any> => {
+  const response: AxiosResponse<any> = await axios.delete(
     `${baseUrl}/file/${fileId}`,
     getRequestConfig()
   )

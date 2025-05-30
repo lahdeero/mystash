@@ -50,7 +50,6 @@ const deleteNoteHandler: APIGatewayProxyHandler = async (
     ReturnValues: 'ALL_OLD',
   })
   const result = await dynamoDb.send(command)
-  console.log('result', result)
   return {
     statusCode: 200,
     headers: { 'content-type': 'application/json; charset=utf-8' },
