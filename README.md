@@ -125,6 +125,11 @@ cdk bootstrap aws://AWS-ACCOUNT-ID-HERE/eu-north-1
 ### Deploy
 
 ```bash
+cd frontend
+npm run build
+```
+
+```bash
 cd stack
 export AWS_PROFILE=mystashapp-prod
 cdk synth --profile mystashapp-prod
