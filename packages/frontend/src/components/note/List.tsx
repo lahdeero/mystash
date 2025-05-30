@@ -100,7 +100,6 @@ const List = ( { notes, sortNotes, filter, loading }: any ) => {
     }
   }
 
-  console.log('notes', notes)
   const filteredNotes = filterNotes(notes.sort(sortFunction), filter.value)
   const notesToShow = filteredNotes.slice((page - 1) * notesPerPage, (page - 1) * notesPerPage + notesPerPage)
   const showBottomPagination = notes.length > 7 ? true : false

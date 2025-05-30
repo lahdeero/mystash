@@ -11,7 +11,6 @@ export const createUser = async (
   data: GitHubUser,
   dynamoDb: DynamoDBDocumentClient
 ): Promise<UserDbItem> => {
-  console.log('userInfo', data)
   const [firstName, lastName] = data.name.split(' ')
   const id = uuidv()
   const command = new PutCommand({
@@ -28,7 +27,6 @@ export const createUser = async (
     },
   })
   await dynamoDb.send(command)
-  console.log('item put')
   return {
     id,
     email: data.email,
@@ -51,6 +49,6 @@ export const searchGithubUser = async (
     },
   })
   const data = await dynamoDb.send(command)
-  console.log('data', { ...data, password: '<REDACTED>' })
+  console.info('data', { ...data, password: '<REDACTED>' })
   return data.Items?.[0] as UserDbItem | undefined
 }

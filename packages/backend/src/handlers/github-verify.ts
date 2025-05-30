@@ -16,7 +16,6 @@ export const verifyGithubHandler = async (
   event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> => {
   const parsedBody = JSON.parse(event.body)
-  console.log('parsedBody', parsedBody)
   if (!parsedBody?.code) {
     return noAccess('Code is required')
   }
