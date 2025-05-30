@@ -2,9 +2,17 @@
 
 # TODO: Logging to local-init.log doesnt work
 
+echo "Remove existing Docker containers..."
+docker rm -f dynamodb-local s3-local 2>/dev/null
+
 echo "Start DynamoDB Local in Docker..."
 docker run -d --name dynamodb-local -p 8001:8000 amazon/dynamodb-local
+
+echo "Start LocalStack in Docker..."
 docker run -d --name s3-local -p 4566:4566 -e SERVICES=s3 localstack/localstack
+
+echo "Build shared package..."
+cd ../shared && npm run build && cd ../backend
 
 echo "Transpile typescript..."
 npx tsc

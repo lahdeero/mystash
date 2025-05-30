@@ -14,16 +14,6 @@ export type User = {
   tier: string
 }
 
-export type Note = {
-  id: string
-  userId: string
-  title: string
-  content: string
-  tags: string[]
-  updatedAt: string
-  createdAt: string
-}
-
 export type FileInfo = {
   id: string
   fileName: string
@@ -35,8 +25,6 @@ export type FileInfo = {
   userId: string
   url?: string
 }
-
-export type GetNotesResponse = Note[]
 
 export type GetNoteFilesResponse = {
   noteId: string
