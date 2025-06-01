@@ -18,7 +18,7 @@ echo "Transpile typescript..."
 npx tsc
 
 echo "Create s3 bucket..."
-aws --endpoint-url=http://localhost:4566 s3 mb s3://mystash-dev-infra-files-bucket
+aws --endpoint-url=http://localhost:4566 s3 mb s3://mystash-dev-infra-files-bucket --region eu-north-1
 
 echo "Set S3 CORS policy..."
 aws --endpoint-url=http://localhost:4566 s3api put-bucket-cors --bucket mystash-dev-infra-files-bucket --cors-configuration '{
