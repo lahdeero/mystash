@@ -72,6 +72,8 @@ jobs:
       - name: Make backend setup script executable
         working-directory: packages/backend
         run: chmod +x setup-dev-backend.sh
+      - name: Add host.docker.internal alias for Linux
+        run: echo "127.0.0.1 host.docker.internal" | sudo tee -a /etc/hosts
       - name: Prepare backend services
         working-directory: packages/backend
         run: ./setup-dev-backend.sh
@@ -96,8 +98,10 @@ jobs:
         run: |
           nohup npm start > frontend.log 2>&1 &
 
+      - name: Test connectivity to DynamoDB
+        run: curl -s http://host.docker.internal:8001 || echo "Connection failed"
       - name: Wait for frontend and backend to be ready
-        run: sleep 15
+        run: sleep 10
 
       - name: Run e2e tests
         working-directory: packages/e2e
