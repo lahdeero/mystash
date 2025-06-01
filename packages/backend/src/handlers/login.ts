@@ -17,7 +17,7 @@ export const loginHandler = async (
   if (!(parsedBody?.email && parsedBody?.password)) {
     return noAccess('Email and password are required')
   }
-  console.log('Login attempt with password', { email: parsedBody.email })
+  console.info('Login attempt with password', { email: parsedBody.email })
   const command = new QueryCommand({
     TableName: process.env.USERS_TABLE_NAME,
     IndexName: 'email-index',
@@ -27,7 +27,7 @@ export const loginHandler = async (
     },
   })
   const data = await dynamoDb.send(command)
-  console.log('data', { ...data, password: '<REDACTED>' })
+  console.info('data', { ...data, password: '<REDACTED>' })
   const item = data.Items?.[0] as UserDbItem | undefined
   const dbPassword = item?.password
   const invalidUserNameOrPassword = 'Invalid username or password'
