@@ -81,7 +81,7 @@ jobs:
       - name: Start serverless offline
         working-directory: packages/backend
         run: |
-          nohup npx serverless offline start &
+          nohup npx serverless offline start > backend.log 2>&1 &
         env:
           MYSTASH_SECRET: ${{ secrets.MYSTASH_SECRET }}
           GITHUB_CLIENT_ID: ${{ secrets.GITHUB_CLIENT_ID }}
@@ -101,6 +101,9 @@ jobs:
         run: npm test
         env:
           CI: true
+      - name: Print backend logs if wait fails
+        if: failure()
+        run: cat backend.log || echo "No backend log found"
       - name: Upload Playwright test results
         if: failure()
         uses: actions/upload-artifact@v4
