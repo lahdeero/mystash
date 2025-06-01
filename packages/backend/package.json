@@ -8,7 +8,6 @@
   "description": "check README.md",
   "scripts": {
     "start": "sls offline start",
-    "prepare": "./setup-backend.sh",
     "dev": "npm run prepare && sls offline start",
     "test": "CHOKIDAR_USEPOLLING=true vitest ${CI:+--watch=false}",
     "lint": "npx eslint --parser-options '{ \"tsconfigRootDir\": \".\" }' src"

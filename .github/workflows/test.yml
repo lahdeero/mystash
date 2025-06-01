@@ -1,0 +1,85 @@
+name: Run Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  frontend:
+    name: Frontend Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '22'
+
+      - name: Install dependencies (root + frontend)
+        run: npm install
+      - name: Build shared package
+        run: npm run build --workspace=shared
+      - name: Run frontend tests
+        working-directory: packages/frontend
+        run: npm test
+        env:
+          CI: true
+
+  backend:
+    name: Backend Unit Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20'
+
+      - name: Install dependencies (root + backend)
+        run: npm install
+      - name: Build shared package
+        working-directory: packages/shared
+        run: npm run build
+      - name: Run backend tests
+        working-directory: packages/backend
+        run: npm test
+        env:
+          CI: true
+
+  e2e:
+    name: E2E Playwright Tests
+    runs-on: ubuntu-latest
+    needs: backend
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20'
+
+      - name: Install dependencies (root + e2e)
+        run: npm install
+      - name: Build shared package
+        run: npm run build --workspace=shared
+
+      - name: Prepare backend services
+        working-directory: packages/backend
+        run: ./setup-dev-backend.sh
+      - name: Start serverless offline
+        working-directory: packages/backend
+        run: |
+          nohup sls offline start &
+
+      - name: Wait for backend to be ready
+        run: sleep 15
+
+      - name: Run e2e tests
+        working-directory: packages/e2e
+        run: npm test
+        env:
+          CI: true
