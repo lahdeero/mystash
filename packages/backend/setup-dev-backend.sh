@@ -1,16 +1,6 @@
 #!/bin/bash
 
-if [ -f .env ]; then
-    echo Setup environment variables...
-    source .env
-    export MYSTASH_SECRET
-    export GITHUB_CLIENT_ID
-    export GITHUB_CLIENT_SECRET
-    export GITHUB_REDIRECT_URI
-    export DYNAMODB_ENDPOINT
-else
-     echo "No .env file found, assuming environment variables are already set."
-fi
+# TODO: Logging to local-init.log doesnt work
 
 echo "Remove existing Docker containers..."
 docker rm -f dynamodb-local s3-local 2>/dev/null
@@ -187,3 +177,14 @@ aws dynamodb put-item \
         "updatedAt": {"S": "2024-10-13T17:30:31.222Z"}
     }' \
     --endpoint-url http://localhost:8001 > local-init.log 2>&1
+
+if [ -f .env ]; then
+    echo Setup environment variables...
+    source .env
+    export MYSTASH_SECRET
+    export GITHUB_CLIENT_ID
+    export GITHUB_CLIENT_SECRET
+    export GITHUB_REDIRECT_URI
+else
+     echo "No .env file found, assuming environment variables are already set."
+fi
