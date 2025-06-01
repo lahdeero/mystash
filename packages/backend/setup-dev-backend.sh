@@ -1,6 +1,7 @@
 #!/bin/bash
 
-# TODO: Logging to local-init.log doesnt work
+echo "Setting up development environment for mystash backend..."
+export AWS_REGION=eu-north-1 # Could remove --region flag from AWS CLI commands, but keeping them for now..
 
 echo "Remove existing Docker containers..."
 docker rm -f dynamodb-local s3-local 2>/dev/null
@@ -18,10 +19,10 @@ echo "Transpile typescript..."
 npx tsc
 
 echo "Create s3 bucket..."
-aws --endpoint-url=http://localhost:4566 s3 mb s3://mystash-dev-infra-files-bucket --region eu-north-1
+aws --endpoint-url=http://localhost:4566 --region eu-north-1 s3 mb s3://mystash-dev-infra-files-bucket --region eu-north-1
 
 echo "Set S3 CORS policy..."
-aws --endpoint-url=http://localhost:4566 s3api put-bucket-cors --bucket mystash-dev-infra-files-bucket --cors-configuration '{
+aws --endpoint-url=http://localhost:4566 --region eu-north-1 s3api put-bucket-cors --bucket mystash-dev-infra-files-bucket --cors-configuration '{
   "CORSRules": [
     {
       "AllowedOrigins": ["*"],
@@ -74,6 +75,7 @@ aws dynamodb create-table \
             }
         }]' \
     --billing-mode PAY_PER_REQUEST \
+    --region eu-north-1 \
     --endpoint-url http://localhost:8001
 
 echo "Create the notes table..."
@@ -102,6 +104,7 @@ aws dynamodb create-table \
             }
         }]' \
     --billing-mode PAY_PER_REQUEST \
+    --region eu-north-1 \
     --endpoint-url http://localhost:8001 > local-init.log 2>&1
 
 echo "Create the files table..."
@@ -147,16 +150,17 @@ aws dynamodb create-table \
             }
         }]' \
     --billing-mode PAY_PER_REQUEST \
+    --region eu-north-1 \
     --endpoint-url http://localhost:8001 > local-init.log 2>&1
 
 echo "Waiting for mystash-dev-users table to be active..."
-aws dynamodb wait table-exists --table-name mystash-dev-users --endpoint-url http://localhost:8001
+aws dynamodb wait table-exists --table-name mystash-dev-users --endpoint-url http://localhost:8001 --region eu-north-1
 
 echo "Waiting for mystash-dev-notes table to be active..."
-aws dynamodb wait table-exists --table-name mystash-dev-notes --endpoint-url http://localhost:8001
+aws dynamodb wait table-exists --table-name mystash-dev-notes --endpoint-url http://localhost:8001 --region eu-north-1
 
 echo "Waiting for mystash-dev-files table to be active..."
-aws dynamodb wait table-exists --table-name mystash-dev-files --endpoint-url http://localhost:8001
+aws dynamodb wait table-exists --table-name mystash-dev-files --endpoint-url http://localhost:8001 --region eu-north-1
 
 
 echo "Seed the users table..."
@@ -169,7 +173,8 @@ aws dynamodb put-item \
         "email": {"S": "test@example.com"},
         "password": {"S": "2dc6e6c891c0e3acfa5b312c0da3e26e"}
     }' \
-    --endpoint-url http://localhost:8001 > local-init.log 2>&1
+    --region eu-north-1 \
+    --endpoint-url http://localhost:8001
 
 echo "Seed the notes table..."
 aws dynamodb put-item \
@@ -186,7 +191,8 @@ aws dynamodb put-item \
         "createdAt": {"S": "2024-10-13T17:30:31.222Z"},
         "updatedAt": {"S": "2024-10-13T17:30:31.222Z"}
     }' \
-    --endpoint-url http://localhost:8001 > local-init.log 2>&1
+    --region eu-north-1 \
+    --endpoint-url http://localhost:8001
 
 if [ -f .env ]; then
     echo Setup environment variables...
