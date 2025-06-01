@@ -1,12 +1,12 @@
 import styled from 'styled-components'
 
-export const TextAreaWrapper = styled.div`
+const TextAreaWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 90%;
 `
 
-interface TextAreaProps {
+interface TextareaProps {
   id: string
   className?: string
   value: string
@@ -14,7 +14,7 @@ interface TextAreaProps {
   minRows?: number
 }
 
-const Textarea = (props: TextAreaProps) => {
+const Textarea = (props: TextareaProps) => {
   const { id, value, onChange, minRows = 5 } = props
   return (
     <TextAreaWrapper>
