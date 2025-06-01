@@ -63,7 +63,7 @@ const Login = (props: any) => {
     } catch (exception) {
       console.error(exception)
       setLoading(false)
-      if ((exception as unknown as any).code === 'ERR_BAD_REQUEST') {
+      if ((exception as any).code === 'ERR_BAD_REQUEST') {
         setError('Invalid credentials')
       } else {
         setError('Error')
@@ -97,8 +97,7 @@ const Login = (props: any) => {
               label='Email'
               value={email}
               onChange={(event) => setEmail(event.target.value)}
-            >
-            </Input>
+            />
           </div>
           <div>
             <Input
@@ -107,8 +106,7 @@ const Login = (props: any) => {
               label='Password'
               value={password}
               onChange={(event) => setPassword(event.target.value)}
-            >
-            </Input>
+            />
           </div>
           <Button type="submit">Login</Button>
         </form>

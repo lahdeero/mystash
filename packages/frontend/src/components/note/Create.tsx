@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import Textarea from 'react-textarea-autosize'
 import { connect } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 
@@ -9,9 +8,9 @@ import { notify, errorMessage } from '../../reducers/notificationReducer'
 import Button from '../common/Button'
 import Container from '../common/Container'
 import Input from '../common/Input'
-import { TextAreaWrapper } from '../common/TextArea'
 import FormElement from '../common/FormElement'
 import TagComponent from './TagComponent'
+import Textarea from '../common/TextArea'
 
 const Create = (props: any) => {
   const { currentNote, createNote, updateCurrentNote, clearCurrentNote, notify, errorMessage } = props
@@ -60,10 +59,7 @@ const Create = (props: any) => {
         <div>
           <Input label="Title" name='title' value={currentNote.title} onChange={handleChange} type="text" />
         </div>
-        <TextAreaWrapper>
-          <label htmlFor={textAreaId}>Content</label>
           <Textarea className="note-edit" id={textAreaId} value={currentNote.content} onChange={handleContent} minRows={10} />
-        </TextAreaWrapper>
       </FormElement>
       <TagComponent tags={tags} setTags={setTags} notify={notify} currentNote={currentNote} updateCurrentNote={updateCurrentNote} errorMessage={errorMessage} handleChange={handleChange} />
       <div>

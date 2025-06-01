@@ -37,7 +37,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '20'
+          node-version: '22'
 
       - name: Install dependencies (root + backend)
         run: npm install
@@ -60,12 +60,13 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '20'
+          node-version: '22'
 
       - name: Install dependencies (root + e2e)
         run: npm install
       - name: Build shared package
-        run: npm run build --workspace=shared
+        working-directory: packages/shared
+        run: npm run build
 
       - name: Prepare backend services
         working-directory: packages/backend

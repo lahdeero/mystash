@@ -8,7 +8,7 @@
   "description": "check README.md",
   "scripts": {
     "start": "sls offline start",
-    "dev": "npm run prepare && sls offline start",
+    "dev": "./setup-dev-backend.sh && sls offline start",
     "test": "CHOKIDAR_USEPOLLING=true vitest ${CI:+--watch=false}",
     "lint": "npx eslint --parser-options '{ \"tsconfigRootDir\": \".\" }' src"
   },
@@ -31,7 +31,6 @@
     "@types/node": "^22.7.5",
     "@types/uuid": "^10.0.0",
     "@typescript-eslint/eslint-plugin": "^8.8.1",
-    "serverless-offline": "^14.3.2",
-    "vitest": "^3.1.4"
+    "serverless-offline": "^14.3.2"
   }
 }
