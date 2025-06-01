@@ -93,8 +93,8 @@ jobs:
         run: |
           nohup npm start > frontend.log 2>&1 &
 
-      - name: Wait for backend
-        run: npx wait-on http://localhost:8000
+      - name: Wait for frontend and backend to be ready
+        run: sleep 15
 
       - name: Run e2e tests
         working-directory: packages/e2e
