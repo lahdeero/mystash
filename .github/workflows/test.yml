@@ -88,6 +88,10 @@ jobs:
           GITHUB_CLIENT_SECRET: ${{ secrets.GITHUB_CLIENT_SECRET }}
           GITHUB_REDIRECT_URI: ${{ secrets.GITHUB_REDIRECT_URI }}
           SERVERLESS_ACCESS_KEY: ${{ secrets.SERVERLESS_ACCESS_KEY }}
+      - name: Start frontend in background
+        working-directory: packages/frontend
+        run: |
+          nohup npm start > frontend.log 2>&1 &
 
       - name: Wait for backend to be ready
         run: sleep 15
