@@ -21,7 +21,8 @@ jobs:
       - name: Install dependencies (root + frontend)
         run: npm install
       - name: Build shared package
-        run: npm run build --workspace=shared
+        working-directory: packages/shared
+        run: npm run build
       - name: Run frontend tests
         working-directory: packages/frontend
         run: npm test
@@ -68,6 +69,9 @@ jobs:
         working-directory: packages/shared
         run: npm run build
 
+      - name: Make backend setup script executable
+        working-directory: packages/backend
+        run: chmod +x setup-dev-backend.sh
       - name: Prepare backend services
         working-directory: packages/backend
         run: ./setup-dev-backend.sh
