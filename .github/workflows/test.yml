@@ -88,6 +88,9 @@ jobs:
           GITHUB_CLIENT_SECRET: ${{ secrets.GITHUB_CLIENT_SECRET }}
           GITHUB_REDIRECT_URI: ${{ secrets.GITHUB_REDIRECT_URI }}
           SERVERLESS_ACCESS_KEY: ${{ secrets.SERVERLESS_ACCESS_KEY }}
+          AWS_ACCESS_KEY_ID: test
+          AWS_SECRET_ACCESS_KEY: test
+          AWS_REGION: eu-north-1
       - name: Start frontend in background
         working-directory: packages/frontend
         run: |
