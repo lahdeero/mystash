@@ -81,7 +81,7 @@ jobs:
       - name: Start serverless offline
         working-directory: packages/backend
         run: |
-          nohup sls offline start &
+          nohup npx serverless offline start &
         env:
           MYSTASH_SECRET: ${{ secrets.MYSTASH_SECRET }}
           GITHUB_CLIENT_ID: ${{ secrets.GITHUB_CLIENT_ID }}
