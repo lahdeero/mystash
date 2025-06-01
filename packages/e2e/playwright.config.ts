@@ -10,7 +10,7 @@ export default defineConfig({
     headless: true,
     viewport: { width: 1280, height: 720 },
     screenshot: 'only-on-failure',
-    trace: 'on-first-retry',
+    trace: 'on',
   },
   reporter: [['html', { outputFolder: 'playwright-report', open: 'never' }]],
 })

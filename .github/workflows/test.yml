@@ -103,6 +103,7 @@ jobs:
           CI: true
       - name: Print backend logs if wait fails
         if: failure()
+        working-directory: packages/backend
         run: cat backend.log || echo "No backend log found"
       - name: Upload Playwright test results
         if: failure()
