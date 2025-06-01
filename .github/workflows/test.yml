@@ -80,6 +80,10 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: test
           AWS_SECRET_ACCESS_KEY: test
+      - name: Check running Docker containers
+        run: docker ps
+      - name: Show DynamoDB logs
+        run: docker logs dynamodb-local || true
       - name: Start serverless offline
         working-directory: packages/backend
         run: |
