@@ -10,7 +10,7 @@ import Container from '../common/Container'
 import Input from '../common/Input'
 import FormElement from '../common/FormElement'
 import TagComponent from './TagComponent'
-import Textarea from '../common/Tekstiarea'
+import Textarea from '../common/Textarea'
 
 const Create = (props: any) => {
   const { currentNote, createNote, updateCurrentNote, clearCurrentNote, notify, errorMessage } = props
