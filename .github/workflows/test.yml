@@ -75,10 +75,18 @@ jobs:
       - name: Prepare backend services
         working-directory: packages/backend
         run: ./setup-dev-backend.sh
+        env:
+          AWS_ACCESS_KEY_ID: test
+          AWS_SECRET_ACCESS_KEY: test
       - name: Start serverless offline
         working-directory: packages/backend
         run: |
           nohup sls offline start &
+        env:
+          MYSTASH_SECRET: ${{ secrets.MYSTASH_SECRET }}
+          GITHUB_CLIENT_ID: ${{ secrets.GITHUB_CLIENT_ID }}
+          GITHUB_CLIENT_SECRET: ${{ secrets.GITHUB_CLIENT_SECRET }}
+          GITHUB_REDIRECT_URI: ${{ secrets.GITHUB_REDIRECT_URI }}
 
       - name: Wait for backend to be ready
         run: sleep 15
