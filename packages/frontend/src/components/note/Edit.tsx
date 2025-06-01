@@ -9,7 +9,7 @@ import Input from '../common/Input'
 import Button from '../common/Button'
 import Chip from '../common/Chip'
 import styled from 'styled-components'
-import Textarea from '../common/Textarea'
+import Textarea from '../common/Tekstiarea'
 
 const AddTagForm = styled.form`
   display: flex;
