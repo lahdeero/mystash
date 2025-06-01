@@ -1,4 +1,5 @@
-import axios, { AxiosResponse } from 'axios'
+import axios from 'axios'
+import type { AxiosResponse } from 'axios'
 import { resolveUrl } from '../utils/environmentResolvers'
 import getRequestConfig from '../utils/requestConfigResolver'
 

@@ -1,4 +1,3 @@
-import React from 'react'
 import styled from 'styled-components'
 import Input from '../common/Input'
 import FormElement from '../common/FormElement'
@@ -23,10 +22,10 @@ const ChipContainer = styled.div`
   display: flex;
 `
 
-const TagComponent = ( { tags, setTags, notify, currentNote, updateCurrentNote, errorMessage, handleChange }) => {
+const TagComponent = ( { tags, setTags, notify, currentNote, updateCurrentNote, errorMessage, handleChange }: any) => {
 
 
-  const addTag = (event) => {
+  const addTag = (event: any) => {
     event.preventDefault()
     const maxTags = 10
     if (tags.length >= maxTags) {
@@ -45,8 +44,8 @@ const TagComponent = ( { tags, setTags, notify, currentNote, updateCurrentNote, 
     }
   }
 
-  const removeTag = (name) => {
-    setTags(tags.filter(tag => tag !== name))
+  const removeTag = (name: string) => {
+    setTags(tags.filter((tag: string) => tag !== name))
   }
 
   return (
@@ -55,15 +54,15 @@ const TagComponent = ( { tags, setTags, notify, currentNote, updateCurrentNote, 
         <FormElement id="tagform">
           <div>
             <br />
-            <Input name='tagText' value={currentNote.tagText} onChange={handleChange} type="text" />
+            <Input label="Tags" name='tagText' value={currentNote.tagText} onChange={handleChange} type="text" />
           </div>
         </FormElement>
 
-        <Button type="submit" form="tagform" onClick={addTag}>Add tag</Button>
+        <Button type="submit" form="tagform" onClick={addTag}>Add tags</Button>
       </div>
 
       <ChipContainer>
-        {tags.map(tag =>
+        {tags.map((tag: string) =>
           <Chip key={tag} onClick={() => { removeTag(tag) }}> {tag} </Chip>
         )}
       </ChipContainer>

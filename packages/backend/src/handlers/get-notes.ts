@@ -7,7 +7,7 @@ import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
 import { DynamoDBDocumentClient, QueryCommand } from '@aws-sdk/lib-dynamodb'
 
 import { jwtMiddleware } from '../utils/index.js'
-import { GetNotesResponse } from '@mystash/shared'
+import type { GetNotesResponse } from '@mystash/shared'
 
 const client = new DynamoDBClient({
   endpoint: process.env.DYNAMODB_ENDPOINT || undefined,

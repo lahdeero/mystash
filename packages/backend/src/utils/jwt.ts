@@ -1,3 +1,4 @@
+import type { User, UserToken } from '@mystash/shared'
 import {
   APIGatewayEventRequestContext,
   APIGatewayProxyEvent,
@@ -7,7 +8,7 @@ import {
 } from 'aws-lambda'
 import { createHmac } from 'crypto'
 
-import { User, UserDbItem, UserToken } from '../types/types.js'
+import { UserDbItem } from '../types/types.js'
 
 const base64UrlEncode = (input: string): string => {
   return Buffer.from(input)

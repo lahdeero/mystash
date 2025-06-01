@@ -2,9 +2,9 @@ name: Run Tests
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   test:
@@ -17,11 +17,13 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '20' # Change to your Node.js version
+          node-version: '22'
 
-      - name: Install dependencies for frontend
-        working-directory: packages/frontend
+      - name: Install dependencies (root)
         run: npm install
+
+      - name: Build shared package
+        run: npm run build --workspace=shared
 
       - name: Run frontend tests
         working-directory: packages/frontend
@@ -29,12 +31,34 @@ jobs:
         env:
           CI: true
 
-      - name: Install dependencies for backend
+      - name: Run backend unit tests
         working-directory: packages/backend
-        run: npm install
+        run: npm test
         env:
           CI: true
 
-      - name: Run backend tests
+      - name: Prepare backend environment for E2E
         working-directory: packages/backend
-        run: npm test
+        run: |
+          chmod +x prepare-backend.sh
+          ./prepare-backend.sh
+
+      # Start Serverless Offline for E2E tests
+      - name: Start Serverless Offline
+        working-directory: packages/backend
+        run: npx serverless offline &
+
+      # Wait for backend ready
+      - name: Wait for backend to be ready
+        run: npx wait-on http://localhost:3000
+
+      # E2E tests
+      - name: Install e2e dependencies
+        working-directory: packages/e2e
+        run: npm install
+
+      - name: Run Playwright E2E tests
+        working-directory: packages/e2e
+        run: npx playwright test
+        env:
+          CI: true

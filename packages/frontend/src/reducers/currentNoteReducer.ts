@@ -1,4 +1,4 @@
-import { AnyAction } from 'redux'
+import type { AnyAction } from '@reduxjs/toolkit'
 
 type CurrentNoteState = any
 const initialState: CurrentNoteState = {

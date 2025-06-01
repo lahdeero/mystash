@@ -50,6 +50,7 @@ const Create = (props: any) => {
       content: event.target.value
     })
   }
+  const textAreaId = 'note-content'
 
   return (
     <Container>
@@ -57,16 +58,11 @@ const Create = (props: any) => {
 
       <FormElement id="noteform">
         <div>
-          <div>
-            Title
-          </div>
-          <Input name='title' value={currentNote.title} onChange={handleChange} type="text" />
+          <Input label="Title" name='title' value={currentNote.title} onChange={handleChange} type="text" />
         </div>
         <TextAreaWrapper>
-          <label>
-            Content
-          </label>
-          <Textarea className="note-edit" value={currentNote.content} onChange={handleContent} minRows={10} />
+          <label htmlFor={textAreaId}>Content</label>
+          <Textarea className="note-edit" id={textAreaId} value={currentNote.content} onChange={handleContent} minRows={10} />
         </TextAreaWrapper>
       </FormElement>
       <TagComponent tags={tags} setTags={setTags} notify={notify} currentNote={currentNote} updateCurrentNote={updateCurrentNote} errorMessage={errorMessage} handleChange={handleChange} />

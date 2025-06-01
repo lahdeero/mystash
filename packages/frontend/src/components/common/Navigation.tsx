@@ -76,12 +76,12 @@ const Navbar = ( { brand, children }: NavbarProps ) => {
   )
 }
 
-const NavItem = ( { children, onClick }: { children: any, onClick: any } ) => {
-  return (
-    <div onClick={onClick}>
-      { children }
-    </div>
-  )
-}
+// const NavItem = ( { children, onClick }: { children: any, onClick: any } ) => {
+//   return (
+//     <div onClick={onClick}>
+//       { children }
+//     </div>
+//   )
+// }
 
-export { Navbar, NavItem }
+export { Navbar }

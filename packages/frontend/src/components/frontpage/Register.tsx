@@ -44,7 +44,7 @@ const Register = (props) => {
 
   return (
     <div>
-      <Navbar brand='mystash' href={process.env.PUBLIC_URL} right />
+      <Navbar brand='mystash' href={import.meta.env.VITE_PUBLIC_URL} right />
       <Container className="container">
         <ClipLoader loading={loading} color='blue' />
         <div>
