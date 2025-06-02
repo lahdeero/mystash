@@ -1,4 +1,3 @@
-import Textarea from 'react-textarea-autosize'
 import { connect } from 'react-redux'
 import { useParams, useNavigate } from 'react-router-dom'
 
@@ -9,8 +8,8 @@ import Container from '../common/Container'
 import Input from '../common/Input'
 import Button from '../common/Button'
 import Chip from '../common/Chip'
-import { TextAreaWrapper } from '../common/TextArea'
 import styled from 'styled-components'
+import Textarea from '../common/Textarea'
 
 const AddTagForm = styled.form`
   display: flex;
@@ -128,12 +127,7 @@ const Edit = ( { notes, errorMessage, modifyNote, notify, editNote, updateEditNo
           Title<br />
           <Input name="title" value={editNote.title} onChange={handleFieldChange} type="text" />
         </div>
-        <TextAreaWrapper>
-          <label>
-            Content
-          </label>
-          <Textarea className="note-edit" value={editNote.content} onChange={handleContent} minRows={10} />
-        </TextAreaWrapper>
+          <Textarea id="edit-note" className="note-edit" value={editNote.content} onChange={handleContent} minRows={10} />
         <br />
         <Button waves="light" className="red accent-2" type="submit">Save</Button>
       </form>

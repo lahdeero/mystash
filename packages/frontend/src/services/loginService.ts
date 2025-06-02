@@ -1,17 +1,19 @@
-import API, { AxiosResponse } from 'axios'
+import API from 'axios'
+import type { AxiosResponse } from 'axios'
 import { resolveUrl } from '../utils/environmentResolvers'
 import getRequestConfig from '../utils/requestConfigResolver'
-import { UserToken } from '@mystash/shared'
+import type { User, UserToken } from '@mystash/shared'
 
 const backendUrl = resolveUrl()
 const baseUrl = backendUrl + '/api'
 
-const getUser = async (): Promise<UserToken> => {
+const getUser = async (): Promise<User> => {
   const response: AxiosResponse<UserToken> = await API.get(
     `${baseUrl}/user`,
     getRequestConfig()
   )
-  return response.data
+  const { user } = response.data
+  return user
 }
 
 const register = async (information: any): Promise<void> => {

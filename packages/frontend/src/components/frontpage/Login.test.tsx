@@ -1,22 +1,17 @@
-import React from 'react'
 import { render, screen } from '@testing-library/react'
-import '@testing-library/jest-dom'
+import { vi, describe, test, expect } from 'vitest'
 import Login from './Login'
 
 describe('login', () => {
-  beforeEach(() => {
-    const actionForLogin = jest.fn()
-    const init = jest.fn()
-
+  test('renders welcome message', () => {
+    const actionForLogin = vi.fn()
+    const init = vi.fn()
     render(
       <Login actionForLogin={actionForLogin} init={init} />
     )
-  })
-
-  it('renders welcome message', () => {
     expect(screen.getByText('mystash')).toBeInTheDocument()
-    expect(screen.getByText('email:')).toBeInTheDocument()
-    expect(screen.getByText('password:')).toBeInTheDocument()
+    expect(screen.getByText('Email')).toBeInTheDocument()
+    expect(screen.getByText('Password')).toBeInTheDocument()
     expect(screen.getByText('Dont have account?')).toBeInTheDocument()
   })
 })

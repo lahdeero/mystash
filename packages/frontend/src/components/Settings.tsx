@@ -20,19 +20,21 @@ const InfoRow = styled.div`
 `
 
 const Settings = () => {
-  const [username, setUsername] = useState('Loading...')
-  const [realname, setRealname] = useState('')
+  const [firstName, setFirstname] = useState('Loading...')
+  const [lastName, setLastname] = useState('')
   const [tier, setTier] = useState('')
   const [email, setEmail] = useState('')
 
   useEffect(() => {
-    loginService.getUser().then(user => {
-      setUsername(user.username)
-      setRealname(user.realname)
+    const fetchData = async () => {
+      const user = await loginService.getUser()
+      setFirstname(user.firstName)
+      setLastname(user.lastName)
       setTier(user.tier)
       setEmail(user.email)
-    })
-  })
+    }
+    fetchData()
+  }, [setFirstname, setLastname, setTier, setEmail])
 
   return (
     <SettingsContainer>
@@ -43,12 +45,12 @@ const Settings = () => {
         <div>
           <div>
             <InfoRow>
-              <label htmlFor="username">Username:</label>
-              <input id="username" value={username} disabled />
+              <label htmlFor="username">Firstname:</label>
+              <input id="username" value={firstName} disabled />
             </InfoRow>
             <InfoRow>
-              <label htmlFor="realname">Name:</label>
-              <input id="realname" value={realname} disabled />
+              <label htmlFor="realname">Lastname:</label>
+              <input id="realname" value={lastName} disabled />
             </InfoRow>
             <InfoRow>
               <label htmlFor="level">Level:</label>

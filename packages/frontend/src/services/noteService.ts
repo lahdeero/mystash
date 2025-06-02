@@ -1,7 +1,8 @@
-import API, { AxiosResponse } from 'axios'
+import API from 'axios'
+import type { AxiosResponse } from 'axios'
 import { resolveUrl } from '../utils/environmentResolvers'
 import getRequestConfig from '../utils/requestConfigResolver'
-import {
+import type {
   GetNotesResponse,
   CreateNoteResponse,
   UpdateNoteResponse,

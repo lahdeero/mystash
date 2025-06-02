@@ -56,8 +56,6 @@ interface InputProps {
   value: string
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
   label?: string
-  image?: React.ReactNode
-  imageLeft?: string
   clear?: boolean
   clearCallback?: () => void
   children?: React.ReactNode
@@ -71,51 +69,37 @@ const Input: React.FC<InputProps> = ({
   value,
   onChange,
   label,
-  image,
-  imageLeft,
   clear,
   clearCallback,
   children,
 }) => {
-  const id = useId()
+  const suffix = name.replace(/[^a-zA-Z0-9]/g, '-')
+  const wrapperId = useId()
+  const inputId = `input-${suffix}`
 
-  const refreshImage = (event: React.FocusEvent<HTMLInputElement>) => {
-    if (!image) return
-
-    const imgEl = document.getElementById(id)?.querySelector('img')
-    if (!imgEl) return
-
-    if (event.type === 'focus') {
-      imgEl.classList.remove('active')
-    } else if (event.type === 'blur') {
-      imgEl.classList.add('active')
-    }
-  }
 
   const handleClear = (event: React.MouseEvent) => {
     event.preventDefault()
-    document.getElementById(id)?.querySelector('input')?.focus()
+    document.getElementById(inputId)?.querySelector('input')?.focus()
 
     if (clearCallback) {
       clearCallback()
     }
   }
-
+  label = label ?? name
   return (
-    <InputWrapper id={id} imageLeft={imageLeft}>
+    <InputWrapper id={wrapperId}>
       <>
         {children}
-        {label && <label>{label}</label>}
+        <label htmlFor={inputId}>{label}</label>
         <input
+          id={inputId}
           type={type}
           name={name}
           autoComplete={autocomplete}
           value={value}
           onChange={onChange}
-          onFocus={refreshImage}
-          onBlur={refreshImage}
         />
-        {image}
         {clear && (
           <button className="clear-input" onClick={handleClear}>
             <img src={ClearIcon} alt="Clear" />

@@ -4,7 +4,6 @@ import styled from 'styled-components'
 import githubLoginImage from '../../assets/github_login.png'
 import { Navbar } from '../common/Navigation'
 import Input from '../common/Input'
-import Icon from '../common/Icon'
 import Button from '../common/Button'
 import Container from '../common/Container'
 import { resolveUrl } from '../../utils/environmentResolvers'
@@ -43,7 +42,7 @@ const ErrorText = styled.div`
   margin: 0 0 10px;
 `
 
-const Login = (props) => {
+const Login = (props: any) => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -53,7 +52,7 @@ const Login = (props) => {
   console.debug('backend url:', backendUrl)
   const githubLoginUrl = `${backendUrl}/api/login/github/init`
 
-  const handleLogin = async (event) => {
+  const handleLogin = async (event: any) => {
     event.preventDefault()
     try {
       setLoading(true)
@@ -64,7 +63,7 @@ const Login = (props) => {
     } catch (exception) {
       console.error(exception)
       setLoading(false)
-      if (exception.code === 'ERR_BAD_REQUEST') {
+      if ((exception as any).code === 'ERR_BAD_REQUEST') {
         setError('Invalid credentials')
       } else {
         setError('Error')
@@ -76,7 +75,7 @@ const Login = (props) => {
     <div>
       <Navbar
         brand="mystash"
-        href={process.env.PUBLIC_URL}
+        href={import.meta.env.VITE_PUBLIC_URL}
         right
       ></Navbar>
       <Container>
@@ -92,26 +91,22 @@ const Login = (props) => {
         {error !== '' ? <ErrorText>{error}</ErrorText> : <div></div>}
         <form onSubmit={handleLogin}>
           <div>
-            email:
             <Input
               type="email"
               name="email"
+              label='Email'
               value={email}
               onChange={(event) => setEmail(event.target.value)}
-            >
-              <Icon>account_circle</Icon>
-            </Input>
+            />
           </div>
           <div>
-            password:
             <Input
               type="password"
               name="password"
+              label='Password'
               value={password}
               onChange={(event) => setPassword(event.target.value)}
-            >
-              <Icon>https</Icon>
-            </Input>
+            />
           </div>
           <Button type="submit">Login</Button>
         </form>

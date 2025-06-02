@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "outDir": "dist",
+    "target": "ESNext",
+    "module": "ESNext",
+    "types": ["@playwright/test"]
+  },
+"include": ["tests/**/*.ts"],
+"exclude": ["node_modules", "dist"]
+}

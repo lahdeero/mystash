@@ -17,7 +17,11 @@ export const loginHandler = async (
   if (!(parsedBody?.email && parsedBody?.password)) {
     return noAccess('Email and password are required')
   }
-  console.info('Login attempt with password', { email: parsedBody.email })
+  console.info(
+    'Login attempt with password',
+    { email: parsedBody.email },
+    process.env.DYNAMODB_ENDPOINT
+  )
   const command = new QueryCommand({
     TableName: process.env.USERS_TABLE_NAME,
     IndexName: 'email-index',
