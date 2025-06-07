@@ -1,4 +1,3 @@
-import React from 'react'
 import { Link } from 'react-router-dom'
 import Chip from '../common/Chip'
 import ContentSpan from '../common/ContentSpan'
@@ -35,10 +34,10 @@ const TagWrapper = styled.div`
   display: flex;
 `
 
-const ListNote = ({ note, filter }) => {
+const ListNote = ({ note, filter }: any) => {
   if (!note || !note.id) return <div />
 
-  const handleClick = (tagi) => {
+  const handleClick = (tagi: any) => {
     filter.setFilter(tagi.tag)
   }
 
@@ -52,12 +51,12 @@ const ListNote = ({ note, filter }) => {
           <ContentSpan>{note.title} </ContentSpan>
         </Link>
         <TagWrapper>
-          {tags.join(',').split(',').map(tag =>
+          {tags.join(',').split(',').map((tag: any) =>
             <Chip key={`tag-${tag}-${Math.floor(Math.random() * 1000)}`} onClick={() => { handleClick({ tag }) }}> {tag} </Chip>)}
         </TagWrapper>
       </TitleRow>
       <div>
-        {text.split('\n').map(function (row, key) {
+        {text.split('\n').map(function (row: any, key: any) {
           return (
             <ContentSpan key={key}>{row}</ContentSpan>
           )

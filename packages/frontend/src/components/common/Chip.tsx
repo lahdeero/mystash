@@ -1,4 +1,3 @@
-import React from 'react'
 import styled from 'styled-components'
 import Colors from '../../layout/colors'
 
@@ -26,7 +25,7 @@ const ChipItem = styled.div`
   }
 `
 
-const Chip = ( { onClick, children } ) => {
+const Chip = ( { onClick, children }: any ) => {
   return (
     <ChipItem onClick={onClick}>
       { children }

@@ -1,5 +1,3 @@
-import React from 'react'
-
 const PageItem = ( { title, active, onClick, disabled }: any ) => {
   const className = active ? 'active' : disabled ? 'disabled' : undefined
 

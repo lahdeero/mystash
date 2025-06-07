@@ -1,7 +1,5 @@
-import React from 'react'
 import styled from 'styled-components'
 import Input from './common/Input'
-import SearchIcon from '../assets/magnifying_glass.svg'
 
 const FilterContainer = styled.div`
   position: relative;
@@ -13,7 +11,7 @@ const FilterContainer = styled.div`
 `
 
 // Handlechange in App
-const Filter = ( { filter } ) => {
+const Filter = ( { filter }: any ) => {
   if (window.location.pathname !== '/') {
     return (
       <div />
@@ -27,9 +25,6 @@ const Filter = ( { filter } ) => {
         type="text"
         onChange={filter.onChange}
         value={filter.value}
-        image={filter.value.length > 0 ? null : (<img className="explainer active" src={ SearchIcon }
-          alt="Magnifying glass" />) }
-        imageLeft={'25px'}
         clear={ filter.value.length > 1 }
         clearCallback={() => filter.setFilter('')}
       >

@@ -132,7 +132,7 @@ npm run build
 ```bash
 cd stack
 export AWS_PROFILE=mystashapp-prod
-cdk synth --profile mystashapp-prod
-cdk diff --profile mystashapp-prod
-cdk deploy --profile mystashapp-prod
+npx cdk synth --profile mystashapp-prod
+npx cdk diff --profile mystashapp-prod
+npx cdk deploy --profile mystashapp-prod
 ```

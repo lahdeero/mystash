@@ -75,7 +75,7 @@ const Login = (props: any) => {
     <div>
       <Navbar
         brand="mystash"
-        href={import.meta.env.VITE_PUBLIC_URL}
+        href={"/"}
         right
       ></Navbar>
       <Container>

@@ -7,12 +7,13 @@ import { modifyLocally } from '../../reducers/noteReducer'
 import { notify, errorMessage } from '../../reducers/notificationReducer'
 import Container from '../common/Container'
 import Button from '../common/Button'
+import type { Note } from '@mystash/shared'
 
-const Upload = ({ notes, modifyLocally, notify, errorMessage }) => {
+const Upload = ({ notes, modifyLocally, notify, errorMessage }: any) => {
   const { id } = useParams()
   const navigate = useNavigate()
 
-  const note = notes.find(({ id: noteId }) => noteId === id)
+  const note = notes.find((n: Note) => n.id === id)
   const [file, setFile] = useState<File | null>(null)
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -71,7 +72,7 @@ const Upload = ({ notes, modifyLocally, notify, errorMessage }) => {
   )
 }
 
-const mapStateToProps = (store) => ({
+const mapStateToProps = (store: any) => ({
   notes: store.notes,
 })
 

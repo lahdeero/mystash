@@ -1,9 +1,9 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import Login from './Login'
 import Register from './Register'
 import '../../App.css'
 
-const Frontpage = ({ actionForLogin, _init }: any) => {
+const Frontpage = ({ actionForLogin }: any) => {
   const [pageIsLogin, setPageIsLogin] = useState(true)
   const togglePage = async (event: any) => {
     event.preventDefault()

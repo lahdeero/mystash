@@ -1,4 +1,3 @@
-import React from 'react'
 import styled from 'styled-components'
 import PageItem from './PageItem'
 import Colors from '../../layout/colors'

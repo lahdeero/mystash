@@ -483,7 +483,7 @@ export class MystashInfraStack extends cdk.Stack {
 
     // Deploy the React app to the S3 bucket
     new deployment.BucketDeployment(this, `${stackName}-DeployWebsite`, {
-      sources: [deployment.Source.asset('../packages/frontend/build')],
+      sources: [deployment.Source.asset('../packages/frontend/dist')],
       destinationBucket: websiteBucket,
       distribution,
       distributionPaths: ['/*'],

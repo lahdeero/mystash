@@ -1,4 +1,3 @@
-import React from 'react'
 import styled from 'styled-components'
 import versionResolver from '../utils/versionResolver'
 import Colors from '../layout/colors'

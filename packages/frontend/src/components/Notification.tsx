@@ -1,4 +1,3 @@
-import React from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 
@@ -42,13 +41,13 @@ const HideButton = styled.button`
   }
 `
 
-const Notification = ({ notification, hideNotification }) => {
+const Notification = ({ notification, hideNotification }: any) => {
   const text = notification[0]
   if (typeof text !== 'string' || text.length < 2) {
     return <div />
   }
 
-  const handleClear = (event) => {
+  const handleClear = (event: any) => {
     event.preventDefault()
     event.target.closest('div.notification-wrapper').classList.add('hidden')
     setTimeout(() => {
@@ -66,7 +65,7 @@ const Notification = ({ notification, hideNotification }) => {
   )
 }
 
-const mapStateToProps = (store) => {
+const mapStateToProps = (store: any) => {
   return {
     notification: store.notification
   }
