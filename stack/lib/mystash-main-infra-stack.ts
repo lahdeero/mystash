@@ -11,6 +11,7 @@ import * as origins from 'aws-cdk-lib/aws-cloudfront-origins'
 import * as deployment from 'aws-cdk-lib/aws-s3-deployment'
 import * as ssm from 'aws-cdk-lib/aws-ssm'
 import * as iam from 'aws-cdk-lib/aws-iam'
+import * as acm from 'aws-cdk-lib/aws-certificatemanager';
 
 export class MystashInfraStack extends cdk.Stack {
   constructor(app: cdk.App, id: string, props: cdk.StackProps) {
@@ -459,8 +460,13 @@ export class MystashInfraStack extends cdk.Stack {
       description: `OAC for ${stackName}`,
     })
 
+    const certArn = ssm.StringParameter.valueForStringParameter(this, 'PROD_MYSTASH_CERTIFICATE_ARN');
+    const certificate = acm.Certificate.fromCertificateArn(this, `${stackName}-domain-cert`, certArn);
+
     // Create a CloudFront distribution using the new Distribution construct
     const distribution = new cloudfront.Distribution(this, `${stackName}-Distribution`, {
+      domainNames: ['mystash.70511337.xyz'],
+      certificate,
       defaultRootObject: 'index.html',
       defaultBehavior: {
         origin: origins.S3BucketOrigin.withOriginAccessControl(websiteBucket, {
