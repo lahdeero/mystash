@@ -7,6 +7,7 @@ import * as lambdaNodeJs from 'aws-cdk-lib/aws-lambda-nodejs'
 import * as lambda from 'aws-cdk-lib/aws-lambda'
 import * as dynamoDb from 'aws-cdk-lib/aws-dynamodb'
 import * as cloudfront from 'aws-cdk-lib/aws-cloudfront'
+import * as origins from 'aws-cdk-lib/aws-cloudfront-origins'
 import * as deployment from 'aws-cdk-lib/aws-s3-deployment'
 import * as ssm from 'aws-cdk-lib/aws-ssm'
 import * as iam from 'aws-cdk-lib/aws-iam'
@@ -448,37 +449,54 @@ export class MystashInfraStack extends cdk.Stack {
     const websiteBucket = new s3.Bucket(this, `${stackName}-website-bucket`, {
       bucketName: `${stackName}-frontend-bucket`,
       versioned: true,
-      websiteIndexDocument: 'index.html',
-      websiteErrorDocument: 'index.html',
       publicReadAccess: false, // Access is only provided via CloudFront
       removalPolicy: cdk.RemovalPolicy.DESTROY,
+      blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
     })
 
-    // Create an Origin Access Identity for CloudFront to access the S3 bucket
-    const originAccessIdentity = new cloudfront.OriginAccessIdentity(
-      this,
-      `${stackName}-OAI`
-    )
+    // Create Origin Access Control (OAC) for CloudFront to access S3
+    const originAccessControl = new cloudfront.S3OriginAccessControl(this, `${stackName}-OAC`, {
+      description: `OAC for ${stackName}`,
+    })
 
-    // Grant CloudFront access to the S3 bucket
-    websiteBucket.grantRead(originAccessIdentity)
+    // Create a CloudFront distribution using the new Distribution construct
+    const distribution = new cloudfront.Distribution(this, `${stackName}-Distribution`, {
+      defaultRootObject: 'index.html',
+      defaultBehavior: {
+        origin: origins.S3BucketOrigin.withOriginAccessControl(websiteBucket, {
+          originAccessControl,
+        }),
+        viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+        cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
+      },
+      errorResponses: [
+        {
+          httpStatus: 404,
+          responseHttpStatus: 200,
+          responsePagePath: '/index.html',
+          ttl: cdk.Duration.minutes(30),
+        },
+        {
+          httpStatus: 403,
+          responseHttpStatus: 200,
+          responsePagePath: '/index.html',
+          ttl: cdk.Duration.minutes(30),
+        },
+      ],
+    })
 
-    // Create a CloudFront distribution to serve the React app
-    // CloudFrontWebDistribution is deprecated but when using Distribution cannot access to s3 bucket
-    const distribution = new cloudfront.CloudFrontWebDistribution(
-      this,
-      `${stackName}-WebDistribution`,
-      {
-        originConfigs: [
-          {
-            s3OriginSource: {
-              s3BucketSource: websiteBucket,
-              originAccessIdentity,
-            },
-            behaviors: [{ isDefaultBehavior: true }],
+    // Grant CloudFront access to the S3 bucket via bucket policy
+    websiteBucket.addToResourcePolicy(
+      new iam.PolicyStatement({
+        actions: ['s3:GetObject'],
+        resources: [websiteBucket.arnForObjects('*')],
+        principals: [new iam.ServicePrincipal('cloudfront.amazonaws.com')],
+        conditions: {
+          StringEquals: {
+            'AWS:SourceArn': `arn:aws:cloudfront::${this.account}:distribution/${distribution.distributionId}`,
           },
-        ],
-      }
+        },
+      })
     )
 
     // Deploy the React app to the S3 bucket
