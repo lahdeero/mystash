@@ -3,7 +3,7 @@ mystash
 
 [Mystash @ https://mystash.70511337.xyz/](https://mystash.70511337.xyz/)
 
-[Mystash @ Cloudfront](https://dn422ddfagn9t.cloudfront.net)
+[Mystash @ Cloudfront](https://dk40cb0xb5gk4.cloudfront.net)
 
 ## Install development environment
 
