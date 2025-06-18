@@ -23,7 +23,6 @@ const noteReducer = (store = [], action: any) => {
 export const noteInitialization = () => {
   return async (dispatch: any) => {
     const notes = await noteService.getAll()
-    console.debug('INIT NOTES', notes)
     dispatch({
       type: 'INIT_NOTES',
       data: notes,

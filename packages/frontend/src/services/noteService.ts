@@ -17,7 +17,6 @@ const getAll = async (): Promise<GetNotesResponse> => {
     `${baseUrl}`,
     getRequestConfig()
   )
-  console.debug(response)
   return response.data
 }
 

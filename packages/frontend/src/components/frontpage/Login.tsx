@@ -49,7 +49,6 @@ const Login = (props: any) => {
   const [loading, setLoading] = useState(false)
 
   const backendUrl = resolveUrl()
-  console.debug('backend url:', backendUrl)
   const githubLoginUrl = `${backendUrl}/api/login/github/init`
 
   const handleLogin = async (event: any) => {
