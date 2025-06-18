@@ -13,7 +13,7 @@ provider:
       - 'image/jpeg'
   environment:
     SECRET: ${env:MYSTASH_SECRET}
-    DYNAMODB_ENDPOINT: http://localhost:8001 # http://host.docker.internal:8001
+    DYNAMODB_ENDPOINT: ${env:DYNAMODB_ENDPOINT} # http://localhost:8001 # http://host.docker.internal:8001
     USERS_TABLE_NAME: mystash-dev-users
     NOTES_TABLE_NAME: mystash-dev-notes
     FILES_TABLE_NAME: mystash-dev-files
