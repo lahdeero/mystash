@@ -1,5 +1,6 @@
 import styled from 'styled-components'
 import Input from './common/Input'
+import { useLocation } from 'react-router-dom'
 
 const FilterContainer = styled.div`
   position: relative;
@@ -10,9 +11,9 @@ const FilterContainer = styled.div`
   }
 `
 
-// Handlechange in App
 const Filter = ( { filter }: any ) => {
-  if (window.location.pathname !== '/') {
+  const { pathname } = useLocation()
+  if (pathname !== '/') {
     return (
       <div />
     )

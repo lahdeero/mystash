@@ -9,6 +9,12 @@ import notification from './reducers/notificationReducer'
 import currentNote from './reducers/currentNoteReducer'
 import editNote from './reducers/editNoteReducer'
 import sortNotes from './reducers/sortReducer'
+import { loadState, saveState } from './utils/storage'
+
+const preloadedState = loadState() as Partial<{
+  user: ReturnType<typeof user>
+  notes: ReturnType<typeof notes>
+}>
 
 const store = configureStore({
   reducer: {
@@ -19,6 +25,11 @@ const store = configureStore({
     editNote,
     sortNotes,
   },
+  preloadedState,
+})
+
+store.subscribe(() => {
+  saveState(store.getState())
 })
 
 const rootEl = document.getElementById('root')
