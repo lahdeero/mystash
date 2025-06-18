@@ -94,6 +94,7 @@ jobs:
           GITHUB_CLIENT_SECRET: ${{ secrets.GITHUB_CLIENT_SECRET }}
           GITHUB_REDIRECT_URI: ${{ secrets.GITHUB_REDIRECT_URI }}
           SERVERLESS_ACCESS_KEY: ${{ secrets.SERVERLESS_ACCESS_KEY }}
+          DYNAMODB_ENDPOINT: http://localhost:8001
           AWS_ACCESS_KEY_ID: test
           AWS_SECRET_ACCESS_KEY: test
           AWS_REGION: eu-north-1
@@ -103,7 +104,7 @@ jobs:
           nohup npm start > frontend.log 2>&1 &
 
       - name: Test connectivity to DynamoDB
-        run: curl -s http://host.docker.internal:8001 || echo "Connection failed"
+        run: curl -s http://localhost:8001 || echo "Connection failed"
       - name: Wait for frontend and backend to be ready
         run: sleep 10
 

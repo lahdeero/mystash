@@ -201,6 +201,7 @@ if [ -f .env ]; then
     export GITHUB_CLIENT_ID
     export GITHUB_CLIENT_SECRET
     export GITHUB_REDIRECT_URI
+    export DYNAMODB_ENDPOINT="http://localhost:8001"
 else
      echo "No .env file found, assuming environment variables are already set."
 fi
