@@ -6,7 +6,8 @@ import { createToken, noAccess, decryptData } from '../utils/index.js'
 import { UserDbItem } from '../types/types.js'
 
 const client = new DynamoDBClient({
-  endpoint: process.env.DYNAMODB_ENDPOINT || undefined,
+  endpoint: process.env.DYNAMODB_ENDPOINT!,
+  region: process.env.AWS_REGION!,
 })
 const dynamoDb = DynamoDBDocumentClient.from(client)
 
