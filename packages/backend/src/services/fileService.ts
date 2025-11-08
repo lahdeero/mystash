@@ -25,7 +25,6 @@ export class FileService {
     noteId: string,
     currentUser: CurrentUser,
   ): Promise<GetNoteFilesResponse> {
-    console.log(`process.env.DYNAMODB_ENDPOINT=${process.env.DYNAMODB_ENDPOINT}`)
     const command = new QueryCommand({
       TableName: process.env.FILES_TABLE_NAME,
       IndexName: 'note-id-index',

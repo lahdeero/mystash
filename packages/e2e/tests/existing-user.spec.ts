@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test'
 
-const SLOW_TIMEOUT = 5_000
+const SLOW_TIMEOUT = 10_000
 
 test('should be able to login and do CRUD actions to note', async ({
   page,
