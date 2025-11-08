@@ -31,8 +31,11 @@ const create = async (fileInfo: any): Promise<any> => {
   return response.data
 }
 
-const upload = async (file: any, uploadUrl: any): Promise<any> => {
-  const response: AxiosResponse<any> = await axios.put(uploadUrl, file)
+const upload = async (file: File, uploadUrl: any): Promise<any> => {
+  const headers = {
+    'Content-Type': file.type
+  }
+  const response: AxiosResponse<any> = await axios.put(uploadUrl, file, { headers})
   return response.data
 }
 

@@ -1,9 +1,9 @@
-import { DynamoDBDocumentClient, QueryCommand } from '@aws-sdk/lib-dynamodb'
+import { DeleteCommand, DynamoDBDocumentClient, PutCommand, QueryCommand } from '@aws-sdk/lib-dynamodb'
 import { GetObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3"
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 
-import { CurrentUser, FileInfo, GetNoteFilesResponse } from "../types/types"
+import { CurrentUser, Environment, FileInfo, GetNoteFilesResponse } from "../types/types.js"
 
 export class FileService {
   private dynamoDb: DynamoDBDocumentClient
@@ -25,6 +25,7 @@ export class FileService {
     noteId: string,
     currentUser: CurrentUser,
   ): Promise<GetNoteFilesResponse> {
+    console.log(`process.env.DYNAMODB_ENDPOINT=${process.env.DYNAMODB_ENDPOINT}`)
     const command = new QueryCommand({
       TableName: process.env.FILES_TABLE_NAME,
       IndexName: 'note-id-index',
@@ -51,17 +52,40 @@ export class FileService {
     }
   }
 
+  async saveFileInfo(fileInfo: FileInfo): Promise<void> {
+    const saveFileInfoCommand = new PutCommand({
+      TableName: process.env.FILES_TABLE_NAME,
+      Item: fileInfo,
+    })
+    await this.dynamoDb.send(saveFileInfoCommand)
+  }
+
+  async removeFileInfo(fileId: string): Promise<void> {
+    const command = new DeleteCommand({
+      TableName: process.env.NOTES_TABLE_NAME,
+      Key: {
+        id: fileId,
+      },
+      ReturnValues: 'ALL_OLD',
+    })
+    await this.dynamoDb.send(command)
+  }
+
   async getUploadUrl(currentUser: CurrentUser, fileInfo: FileInfo): Promise<string> {
     const { userId } = currentUser
     const { fileName } = fileInfo
+    const command = new PutObjectCommand({
+      Bucket: process.env.FILES_BUCKET_NAME,
+      Key: `${userId}/${fileName}`,
+    })
     const uploadUrl = await getSignedUrl(
       this.s3Client,
-      new PutObjectCommand({
-        Bucket: process.env.FILES_BUCKET_NAME,
-        Key: `${userId}/${fileName}`,
-      }),
-      { expiresIn: 60 }
+      command,
+      { expiresIn: 60, }
     )
+    if (process.env.ENVIRONMENT === Environment.Dev) {
+      return uploadUrl.replace(/[&?]x-amz-checksum-crc32=[^&]+/, "")
+    }
     return uploadUrl
   }
 

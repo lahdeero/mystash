@@ -7,7 +7,7 @@ import {
 } from 'aws-lambda'
 
 import { jwtMiddleware } from '../utils/index.js'
-import { CurrentUser } from '../types/types.js'
+import { CurrentUser, GetNoteFilesResponse } from '../types/types.js'
 import { FileService } from '../services/fileService.js'
 
 const getNoteFiles: Handler<APIGatewayEvent, any> = async (
@@ -24,7 +24,7 @@ const getNoteFiles: Handler<APIGatewayEvent, any> = async (
     tier: event.requestContext.authorizer.tier,
   }
   const fileService = new FileService()
-  const response = fileService.getFilesByNoteId(
+  const response: GetNoteFilesResponse = await fileService.getFilesByNoteId(
     noteId,
     currentUser
   )

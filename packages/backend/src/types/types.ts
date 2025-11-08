@@ -1,3 +1,8 @@
+export enum Environment {
+  Dev = 'dev',
+  Prod = 'prod',
+}
+
 export type CurrentUser = {
   userId: string,
   tier: UserTier

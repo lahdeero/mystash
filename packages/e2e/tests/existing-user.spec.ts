@@ -1,5 +1,7 @@
 import { test, expect } from '@playwright/test'
 
+const SLOW_TIMEOUT = 5_000
+
 test('should be able to login and do CRUD actions to note', async ({
   page,
 }) => {
@@ -8,7 +10,7 @@ test('should be able to login and do CRUD actions to note', async ({
   await page.getByLabel('Email').fill('test@example.com')
   await page.getByLabel('Password').fill('salasana')
   await page.getByRole('button', { name: 'Login' }).click()
-  await expect(page.getByRole('link', { name: 'Logout' })).toBeVisible()
+  await expect(page.getByRole('link', { name: 'Logout' })).toBeVisible({ timeout: SLOW_TIMEOUT })
 
   await page.getByRole('link', { name: 'Add note' }).click()
   const noteTitle = 'Test title for e2e test'

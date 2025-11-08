@@ -198,14 +198,15 @@ aws dynamodb put-item \
     --endpoint-url http://localhost:8001
 
 if [ -f .env ]; then
-    echo Setup environment variables...
+    echo "Setup environment variables..."
     . "$ENV_FILE"
+    export ENVIRONMENT
     export MYSTASH_SECRET
     export GITHUB_CLIENT_ID
     export GITHUB_CLIENT_SECRET
     export GITHUB_REDIRECT_URI
     export DYNAMODB_ENDPOINT="http://localhost:8001"
-    echo Environment variables set
+    echo "Environment variables set"
 else
      echo "No .env file found, assuming environment variables are already set."
 fi

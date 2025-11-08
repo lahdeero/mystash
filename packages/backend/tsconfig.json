@@ -2,7 +2,7 @@
   "compilerOptions": {
     "module": "ESNext",
     "target": "ESNext",
-    "moduleResolution": "node",
+    "moduleResolution": "nodeNext",
     "outDir": "dist",
     "rootDir": "src",
     "types": ["vitest/globals", "@types/aws-lambda", "@types/node"],

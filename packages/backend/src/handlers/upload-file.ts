@@ -41,7 +41,8 @@ const uploadFileHandler: Handler<APIGatewayEvent, any> = async (
       noteId,
       userId: event.requestContext.authorizer.userId,
     }
-    const uploadUrl = fileService.getUploadUrl(currentUser, fileInfo)
+    await fileService.saveFileInfo(fileInfo)
+    const uploadUrl = await fileService.getUploadUrl(currentUser, fileInfo)
     const body = {
       uploadUrl,
     }
@@ -51,6 +52,7 @@ const uploadFileHandler: Handler<APIGatewayEvent, any> = async (
     }
   } catch (error) {
     console.error('Error uploading file', error)
+    await fileService.removeFileInfo(id)
     return {
       statusCode: 500,
       body: JSON.stringify({ error: 'Error uploading file' }),

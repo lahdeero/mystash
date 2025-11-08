@@ -152,6 +152,7 @@ export class MystashInfraStack extends cdk.Stack {
       'PROD_MYSTASH_GITHUB_CLIENT_SECRET'
     )
     const environment = {
+      ENVIRONMENT: process.env.ENVIRONMENT ?? 'prod',
       REGION: props.env?.region ?? 'eu-north-1',
       PRIMARY_KEY: 'id',
       NOTES_TABLE_NAME: noteDb.tableName,

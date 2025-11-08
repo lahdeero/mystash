@@ -1,6 +1,6 @@
 import { APIGatewayEvent } from "aws-lambda"
 
-import { CurrentUser, UserTier } from "../types/types"
+import { CurrentUser, UserTier } from "../types/types.js"
 
 export const getCurrentUser = (event: APIGatewayEvent): CurrentUser => {
   return {
