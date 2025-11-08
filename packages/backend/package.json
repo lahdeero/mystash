@@ -10,7 +10,7 @@
     "start": "sls offline start",
     "dev": "./setup-dev-backend.sh && sls offline start",
     "test": "CHOKIDAR_USEPOLLING=true vitest ${CI:+--watch=false}",
-    "lint": "npx eslint --parser-options '{ \"tsconfigRootDir\": \".\" }' src"
+    "lint": "eslint 'src/**/*.{ts,js}' --ext .ts,.js"
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.363.0",
@@ -30,7 +30,10 @@
     "@types/mime-types": "^2.1.4",
     "@types/node": "^22.7.5",
     "@types/uuid": "^10.0.0",
-    "@typescript-eslint/eslint-plugin": "^8.8.1",
+    "@typescript-eslint/eslint-plugin": "^8.46.3",
+    "@typescript-eslint/parser": "^8.46.3",
+    "eslint": "^8.57.1",
+    "eslint-plugin-import": "^2.32.0",
     "serverless": "^4.15.1",
     "serverless-offline": "^14.3.2"
   }

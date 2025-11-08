@@ -1,3 +1,8 @@
+export type CurrentUser = {
+  userId: string,
+  tier: UserTier
+}
+
 export type UserDbItem = {
   id: string
   email: string
@@ -24,7 +29,7 @@ export type GetNoteFilesResponse = {
   files: FileInfo[]
 }
 
-export enum Tier {
+export enum UserTier {
   Free = 'free',
   Premium = 'premium',
   Admin = 'admin',

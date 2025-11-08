@@ -3,7 +3,7 @@ import type { APIGatewayProxyEvent, APIGatewayProxyHandler } from 'aws-lambda'
 const GITHUB_OAUTH_URL = 'https://github.com/login/oauth/authorize'
 
 const githubLoginHandler: APIGatewayProxyHandler = async (
-  event: APIGatewayProxyEvent
+  _event: APIGatewayProxyEvent
 ) => {
   const params = new URLSearchParams({
     client_id: process.env.GITHUB_CLIENT_ID,

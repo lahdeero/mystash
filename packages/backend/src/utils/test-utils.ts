@@ -1,8 +1,5 @@
 import { APIGatewayProxyEvent } from 'aws-lambda'
 
-type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE'
-type Body = string | null
-
 const testToken =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjllNTNjYTg4LTQ0ZjMtNDIxMC1hNWY3LTkwZDQ3MTdhM2Q2YSIsImZpcnN0TmFtZSI6IkVlcm8iLCJsYXN0TmFtZSI6Ikhlcm1hbm5pIiwiZW1haWwiOiJqZWFocmFpdEBwcm90b25tYWlsLmNvbSIsImlhdCI6MTcyOTM1MzU2MywiZXhwIjoyMDQzODQ5NTYzfQ.S1NiSjdBNTFHRkFYMGdkVk0zSEdVSThLUzE1RjVSTER0NHpxOFZlUmpOVT0'
 

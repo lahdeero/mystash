@@ -1,32 +1,17 @@
 {
   "parser": "@typescript-eslint/parser",
-  "parserOptions": {
-    "project": "tsconfig.eslint.json",
-    "tsconfigRootDir": "./packages/backend",
-    "sourceType": "module"
-  },
   "plugins": ["@typescript-eslint", "import"],
   "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
-  "ignorePatterns": [
-    "dist/",
-    "node_modules/",
-    "vitest.setup.ts",
-    "vitest.config.ts",
-    "vitest-globals.d.ts"
-  ],
+  "ignorePatterns": ["dist/", "node_modules/"],
   "rules": {
     "semi": ["error", "never"],
-    "@typescript-eslint/no-unused-vars": ["off", { "argsIgnorePattern": "^_" }],
+    "indent": ["error", 2],
+    "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
     "@typescript-eslint/no-explicit-any": "off",
-    "@typescript-eslint/no-floating-promises": "error",
     "import/order": [
       "warn",
       {
-        "groups": [
-          ["builtin", "external"],
-          ["internal"],
-          ["sibling", "parent", "index"]
-        ],
+        "groups": [["builtin", "external"], ["internal"], ["sibling", "parent", "index"]],
         "newlines-between": "always"
       }
     ]

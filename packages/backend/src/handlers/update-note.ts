@@ -1,5 +1,5 @@
 import type { APIGatewayProxyEvent, APIGatewayProxyHandler } from 'aws-lambda'
-import { DynamoDB, DynamoDBClient } from '@aws-sdk/client-dynamodb'
+import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
 import {
   DynamoDBDocumentClient,
   QueryCommand,

@@ -103,6 +103,7 @@ export const jwtMiddleware = (
       }
       event.requestContext.authorizer = { userId } // Store userId in event for later use
     } catch (error) {
+      console.error('JWT verification failed', error)
       callback(null, {
         statusCode: 401,
         body: JSON.stringify({ message: 'Unauthorized' }),

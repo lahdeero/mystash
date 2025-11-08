@@ -1,16 +1,9 @@
 import type { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda'
-import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
-import { DynamoDBDocumentClient, PutCommand } from '@aws-sdk/lib-dynamodb'
 import axios from 'axios'
 
 import { GitHubUser } from '../types/types.js'
-import { createUser, searchGithubUser } from '../services/index.js'
 import { noAccess, createToken } from '../utils/index.js'
-
-const client = new DynamoDBClient({
-  endpoint: process.env.DYNAMODB_ENDPOINT || undefined,
-})
-const dynamoDb = DynamoDBDocumentClient.from(client)
+import { UserService } from '../services/userService.js'
 
 export const verifyGithubHandler = async (
   event: APIGatewayProxyEvent
@@ -44,8 +37,9 @@ export const verifyGithubHandler = async (
     },
   })
 
-  const dbUser = await searchGithubUser(data.id, dynamoDb)
-  const item = dbUser ?? (await createUser(data, dynamoDb))
+  const userService = new UserService()
+  const dbUser = await userService.searchGithubUser(data.id)
+  const item = dbUser ?? (await userService.createUser(data))
   const { token, user } = createToken(item)
 
   return {

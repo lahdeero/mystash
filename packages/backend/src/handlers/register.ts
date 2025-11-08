@@ -7,7 +7,7 @@ import {
 } from '@aws-sdk/lib-dynamodb'
 import { v4 as uuidv } from 'uuid'
 
-import { Tier } from '../types/types.js'
+import { UserTier } from '../types/types.js'
 import { noAccess, encryptData, emailPattern } from '../utils/index.js'
 
 const client = new DynamoDBClient({
@@ -54,7 +54,7 @@ export const registerHandler = async (
       password: encryptedPassword,
       firstName,
       lastName,
-      tier: Tier.Free,
+      tier: UserTier.Free,
     },
   })
   await dynamoDb.send(command)

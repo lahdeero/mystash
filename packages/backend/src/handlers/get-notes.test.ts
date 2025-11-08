@@ -1,8 +1,8 @@
 import { vi, describe, test, expect } from 'vitest'
 import { afterEach } from 'node:test'
 import { APIGatewayProxyResult } from 'aws-lambda'
-
 import type { GetNotesResponse, Note } from '@mystash/shared'
+
 import { getContext, getEvent } from '../utils/test-utils'
 import { handler } from './get-notes'
 
