@@ -8,7 +8,8 @@
   "description": "check README.md",
   "scripts": {
     "start": "sls offline start",
-    "dev": "./setup-dev-backend.sh && sls offline start",
+    "dev": ". ./setup-dev-backend.sh && sls offline start",
+    "serverless": "sls offline start",
     "test": "CHOKIDAR_USEPOLLING=true vitest ${CI:+--watch=false}",
     "lint": "eslint 'src/**/*.{ts,js}' --ext .ts,.js"
   },

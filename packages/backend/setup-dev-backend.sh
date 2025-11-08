@@ -1,5 +1,8 @@
 #!/bin/bash
 
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+ENV_FILE="$SCRIPT_DIR/.env"
+
 echo "Setting up development environment for mystash backend..."
 export AWS_REGION=eu-north-1 # Could remove --region flag from AWS CLI commands, but keeping them for now..
 
@@ -196,12 +199,13 @@ aws dynamodb put-item \
 
 if [ -f .env ]; then
     echo Setup environment variables...
-    source .env
+    . "$ENV_FILE"
     export MYSTASH_SECRET
     export GITHUB_CLIENT_ID
     export GITHUB_CLIENT_SECRET
     export GITHUB_REDIRECT_URI
     export DYNAMODB_ENDPOINT="http://localhost:8001"
+    echo Environment variables set
 else
      echo "No .env file found, assuming environment variables are already set."
 fi

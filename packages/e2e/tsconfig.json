@@ -1,8 +1,10 @@
 {
   "compilerOptions": {
-    "outDir": "dist",
-    "target": "ESNext",
     "module": "ESNext",
+    "target": "ESNext",
+    "moduleResolution": "node",
+    "outDir": "dist",
+    "rootDir": "tests",
     "types": ["@playwright/test"]
   },
 "include": ["tests/**/*.ts"],
