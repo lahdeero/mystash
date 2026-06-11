@@ -11,7 +11,8 @@ import * as origins from 'aws-cdk-lib/aws-cloudfront-origins'
 import * as deployment from 'aws-cdk-lib/aws-s3-deployment'
 import * as ssm from 'aws-cdk-lib/aws-ssm'
 import * as iam from 'aws-cdk-lib/aws-iam'
-import * as acm from 'aws-cdk-lib/aws-certificatemanager';
+import * as acm from 'aws-cdk-lib/aws-certificatemanager'
+import * as path from 'path'
 
 export class MystashInfraStack extends cdk.Stack {
   constructor(app: cdk.App, id: string, props: cdk.StackProps) {
@@ -169,127 +170,119 @@ export class MystashInfraStack extends cdk.Stack {
         .slice(0, 32),
     }
 
+    const projectRoot = path.join(__dirname, '../../')
+    const depsLockFilePath = path.join(__dirname, '../../pnpm-lock.yaml')
+    const handlersPath = path.join(
+      __dirname,
+      '../../packages/backend/src/handlers'
+    )
+    const commonHandlerProps = {
+      runtime: lambda.Runtime.NODEJS_20_X,
+      handler: 'handler',
+      projectRoot,
+      depsLockFilePath,
+      environment,
+    }
+
     const registerHandler = new lambdaNodeJs.NodejsFunction(
       this,
       `${stackName}-register-lambda-handler`,
       {
-        runtime: lambda.Runtime.NODEJS_20_X,
-        handler: 'handler',
-        entry: '../packages/backend/src/handlers/register.ts',
+        ...commonHandlerProps,
+        entry: path.join(handlersPath, 'register.ts'),
         functionName: `${stackName}-register-lambda`,
-        environment,
       }
     )
     const loginHandler = new lambdaNodeJs.NodejsFunction(
       this,
       `${stackName}-login-lambda-handler`,
       {
-        runtime: lambda.Runtime.NODEJS_20_X,
-        handler: 'handler',
-        entry: '../packages/backend/src/handlers/login.ts',
+        ...commonHandlerProps,
+        entry: path.join(handlersPath, 'login.ts'),
         functionName: `${stackName}-login-lambda`,
-        environment,
       }
     )
     const createNoteHandler = new lambdaNodeJs.NodejsFunction(
       this,
       `${stackName}-create-note-lambda-handler`,
       {
-        runtime: lambda.Runtime.NODEJS_20_X,
-        handler: 'handler',
-        entry: '../packages/backend/src/handlers/create-note.ts',
+        ...commonHandlerProps,
+        entry: path.join(handlersPath, 'create-note.ts'),
         functionName: `${stackName}-create-note-lambda`,
-        environment,
       }
     )
     const getNotesHandler = new lambdaNodeJs.NodejsFunction(
       this,
       `${stackName}-get-notes-lambda-handler`,
       {
-        runtime: lambda.Runtime.NODEJS_20_X,
-        handler: 'handler',
-        entry: '../packages/backend/src/handlers/get-notes.ts',
+        ...commonHandlerProps,
+        entry: path.join(handlersPath, 'get-notes.ts'),
         functionName: `${stackName}-get-notes-lambda`,
-        environment,
       }
     )
     const getNoteFilesHandler = new lambdaNodeJs.NodejsFunction(
       this,
       `${stackName}-get-note-files-lambda-handler`,
       {
-        runtime: lambda.Runtime.NODEJS_20_X,
-        handler: 'handler',
-        entry: '../packages/backend/src/handlers/get-note-files.ts',
+        ...commonHandlerProps,
+        entry: path.join(handlersPath, 'get-note-files.ts'),
         functionName: `${stackName}-get-note-files-lambda`,
-        environment,
       }
     )
     const updateNoteHandler = new lambdaNodeJs.NodejsFunction(
       this,
       `${stackName}-update-note-lambda-handler`,
       {
-        runtime: lambda.Runtime.NODEJS_20_X,
-        handler: 'handler',
-        entry: '../packages/backend/src/handlers/update-note.ts',
+        ...commonHandlerProps,
+        entry: path.join(handlersPath, 'update-note.ts'),
         functionName: `${stackName}-update-note-lambda`,
-        environment,
       }
     )
     const deleteNoteHandler = new lambdaNodeJs.NodejsFunction(
       this,
       `${stackName}-delete-note-lambda-handler`,
       {
-        runtime: lambda.Runtime.NODEJS_20_X,
-        handler: 'handler',
-        entry: '../packages/backend/src/handlers/delete-note.ts',
+        ...commonHandlerProps,
+        entry: path.join(handlersPath, 'delete-note.ts'),
         functionName: `${stackName}-delete-note-lambda`,
-        environment,
       }
     )
     const githubLoginHandler = new lambdaNodeJs.NodejsFunction(
       this,
       `${stackName}-github-login-lambda-handler`,
       {
-        runtime: lambda.Runtime.NODEJS_20_X,
-        handler: 'handler',
-        entry: '../packages/backend/src/handlers/github-login.ts',
+        ...commonHandlerProps,
+        entry: path.join(handlersPath, 'github-login.ts'),
         functionName: `${stackName}-github-login-lambda`,
-        environment,
       }
     )
     const githubVerifyHandler = new lambdaNodeJs.NodejsFunction(
       this,
       `${stackName}-github-verify-lambda-handler`,
       {
-        runtime: lambda.Runtime.NODEJS_20_X,
-        handler: 'handler',
-        entry: '../packages/backend/src/handlers/github-verify.ts',
+        ...commonHandlerProps,
+        entry: path.join(handlersPath, 'github-verify.ts'),
         functionName: `${stackName}-github-verify-lambda`,
-        environment,
       }
     )
     const uploadFileHandler = new lambdaNodeJs.NodejsFunction(
       this,
       `${stackName}-upload-file-lambda-handler`,
       {
-        runtime: lambda.Runtime.NODEJS_20_X,
-        handler: 'handler',
-        entry: '../packages/backend/src/handlers/upload-file.ts',
+        ...commonHandlerProps,
+        entry: path.join(handlersPath, 'upload-file.ts'),
         functionName: `${stackName}-upload-file-lambda`,
         timeout: cdk.Duration.seconds(30),
-        environment,
       }
     )
     const deleteFileHandler = new lambdaNodeJs.NodejsFunction(
       this,
       `${stackName}-delete-file-lambda-handler`,
       {
-        runtime: lambda.Runtime.NODEJS_20_X,
-        handler: 'handler',
-        entry: '../packages/backend/src/handlers/delete-file.ts',
+        ...commonHandlerProps,
+        entry: path.join(handlersPath, 'delete-file.ts'),
         functionName: `${stackName}-delete-file-lambda`,
         timeout: cdk.Duration.seconds(30),
-        environment,
       }
     )
 
@@ -457,40 +450,59 @@ export class MystashInfraStack extends cdk.Stack {
     })
 
     // Create Origin Access Control (OAC) for CloudFront to access S3
-    const originAccessControl = new cloudfront.S3OriginAccessControl(this, `${stackName}-OAC`, {
-      description: `OAC for ${stackName}`,
-    })
+    const originAccessControl = new cloudfront.S3OriginAccessControl(
+      this,
+      `${stackName}-OAC`,
+      {
+        description: `OAC for ${stackName}`,
+      }
+    )
 
-    const certArn = ssm.StringParameter.valueForStringParameter(this, 'PROD_MYSTASH_CERTIFICATE_ARN');
-    const certificate = acm.Certificate.fromCertificateArn(this, `${stackName}-domain-cert`, certArn);
+    const certArn = ssm.StringParameter.valueForStringParameter(
+      this,
+      'PROD_MYSTASH_CERTIFICATE_ARN'
+    )
+    const certificate = acm.Certificate.fromCertificateArn(
+      this,
+      `${stackName}-domain-cert`,
+      certArn
+    )
 
     // Create a CloudFront distribution using the new Distribution construct
-    const distribution = new cloudfront.Distribution(this, `${stackName}-Distribution`, {
-      domainNames: ['mystash.70511337.xyz'],
-      certificate,
-      defaultRootObject: 'index.html',
-      defaultBehavior: {
-        origin: origins.S3BucketOrigin.withOriginAccessControl(websiteBucket, {
-          originAccessControl,
-        }),
-        viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
-        cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
-      },
-      errorResponses: [
-        {
-          httpStatus: 404,
-          responseHttpStatus: 200,
-          responsePagePath: '/index.html',
-          ttl: cdk.Duration.minutes(30),
+    const distribution = new cloudfront.Distribution(
+      this,
+      `${stackName}-Distribution`,
+      {
+        domainNames: ['mystash.70511337.xyz'],
+        certificate,
+        defaultRootObject: 'index.html',
+        defaultBehavior: {
+          origin: origins.S3BucketOrigin.withOriginAccessControl(
+            websiteBucket,
+            {
+              originAccessControl,
+            }
+          ),
+          viewerProtocolPolicy:
+            cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+          cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
         },
-        {
-          httpStatus: 403,
-          responseHttpStatus: 200,
-          responsePagePath: '/index.html',
-          ttl: cdk.Duration.minutes(30),
-        },
-      ],
-    })
+        errorResponses: [
+          {
+            httpStatus: 404,
+            responseHttpStatus: 200,
+            responsePagePath: '/index.html',
+            ttl: cdk.Duration.minutes(30),
+          },
+          {
+            httpStatus: 403,
+            responseHttpStatus: 200,
+            responsePagePath: '/index.html',
+            ttl: cdk.Duration.minutes(30),
+          },
+        ],
+      }
+    )
 
     // Grant CloudFront access to the S3 bucket via bucket policy
     websiteBucket.addToResourcePolicy(
