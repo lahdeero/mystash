@@ -124,7 +124,9 @@ const Show = ({ notes, notify, removeNote }: any) => {
         notify('File successfully deleted!')
         type === 'image'
           ? setImagesInfo(imagesInfo.filter((img: any) => img.id !== fileId))
-          : setDataFilesInfo(dataFilesInfo.filter((file: any) => file.id !== fileId))
+          : setDataFilesInfo(
+              dataFilesInfo.filter((file: any) => file.id !== fileId)
+            )
       } catch (e) {
         console.error(e)
         notify('Could not delete file')
@@ -136,18 +138,52 @@ const Show = ({ notes, notify, removeNote }: any) => {
   const text = note.content
   const markdown = tags.includes('markdown')
 
-  const RenderContent = () => (
-    <ContentWrapper>
-      {text.split('\n').map(function (row: any, key: any) {
-        return (
-          <span key={key}>
-            {row}
+  const RenderContent = () => {
+    const urlRegex =
+      /(?:https?:\/\/|www\.)[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_+.~#?&/=]*)/g
+
+    const renderRow = (row: string) => {
+      const parts: React.ReactNode[] = []
+      let lastIndex = 0
+      let match
+
+      urlRegex.lastIndex = 0
+      while ((match = urlRegex.exec(row)) !== null) {
+        if (match.index > lastIndex) {
+          parts.push(row.slice(lastIndex, match.index))
+        }
+        const url = match[0]
+        const href = url.startsWith('www.') ? `https://${url}` : url
+        parts.push(
+          <a
+            key={match.index}
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {url}
+          </a>
+        )
+        lastIndex = match.index + url.length
+      }
+      if (lastIndex < row.length) {
+        parts.push(row.slice(lastIndex))
+      }
+
+      return parts
+    }
+
+    return (
+      <ContentWrapper data-testid="note-content-wrapper">
+        {text.split('\n').map((row: string, lineKey: number) => (
+          <span key={lineKey}>
+            {renderRow(row)}
             <br />
           </span>
-        )
-      })}
-    </ContentWrapper>
-  )
+        ))}
+      </ContentWrapper>
+    )
+  }
 
   if (!note) {
     return <div>Could not find note</div>

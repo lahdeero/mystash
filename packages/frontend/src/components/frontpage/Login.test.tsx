@@ -6,9 +6,7 @@ describe('login', () => {
   test('renders welcome message', () => {
     const actionForLogin = vi.fn()
     const init = vi.fn()
-    render(
-      <Login actionForLogin={actionForLogin} init={init} />
-    )
+    render(<Login actionForLogin={actionForLogin} init={init} />)
     expect(screen.getByText('mystash')).toBeInTheDocument()
     expect(screen.getByText('Email')).toBeInTheDocument()
     expect(screen.getByText('Password')).toBeInTheDocument()

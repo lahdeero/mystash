@@ -13,7 +13,7 @@ const NavbarWrapper = styled.div`
   background-color: ${Colors.Nav};
   display: flex;
   justify-content: space-between;
-  padding: .2rem 1rem;
+  padding: 0.2rem 1rem;
 
   @media only screen and (max-width: 600px) {
     flex-direction: column;
@@ -31,7 +31,7 @@ const Logo = styled.div`
 
 const NavItemsWrapper = styled.nav`
   a {
-    color: ${Colors.White};;
+    color: ${Colors.White};
     text-decoration: none;
 
     &:hover,
@@ -43,7 +43,7 @@ const NavItemsWrapper = styled.nav`
 
   > ul {
     display: flex;
-    padding: .1rem 1rem;
+    padding: 0.1rem 1rem;
 
     @media only screen and (max-width: 600px) {
       justify-content: space-between;
@@ -59,29 +59,21 @@ const NavItemsWrapper = styled.nav`
   }
 `
 
-const Navbar = ( { brand, children }: NavbarProps ) => {
+const Navbar = ({ brand, children }: NavbarProps) => {
   const arrayChildren = Children.toArray(children)
 
   return (
     <NavbarWrapper>
-      <Logo>
-        { brand }
-      </Logo>
+      <Logo>{brand}</Logo>
       <NavItemsWrapper>
         <ul>
-          { Children.map(arrayChildren, (child) => <li>{child}</li>) }
+          {Children.map(arrayChildren, (child) => (
+            <li>{child}</li>
+          ))}
         </ul>
       </NavItemsWrapper>
     </NavbarWrapper>
   )
 }
-
-// const NavItem = ( { children, onClick }: { children: any, onClick: any } ) => {
-//   return (
-//     <div onClick={onClick}>
-//       { children }
-//     </div>
-//   )
-// }
 
 export { Navbar }
