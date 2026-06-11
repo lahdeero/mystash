@@ -4,8 +4,7 @@
   "main": "index.js",
   "scripts": {
     "test": "playwright test",
-    "debug": "playwright test --debug",
-    "postinstall": "playwright install"
+    "debug": "playwright test --debug"
   },
   "keywords": [],
   "author": "",
