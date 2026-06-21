@@ -1,6 +1,7 @@
 {
   "name": "mystash",
   "private": true,
+  "packageManager": "pnpm@11.8.0",
   "scripts": {
     "init": "pnpm install",
     "dev": "pnpm --filter frontend dev & pnpm --filter backend dev",

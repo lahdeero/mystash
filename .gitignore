@@ -5,3 +5,4 @@ dist/
 test-results/
 packages/e2e/playwright-report/
 .serverless/
+local-init.log

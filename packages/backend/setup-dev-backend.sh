@@ -16,10 +16,10 @@ echo "Start LocalStack in Docker..."
 docker run -d --name s3-local -p 4566:4566 -e SERVICES=s3 localstack/localstack
 
 echo "Build shared package..."
-cd ../shared && npm run build && cd ../backend
+cd ../shared && pnpm run build && cd ../backend
 
 echo "Transpile typescript..."
-npx tsc
+tsc --build
 
 echo "Create s3 bucket..."
 aws --endpoint-url=http://localhost:4566 --region eu-north-1 s3 mb s3://mystash-dev-infra-files-bucket --region eu-north-1
