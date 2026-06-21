@@ -21,7 +21,7 @@ const TitleRow = styled.div`
   }
 
   > a {
-    padding: .2rem 1.5rem 0 0;
+    padding: 0.2rem 1.5rem 0 0;
     overflow: hidden;
     text-overflow: ellipse;
   }
@@ -42,24 +42,37 @@ const ListNote = ({ note, filter }: any) => {
   }
 
   const tags = note.tags || ['EI TAGIA', 'HUOM']
-  const text = note.content.length <= 150 ? note.content : `${note.content.substring(0, 150)}...`
+  const text =
+    note.content.length <= 150
+      ? note.content
+      : `${note.content.substring(0, 150)}...`
 
   return (
     <NoteWrapper>
       <TitleRow>
         <Link to={`/notes/${note.id}`}>
-          <ContentSpan>{note.title} </ContentSpan>
+          <ContentSpan isClickable={true}>{note.title}</ContentSpan>
         </Link>
         <TagWrapper>
-          {tags.join(',').split(',').map((tag: any) =>
-            <Chip key={`tag-${tag}-${Math.floor(Math.random() * 1000)}`} onClick={() => { handleClick({ tag }) }}> {tag} </Chip>)}
+          {tags
+            .join(',')
+            .split(',')
+            .map((tag: any) => (
+              <Chip
+                key={`tag-${tag}-${Math.floor(Math.random() * 1000)}`}
+                onClick={() => {
+                  handleClick({ tag })
+                }}
+              >
+                {' '}
+                {tag}{' '}
+              </Chip>
+            ))}
         </TagWrapper>
       </TitleRow>
       <div>
         {text.split('\n').map(function (row: any, key: any) {
-          return (
-            <ContentSpan key={key}>{row}</ContentSpan>
-          )
+          return <ContentSpan key={key}>{row}</ContentSpan>
         })}
       </div>
     </NoteWrapper>

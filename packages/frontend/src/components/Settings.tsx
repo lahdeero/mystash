@@ -3,6 +3,7 @@ import styled from 'styled-components'
 
 import loginService from '../services/loginService'
 import Info from './common/Info'
+import { Theme } from '../layout/colors'
 
 const SettingsContainer = styled.div`
   padding: 1rem;
@@ -15,11 +16,16 @@ const UserInfoWrapper = styled.div`
 const InfoRow = styled.div`
   display: flex;
   > * {
-    padding: 0 .1rem;
+    padding: 0 0.1rem;
   }
 `
 
-const Settings = () => {
+interface SettingsProps {
+  currentTheme: Theme
+  setCurrentTheme: (theme: Theme) => void
+}
+
+const Settings = (props: SettingsProps) => {
   const [firstName, setFirstname] = useState('Loading...')
   const [lastName, setLastname] = useState('')
   const [tier, setTier] = useState('')
@@ -38,10 +44,20 @@ const Settings = () => {
 
   return (
     <SettingsContainer>
+      <h2>Settings</h2>
+      <div>
+        <label htmlFor="theme">Change theme:</label>
+        <select
+          id="theme"
+          value={props.currentTheme}
+          onChange={(e) => props.setCurrentTheme(e.target.value as Theme)}
+        >
+          <option value={Theme.Light}>Light</option>
+          <option value={Theme.Dark}>Dark</option>
+        </select>
+      </div>
       <UserInfoWrapper>
-        <Info>
-          {'Currently can\'t change your information'}
-        </Info>
+        <Info>{"Currently can't change your information"}</Info>
         <div>
           <div>
             <InfoRow>
@@ -57,7 +73,7 @@ const Settings = () => {
               <input id="level" value={tier} disabled />
             </InfoRow>
             <InfoRow>
-              <label htmlFor='email'>Email:</label>
+              <label htmlFor="email">Email:</label>
               <input id="email" value={email} disabled />
             </InfoRow>
           </div>

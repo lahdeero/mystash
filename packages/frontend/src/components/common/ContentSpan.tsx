@@ -1,6 +1,11 @@
 import styled from 'styled-components'
 
-const ContentSpan = styled.span`
+interface ContentSpanProps {
+  isClickable?: boolean
+}
+
+const ContentSpan = styled.span<ContentSpanProps>`
+  color: ${({ theme, isClickable }) => (isClickable ? theme.Link : theme.Text)};
   display: block;
   overflow: hidden;
   text-overflow: ellipsis;

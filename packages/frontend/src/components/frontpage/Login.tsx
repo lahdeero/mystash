@@ -7,7 +7,6 @@ import Input from '../common/Input'
 import Button from '../common/Button'
 import Container from '../common/Container'
 import { resolveUrl } from '../../utils/environmentResolvers'
-import Colors from '../../layout/colors'
 
 const FlexItem = styled.div`
   display: flex;
@@ -27,14 +26,14 @@ const LoginSeparator = styled.div`
   margin: 2rem 0;
 
   span {
-    background-color: ${Colors.Background};
+    background-color: ${({ theme }) => theme.Background};
     padding: 0 10px;
   }
 `
 
 const ErrorText = styled.div`
-  color: black;
-  background-color: red;
+  color: ${({ theme }) => theme.Text};
+  background-color: ${({ theme }) => theme.ButtonDanger};
   font-size: 20px;
   border-style: solid;
   border-radius: 5px;
@@ -72,11 +71,7 @@ const Login = (props: any) => {
 
   return (
     <div>
-      <Navbar
-        brand="mystash"
-        href={"/"}
-        right
-      ></Navbar>
+      <Navbar brand="mystash" href={'/'} right></Navbar>
       <Container>
         <FlexItem>
           <a href={githubLoginUrl}>
@@ -93,7 +88,7 @@ const Login = (props: any) => {
             <Input
               type="email"
               name="email"
-              label='Email'
+              label="Email"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
             />
@@ -102,7 +97,7 @@ const Login = (props: any) => {
             <Input
               type="password"
               name="password"
-              label='Password'
+              label="Password"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
             />

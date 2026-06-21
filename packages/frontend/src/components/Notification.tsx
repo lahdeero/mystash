@@ -2,13 +2,12 @@ import { connect } from 'react-redux'
 import styled from 'styled-components'
 
 import { hideNotification } from '../reducers/notificationReducer'
-import Colors from '../layout/colors'
 import ContentSpan from './common/ContentSpan'
 import ClearIcon from '../assets/clear.svg'
 
 const NotificationWrapper = styled.div`
-  background-color: ${Colors.Teal};
-  color: ${Colors.White};
+  background-color: ${({ theme }) => theme.NotificationBackground};
+  color: ${({ theme }) => theme.Text};
 
   max-height: 4rem;
   overflow: hidden;
@@ -17,14 +16,14 @@ const NotificationWrapper = styled.div`
   justify-content: space-between;
   align-items: flex-start;
 
-  margin: .1rem;
-  padding: .1rem .2rem;
+  margin: 0.1rem;
+  padding: 0.1rem 0.2rem;
   font-size: 1.4rem;
   border-radius: 5px;
 
   &.hidden {
     max-height: 0;
-    transition: max-height .7s ease-out;
+    transition: max-height 0.7s ease-out;
     overflow: hidden;
   }
 `
@@ -67,11 +66,11 @@ const Notification = ({ notification, hideNotification }: any) => {
 
 const mapStateToProps = (store: any) => {
   return {
-    notification: store.notification
+    notification: store.notification,
   }
 }
 const mapDispatchToProps = {
-  hideNotification
+  hideNotification,
 }
 
 const ConnectedNotification = connect(

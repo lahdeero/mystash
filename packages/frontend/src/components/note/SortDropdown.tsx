@@ -1,7 +1,11 @@
 import { connect } from 'react-redux'
 import styled from 'styled-components'
-import { sortOptions, sortAlphabetic, sortCreated, sortModified } from '../../reducers/sortReducer'
-import Colors from '../../layout/colors'
+import {
+  sortOptions,
+  sortAlphabetic,
+  sortCreated,
+  sortModified,
+} from '../../reducers/sortReducer'
 
 const DropdownWrapper = styled.div`
   display: flex;
@@ -9,15 +13,20 @@ const DropdownWrapper = styled.div`
 
   label {
     align-self: flex-end;
-    padding-right: .5rem;
+    padding-right: 0.5rem;
   }
 
   select {
-    background-color: ${Colors.White}
+    background-color: ${({ theme }) => theme.Background};
   }
 `
 
-const SortDropdown = ({ sortNotes, sortAlphabetic, sortCreated, sortModified }: any) => {
+const SortDropdown = ({
+  sortNotes,
+  sortAlphabetic,
+  sortCreated,
+  sortModified,
+}: any) => {
   const handleChange = (event: any) => {
     switch (event.target.value) {
       case 'ALPHABETIC':
@@ -37,7 +46,11 @@ const SortDropdown = ({ sortNotes, sortAlphabetic, sortCreated, sortModified }: 
     <DropdownWrapper>
       <label htmlFor="sort-select">Sort:</label>
       <select id="sort-select" onChange={handleChange} value={sortNotes}>
-        { sortOptions.map(o => <option key={o} value={o}>{o}</option>) }
+        {sortOptions.map((o) => (
+          <option key={o} value={o}>
+            {o}
+          </option>
+        ))}
       </select>
     </DropdownWrapper>
   )
@@ -51,10 +64,7 @@ const mapStateToProps = (store: any) => {
 const mapDispatchToProps = {
   sortAlphabetic,
   sortCreated,
-  sortModified
+  sortModified,
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(SortDropdown)
+export default connect(mapStateToProps, mapDispatchToProps)(SortDropdown)

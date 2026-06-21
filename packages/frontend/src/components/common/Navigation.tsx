@@ -1,6 +1,5 @@
 import { Children } from 'react'
 import styled from 'styled-components'
-import Colors from '../../layout/colors'
 
 type NavbarProps = {
   brand: any
@@ -10,7 +9,7 @@ type NavbarProps = {
 }
 
 const NavbarWrapper = styled.div`
-  background-color: ${Colors.Nav};
+  background-color: ${({ theme }) => theme.Nav};
   display: flex;
   justify-content: space-between;
   padding: 0.2rem 1rem;
@@ -22,7 +21,7 @@ const NavbarWrapper = styled.div`
 
 const Logo = styled.div`
   position: relative;
-  color: ${Colors.White};
+  color: ${({ theme }) => theme.ButtonText};
   display: inline-block;
   font-size: 2.1rem;
   padding: 0;
@@ -31,7 +30,7 @@ const Logo = styled.div`
 
 const NavItemsWrapper = styled.nav`
   a {
-    color: ${Colors.White};
+    color: ${({ theme }) => theme.ButtonText};
     text-decoration: none;
 
     &:hover,

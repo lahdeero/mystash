@@ -1,11 +1,10 @@
 import styled from 'styled-components'
 import versionResolver from '../utils/versionResolver'
-import Colors from '../layout/colors'
 import GithubLink from '../assets/github_link.svg'
 
 const FooterWrapper = styled.div`
-  background-color: ${Colors.Nav};
-  color: ${Colors.White};
+  background-color: ${({ theme }) => theme.FooterBackground};
+  color: ${({ theme }) => theme.FooterText};
   display: flex;
   justify-content: space-between;
   padding: 1rem;
@@ -19,11 +18,13 @@ const FooterWrapper = styled.div`
 
 const Footer = () => (
   <FooterWrapper>
-    <div>
-      mystash v. {versionResolver}
-    </div>
-    <a href="https://github.com/lahdeero/mystash" rel="noreferrer" target="_blank">
-      <img src={GithubLink} alt="Link to github repository"/>
+    <div>mystash v. {versionResolver}</div>
+    <a
+      href="https://github.com/lahdeero/mystash"
+      rel="noreferrer"
+      target="_blank"
+    >
+      <img src={GithubLink} alt="Link to github repository" />
     </a>
   </FooterWrapper>
 )

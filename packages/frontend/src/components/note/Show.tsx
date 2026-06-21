@@ -10,7 +10,6 @@ import { removeNote } from '../../reducers/noteReducer'
 import { notify, errorMessage } from '../../reducers/notificationReducer'
 import Button from '../common/Button'
 import Container from '../common/Container'
-import Colors from '../../layout/colors'
 import { useEffect } from 'react'
 import fileService from '../../services/fileService'
 
@@ -22,7 +21,7 @@ const NoteContent = styled.div`
 `
 
 const NoteWrapper = styled.div`
-  background-color: ${Colors.LightBlue};
+  background-color: ${({ theme }) => theme.NoteBackground};
   border-radius: 1rem;
   margin: 1rem 0;
   padding: 1rem;

@@ -21,7 +21,14 @@ const ChipContainer = styled.div`
   display: flex;
 `
 
-const Edit = ( { notes, errorMessage, modifyNote, notify, editNote, updateEditNote }: any) => {
+const Edit = ({
+  notes,
+  errorMessage,
+  modifyNote,
+  notify,
+  editNote,
+  updateEditNote,
+}: any) => {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const note = notes.find((note: any) => note.id === id)
@@ -32,7 +39,7 @@ const Edit = ( { notes, errorMessage, modifyNote, notify, editNote, updateEditNo
       content: note.content,
       tags: note.tags.filter((tag: any) => tag !== null),
       newTags: note.tags.filter((tag: any) => tag !== null),
-      tagText: ''
+      tagText: '',
     })
   }
 
@@ -43,7 +50,7 @@ const Edit = ( { notes, errorMessage, modifyNote, notify, editNote, updateEditNo
         id: editNote.id,
         title: editNote.title,
         content: editNote.content,
-        tags: editNote.newTags
+        tags: editNote.newTags,
       }
       await modifyNote(noteObject)
       await notify(`you modified '${noteObject.title}'`)
@@ -56,26 +63,29 @@ const Edit = ( { notes, errorMessage, modifyNote, notify, editNote, updateEditNo
 
   const handleTagTextChange = (event: any) => {
     updateEditNote({
-      tagText: event.target.value
+      tagText: event.target.value,
     })
   }
 
   const handleFieldChange = (event: any) => {
     updateEditNote({
-      title: event.target.value
+      title: event.target.value,
     })
   }
 
   const handleContent = (event: any) => {
     updateEditNote({
-      content: event.target.value
+      content: event.target.value,
     })
   }
 
   const addTag = async (event: any) => {
     event.preventDefault()
     const maxTags = 10
-    if (editNote.tagText.length === 0 || editNote.newTags.includes(editNote.tagText)) {
+    if (
+      editNote.tagText.length === 0 ||
+      editNote.newTags.includes(editNote.tagText)
+    ) {
       return
     }
 
@@ -85,7 +95,7 @@ const Edit = ( { notes, errorMessage, modifyNote, notify, editNote, updateEditNo
     if (tagTemp.length < maxTags) {
       updateEditNote({
         newTags: tagTemp,
-        tagText: ''
+        tagText: '',
       })
     } else {
       notify(`Maxium number of tags is '${maxTags}'`)
@@ -94,7 +104,7 @@ const Edit = ( { notes, errorMessage, modifyNote, notify, editNote, updateEditNo
 
   const removeTag = (tagName: any) => {
     updateEditNote({
-      newTags: editNote.newTags.filter((tag: any) => tag !== tagName)
+      newTags: editNote.newTags.filter((tag: any) => tag !== tagName),
     })
   }
 
@@ -107,29 +117,59 @@ const Edit = ( { notes, errorMessage, modifyNote, notify, editNote, updateEditNo
       <div>
         <div>
           <ChipContainer>
-            {editNote.newTags.map((tag: any) =>
-              <Chip key={tag} onClick={() => { removeTag(tag) }}> {tag} </Chip>
-            )}
+            {editNote.newTags.map((tag: any) => (
+              <Chip
+                key={tag}
+                onClick={() => {
+                  removeTag(tag)
+                }}
+              >
+                {' '}
+                {tag}{' '}
+              </Chip>
+            ))}
           </ChipContainer>
         </div>
       </div>
       <div>
         <AddTagForm id="tagform" onSubmit={addTag}>
           <div>
-            Add tag <Input name="tagText" value={editNote.tagText} onChange={handleTagTextChange} type="text"/>
+            Add tag{' '}
+            <Input
+              name="tagText"
+              value={editNote.tagText}
+              onChange={handleTagTextChange}
+              type="text"
+            />
           </div>
-          <Button className="deep orange" type="submit" form="tagform">Add tag</Button>
+          <Button className="deep orange" type="submit" form="tagform">
+            Add tag
+          </Button>
         </AddTagForm>
       </div>
       <h2>Edit note</h2>
       <form onSubmit={handleSubmit}>
         <div>
-          Title<br />
-          <Input name="title" value={editNote.title} onChange={handleFieldChange} type="text" />
+          Title
+          <br />
+          <Input
+            name="title"
+            value={editNote.title}
+            onChange={handleFieldChange}
+            type="text"
+          />
         </div>
-          <Textarea id="edit-note" className="note-edit" value={editNote.content} onChange={handleContent} minRows={10} />
+        <Textarea
+          id="edit-note"
+          className="note-edit"
+          value={editNote.content}
+          onChange={handleContent}
+          minRows={10}
+        />
         <br />
-        <Button waves="light" className="red accent-2" type="submit">Save</Button>
+        <Button className="red accent-2" type="submit">
+          Save
+        </Button>
       </form>
     </Container>
   )
@@ -147,10 +187,7 @@ const mapDispatchToProps = {
   clearEditNote,
   modifyNote,
   notify,
-  errorMessage
+  errorMessage,
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Edit)
+export default connect(mapStateToProps, mapDispatchToProps)(Edit)
