@@ -8,21 +8,40 @@ mystash
 ## Install development environment
 
 ### Backend
+- PNPM is required
 - Docker is required
 - Serverless is required
 - AWS CLI is required
 
+Install pnpm
 ```bash
-npm install -g serverless
-npm i
+npm install pnpm --global
+pnpm setup
+```
+
+Setup environment variables
+```bash
+cp ./packages/backend/.env.example ./packages/backend/.env
+```
+
+```bash
+pnpm install -g serverless
+```
+
+```bash
+sudo pacman -S aws-cli
 aws configure --profile mystashapp-dev
 ```
 
 Add or update ~/.aws/config
 ```bash
 [default]
-s3 =
-    endpoint_url = http://localhost:4566
+s3 = endpoint_url = http://localhost:4566
+```
+
+Init
+```bash
+pnpm run init
 ```
 
 ## Development
