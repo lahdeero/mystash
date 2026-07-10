@@ -15,7 +15,7 @@ docker run -d --name dynamodb-local -p 8001:8000 amazon/dynamodb-local
 echo "DynamoDB Local started in Docker."
 
 echo "Start LocalStack in Docker..."
-docker run -d --name s3-local -p 4566:4566 -e SERVICES=s3 localstack/localstack
+docker run -d --name s3-local -p 4566:4566 -e SERVICES=s3 localstack/localstack:3.8
 echo "LocalStack started in Docker."
 
 echo "Build shared package..."

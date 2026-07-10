@@ -36,7 +36,8 @@ aws configure --profile mystashapp-dev
 Add or update ~/.aws/config
 ```bash
 [default]
-s3 = endpoint_url = http://localhost:4566
+s3 =
+  endpoint_url = http://localhost:4566
 ```
 
 Init
