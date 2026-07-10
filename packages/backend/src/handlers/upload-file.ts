@@ -45,6 +45,7 @@ const uploadFileHandler: Handler<APIGatewayEvent, any> = async (
     const uploadUrl = await fileService.getUploadUrl(currentUser, fileInfo)
     const body = {
       uploadUrl,
+      id,
     }
     return {
       statusCode: 200,
