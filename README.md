@@ -52,13 +52,13 @@ Login: test@example.com / salasana
 ### Backend
 
 ```bash
-npm run dev
+pnpm run dev
 ```
 
 ### Frontend
 
 ```bash
-npm start
+pnpm start
 ```
 
 ## Debug
@@ -129,14 +129,15 @@ sudo ./aws/install
 ### Install CDK
 
 ```bash
-npm install -g aws-cdk
+pnpm install -g aws-cdk
+pnpm install -g ts-node
 ```
 
 ### Prepare AWS environment
 
 ```bash
 export AWS_PROFILE=mystashapp-prod
-npm ci
+pnpm ci
 aws s3 ls
 aws sts get-caller-identity --profile mystashapp-prod
 cdk bootstrap aws://AWS-ACCOUNT-ID-HERE/eu-north-1
@@ -146,13 +147,13 @@ cdk bootstrap aws://AWS-ACCOUNT-ID-HERE/eu-north-1
 
 ```bash
 cd frontend
-npm run build
+pnpm run build
 ```
 
 ```bash
 cd stack
 export AWS_PROFILE=mystashapp-prod
-npx cdk synth --profile mystashapp-prod
-npx cdk diff --profile mystashapp-prod
-npx cdk deploy --profile mystashapp-prod
+pnpm cdk synth --profile mystashapp-prod
+pnpm cdk diff --profile mystashapp-prod
+pnpm cdk deploy --profile mystashapp-prod
 ```

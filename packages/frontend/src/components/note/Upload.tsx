@@ -15,7 +15,7 @@ const Dropzone = styled.div<{ isActive: boolean }>`
   padding: 2rem;
   border: 2px dashed ${({ theme }) => theme.Border};
   border-radius: 1rem;
-  background-color: ${({ theme, isActive }) =>
+  background-color: ${({ isActive }) =>
     isActive ? 'rgba(66, 153, 225, 0.1)' : 'transparent'};
   color: ${({ theme }) => theme.Text};
   text-align: center;

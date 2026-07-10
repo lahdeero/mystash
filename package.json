@@ -9,7 +9,8 @@
     "remove:deps": "find . -type d -name 'node_modules' -prune -exec rm -rf '{}' +"
   },
   "dependencies": {
-    "axios": "^1.7.7"
+    "axios": "^1.7.7",
+    "esbuild": "^0.20.2"
   },
   "devDependencies": {
     "@typescript-eslint/parser": "^8.8.1",
