@@ -19,24 +19,6 @@ body {
   flex-direction: column;
 }
 
-a:link {
-  /* color: #1976d2; */
-  background-color: transparent;
-  text-decoration: none;
-}
-
-a:visited {
-  /* color: #1976d2; */
-  background-color: transparent;
-  text-decoration: none;
-}
-
-a:hover {
-  /* color: #2fceda; */
-  background-color: transparent;
-  text-decoration: underline;
-}
-
 ul {
   list-style-type: none;
 }

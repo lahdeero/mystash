@@ -3,6 +3,8 @@ import 'styled-components'
 declare module 'styled-components' {
   export interface DefaultTheme {
     Link: string
+    LinkVisited: string
+    LinkMenu: string
     Nav: string
     Background: string
     Text: string

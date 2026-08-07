@@ -25,6 +25,16 @@ const Content = styled.div`
   flex: 1 0 auto;
   background-color: ${({ theme }) => theme.Background};
   color: ${({ theme }) => theme.Text};
+
+  .inner-content {
+    a {
+      color: ${({ theme }) => theme.Link};
+    }
+
+    a:visited {
+      color: ${({ theme }) => theme.LinkVisited};
+    }
+  }
 `
 
 const MS_TOKEN = 'MS_token'
@@ -100,26 +110,28 @@ const App = (props: any) => {
           <Content>
             <Notification />
             <Menu filter={filter} handleLogout={handleLogout} />
-            <Routes>
-              <Route
-                path="/"
-                element={<List filter={filter} loading={loading} />}
-              />
-              <Route path="/login" element={<Frontpage />} />
-              <Route path="/create" element={<Create />} />
-              <Route
-                path="/settings"
-                element={
-                  <Settings
-                    currentTheme={currentTheme}
-                    setCurrentTheme={setCurrentTheme}
-                  />
-                }
-              />
-              <Route path="/notes/:id" element={<Show />} />
-              <Route path="/notes/edit/:id" element={<Edit />} />
-              <Route path="/notes/upload/:id" element={<Upload />} />
-            </Routes>
+            <div className='inner-content'>
+              <Routes>
+                <Route
+                  path="/"
+                  element={<List filter={filter} loading={loading} />}
+                />
+                <Route path="/login" element={<Frontpage />} />
+                <Route path="/create" element={<Create />} />
+                <Route
+                  path="/settings"
+                  element={
+                    <Settings
+                      currentTheme={currentTheme}
+                      setCurrentTheme={setCurrentTheme}
+                    />
+                  }
+                />
+                <Route path="/notes/:id" element={<Show />} />
+                <Route path="/notes/edit/:id" element={<Edit />} />
+                <Route path="/notes/upload/:id" element={<Upload />} />
+              </Routes>
+            </div>
           </Content>
           <Footer />
         </ThemeProvider>

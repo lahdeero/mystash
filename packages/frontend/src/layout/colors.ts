@@ -5,7 +5,9 @@ export enum Theme {
 
 export const themes = {
   [Theme.Light]: {
-    Link: '#1976d2',
+    Link: '#165797',
+    LinkVisited: '#165797',
+    LinkMenu: '#E2E8F0',
     Nav: '#3f51b5',
     Background: '#E2E8F0',
     Text: '#1a202c',
@@ -22,6 +24,8 @@ export const themes = {
   },
   [Theme.Dark]: {
     Link: '#81d4fa',
+    LinkVisited: '#81d4fa',
+    LinkMenu: '#E2E8F0',
     Nav: '#3f51b5',
     Background: '#1a202c',
     Text: '#E2E8F0',

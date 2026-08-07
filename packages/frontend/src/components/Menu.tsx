@@ -2,11 +2,22 @@ import { Link, useNavigate } from 'react-router-dom'
 import { connect } from 'react-redux'
 import Filter from './Filter'
 import { Navbar } from './common/Navigation'
+import styled from 'styled-components'
 
 type Props = {
   filter: { setFilter: (value: string) => void }
   handleLogout: (event: any) => void
 }
+
+const MenuWrapper = styled.div`
+  a {
+    color: ${({ theme }) => theme.LinkMenu};
+  }
+
+  a:visited {
+    color: ${({ theme }) => theme.LinkMenu};
+  }
+`
 
 const Menu = (props: Props) => {
   const navigate = useNavigate()
@@ -19,7 +30,7 @@ const Menu = (props: Props) => {
   const Logo = () => <div onClick={clickHome}>mystash</div>
 
   return (
-    <div>
+    <MenuWrapper>
       <Navbar brand={<Logo />}>
         <Link to='/' onClick={() => props.filter.setFilter('')}>
           List
@@ -35,7 +46,7 @@ const Menu = (props: Props) => {
         </Link>
       </Navbar>
       <Filter filter={props.filter} />
-    </div>
+    </MenuWrapper>
   )
 }
 
