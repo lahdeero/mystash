@@ -38,7 +38,6 @@ const Content = styled.div`
 `
 
 const MS_TOKEN = 'MS_token'
-const MS_CODE = 'MS_code'
 const MS_THEME = 'MS_theme'
 
 const App = (props: any) => {
@@ -96,7 +95,6 @@ const App = (props: any) => {
   const handleLogout = (event: any) => {
     event.preventDefault()
     window.localStorage.removeItem(MS_TOKEN)
-    window.localStorage.removeItem(MS_CODE)
     filter.setFilter('')
     props.clearNotes()
     props.actionForLogout()
