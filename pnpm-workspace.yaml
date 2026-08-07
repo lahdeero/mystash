@@ -1,6 +1,59 @@
 packages:
   - 'packages/*'
   - 'stack'
+
+catalog:
+  '@aws-sdk/client-dynamodb': ^3.363.0
+  '@aws-sdk/client-lambda': ^3.363.0
+  '@aws-sdk/client-s3': ^3.675.0
+  '@aws-sdk/lib-dynamodb': ^3.365.0
+  '@aws-sdk/s3-request-presigner': ^3.688.0
+  '@eslint/js': ^9.25.0
+  '@playwright/test': ^1.52.0
+  '@reduxjs/toolkit': ^2.8.2
+  '@testing-library/jest-dom': ^6.6.3
+  '@testing-library/react': ^13.4.0
+  '@testing-library/user-event': ^14.6.1
+  '@types/aws-lambda': ^8.10.145
+  '@types/busboy': ^1.5.4
+  '@types/mime-types': ^2.1.4
+  '@types/react': ^19.1.2
+  '@types/react-dom': ^19.1.2
+  '@types/styled-components': ^5.1.34
+  '@types/uuid': ^10.0.0
+  '@typescript-eslint/eslint-plugin': ^8.46.3
+  '@typescript-eslint/parser': ^8.46.3
+  '@vitejs/plugin-react': ^4.4.1
+  aws-cdk-lib: ^2.161.1
+  axios: ^1.7.7
+  babel-preset-react-app: ^10.0.1
+  body-parser: ^1.20.0
+  crypto: ^1.0.1
+  esbuild: ^0.20.2
+  eslint-plugin-import: ^2.32.0
+  eslint-plugin-react-hooks: ^5.2.0
+  eslint-plugin-react-refresh: ^0.4.19
+  globals: ^16.0.0
+  jsdom: ^26.1.0
+  playwright: ^1.52.0
+  query-string: ^7.1.1
+  react: ^19.1.0
+  react-dom: ^19.1.0
+  react-markdown: ^10.1.0
+  react-redux: ^9.2.0
+  react-router: ^7.6.1
+  react-router-dom: ^7.6.1
+  react-spinners: ^0.17.0
+  save: ^2.9.0
+  serverless: ^4.15.1
+  serverless-offline: ^14.3.2
+  styled-components: ^6.1.18
+  ts-node: ^10.9.2
+  typescript-eslint: ^8.30.1
+  uuid: ^14.0.0
+  vite: ^6.3.5
+  vitest: ^3.1.4
+
 allowBuilds:
   esbuild: true
   serverless: true

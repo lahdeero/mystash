@@ -14,29 +14,29 @@
     "lint": "eslint 'src/**/*.{ts,js}' --ext .ts,.js"
   },
   "dependencies": {
-    "@aws-sdk/client-dynamodb": "^3.363.0",
-    "@aws-sdk/client-lambda": "^3.363.0",
-    "@aws-sdk/client-s3": "^3.675.0",
-    "@aws-sdk/lib-dynamodb": "^3.365.0",
-    "@aws-sdk/s3-request-presigner": "^3.688.0",
+    "@aws-sdk/client-dynamodb": "catalog:",
+    "@aws-sdk/client-lambda": "catalog:",
+    "@aws-sdk/client-s3": "catalog:",
+    "@aws-sdk/lib-dynamodb": "catalog:",
+    "@aws-sdk/s3-request-presigner": "catalog:",
     "@mystash/shared": "workspace:*",
-    "babel-preset-react-app": "^10.0.1",
-    "body-parser": "^1.20.0",
-    "crypto": "^1.0.1",
-    "save": "^2.9.0",
-    "uuid": "^14.0.0"
+    "babel-preset-react-app": "catalog:",
+    "body-parser": "catalog:",
+    "crypto": "catalog:",
+    "save": "catalog:",
+    "uuid": "catalog:"
   },
   "devDependencies": {
-    "@types/aws-lambda": "^8.10.145",
-    "@types/busboy": "^1.5.4",
-    "@types/mime-types": "^2.1.4",
+    "@types/aws-lambda": "catalog:",
+    "@types/busboy": "catalog:",
+    "@types/mime-types": "catalog:",
     "@types/node": "^22.7.5",
-    "@types/uuid": "^10.0.0",
-    "@typescript-eslint/eslint-plugin": "^8.46.3",
-    "@typescript-eslint/parser": "^8.46.3",
+    "@types/uuid": "catalog:",
+    "@typescript-eslint/eslint-plugin": "catalog:",
+    "@typescript-eslint/parser": "catalog:",
     "eslint": "^8.57.1",
-    "eslint-plugin-import": "^2.32.0",
-    "serverless": "^4.15.1",
-    "serverless-offline": "^14.3.2"
+    "eslint-plugin-import": "catalog:",
+    "serverless": "catalog:",
+    "serverless-offline": "catalog:"
   }
 }

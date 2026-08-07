@@ -13,49 +13,49 @@
   },
   "dependencies": {
     "@mystash/shared": "workspace:*",
-    "@reduxjs/toolkit": "^2.8.2",
-    "query-string": "^7.1.1",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0",
-    "react-markdown": "^10.1.0",
-    "react-redux": "^9.2.0",
-    "react-router": "^7.6.1",
-    "react-router-dom": "^7.6.1",
-    "react-spinners": "^0.17.0",
-    "styled-components": "^6.1.18"
+    "@reduxjs/toolkit": "catalog:",
+    "query-string": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "react-markdown": "catalog:",
+    "react-redux": "catalog:",
+    "react-router": "catalog:",
+    "react-router-dom": "catalog:",
+    "react-spinners": "catalog:",
+    "styled-components": "catalog:"
   },
   "devDependencies": {
-    "@eslint/js": "^9.25.0",
-    "@testing-library/jest-dom": "^6.6.3",
-    "@testing-library/react": "^13.4.0",
-    "@testing-library/user-event": "^14.6.1",
-    "@types/react": "^19.1.2",
-    "@types/react-dom": "^19.1.2",
-    "@types/styled-components": "^5.1.34",
-    "@vitejs/plugin-react": "^4.4.1",
+    "@eslint/js": "catalog:",
+    "@testing-library/jest-dom": "catalog:",
+    "@testing-library/react": "catalog:",
+    "@testing-library/user-event": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "@types/styled-components": "catalog:",
+    "@vitejs/plugin-react": "catalog:",
     "eslint": "^9.25.0",
-    "eslint-plugin-react-hooks": "^5.2.0",
-    "eslint-plugin-react-refresh": "^0.4.19",
-    "globals": "^16.0.0",
-    "jsdom": "^26.1.0",
+    "eslint-plugin-react-hooks": "catalog:",
+    "eslint-plugin-react-refresh": "catalog:",
+    "globals": "catalog:",
+    "jsdom": "catalog:",
     "typescript": "~5.8.3",
-    "typescript-eslint": "^8.30.1",
-    "vite": "^6.3.5"
+    "typescript-eslint": "catalog:",
+    "vite": "catalog:"
   },
   "overrides": {
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0",
+    "react": "catalog:",
+    "react-dom": "catalog:",
     "use-sync-external-store": {
-      "react": "^19.1.0"
+      "react": "catalog:"
     },
     "@testing-library/react": {
-      "react": "^19.1.0",
-      "react-dom": "^19.1.0"
+      "react": "catalog:",
+      "react-dom": "catalog:"
     },
-    "use-sync-external-store/react": "^19.1.0"
+    "use-sync-external-store/react": "catalog:"
   },
   "peerDependencies": {
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react": "catalog:",
+    "react-dom": "catalog:"
   }
 }
