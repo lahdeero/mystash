@@ -1,0 +1,63 @@
+name: Deploy Frontend
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Deploy Frontend
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: read
+
+    environment:
+      name: production
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.8.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build shared package
+        working-directory: packages/shared
+        run: pnpm run build
+
+      - name: Build frontend
+        working-directory: packages/frontend
+        run: pnpm run build
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: eu-north-1
+
+      - name: Deploy frontend to S3
+        run: |
+          aws s3 sync packages/frontend/dist/ \
+            s3://${{ vars.FRONTEND_BUCKET_NAME }} \
+            --delete
+
+      - name: Invalidate CloudFront cache
+        if: ${{ vars.CLOUDFRONT_DISTRIBUTION_ID != '' }}
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id ${{ vars.CLOUDFRONT_DISTRIBUTION_ID }} \
+            --paths "/*"
