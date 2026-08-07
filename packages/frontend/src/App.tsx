@@ -105,47 +105,45 @@ const App = (props: any) => {
 
   if (logged) {
     return (
-      <>
-        <ThemeProvider theme={themes[currentTheme]}>
-          <Content>
-            <Notification />
-            <Menu filter={filter} handleLogout={handleLogout} />
-            <div className='inner-content'>
-              <Routes>
-                <Route
-                  path="/"
-                  element={<List filter={filter} loading={loading} />}
-                />
-                <Route path="/login" element={<Frontpage />} />
-                <Route path="/create" element={<Create />} />
-                <Route
-                  path="/settings"
-                  element={
-                    <Settings
-                      currentTheme={currentTheme}
-                      setCurrentTheme={setCurrentTheme}
-                    />
-                  }
-                />
-                <Route path="/notes/:id" element={<Show />} />
-                <Route path="/notes/edit/:id" element={<Edit />} />
-                <Route path="/notes/upload/:id" element={<Upload />} />
-              </Routes>
-            </div>
-          </Content>
-          <Footer />
-        </ThemeProvider>
-      </>
+      <ThemeProvider theme={themes[currentTheme]}>
+        <Content>
+          <Notification />
+          <Menu filter={filter} handleLogout={handleLogout} />
+          <div className='inner-content'>
+            <Routes>
+              <Route
+                path="/"
+                element={<List filter={filter} loading={loading} />}
+              />
+              <Route path="/login" element={<Frontpage />} />
+              <Route path="/create" element={<Create />} />
+              <Route
+                path="/settings"
+                element={
+                  <Settings
+                    currentTheme={currentTheme}
+                    setCurrentTheme={setCurrentTheme}
+                  />
+                }
+              />
+              <Route path="/notes/:id" element={<Show />} />
+              <Route path="/notes/edit/:id" element={<Edit />} />
+              <Route path="/notes/upload/:id" element={<Upload />} />
+            </Routes>
+          </div>
+        </Content>
+        <Footer />
+      </ThemeProvider>
     )
   } else {
     return (
-      <>
+      <ThemeProvider theme={themes[currentTheme]}>
         <Content>
           <Notification />
           <Frontpage actionForLogin={props.actionForLogin} init={init} />
         </Content>
         <Footer />
-      </>
+      </ThemeProvider>
     )
   }
 }
