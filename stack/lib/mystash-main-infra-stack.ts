@@ -177,7 +177,7 @@ export class MystashInfraStack extends cdk.Stack {
       '../../packages/backend/src/handlers'
     )
     const commonHandlerProps = {
-      runtime: lambda.Runtime.NODEJS_20_X,
+      runtime: lambda.Runtime.NODEJS_22_X,
       handler: 'handler',
       projectRoot,
       depsLockFilePath,
