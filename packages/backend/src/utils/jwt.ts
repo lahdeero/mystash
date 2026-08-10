@@ -61,7 +61,7 @@ export const jwtMiddleware = (
   handler: APIGatewayProxyHandler,
   secret: string
 ): APIGatewayProxyHandler => {
-  return async (
+  return (async (
     event: APIGatewayProxyEvent,
     context: Context,
     callback: Callback
@@ -93,7 +93,7 @@ export const jwtMiddleware = (
     // Verify the JWT
     let userId: string
     try {
-      userId = verifyJWT(token, secret!)
+      userId = verifyJWT(token, secret!)!
       // TODO: Locally requestContext is undefined, works in AWS (without this condition)
       if (!event.requestContext) {
         event.requestContext = {} as APIGatewayEventRequestContext
@@ -114,12 +114,12 @@ export const jwtMiddleware = (
     if (!result) {
       throw new Error('Handler did not return a result')
     }
-    return result
-  }
+    return result!
+  }) as APIGatewayProxyHandler
 }
 
 export const createToken = (dbUser?: UserDbItem): UserToken => {
-  if (!dbUser.id) {
+  if (!dbUser?.id) {
     throw new Error('User ID missing')
   }
   const { id, firstName, lastName, email, tier } = dbUser

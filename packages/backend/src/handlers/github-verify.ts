@@ -8,7 +8,7 @@ import { UserService } from '../services/userService.js'
 export const verifyGithubHandler = async (
   event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> => {
-  const parsedBody = JSON.parse(event.body)
+  const parsedBody = JSON.parse(event.body!)
   if (!parsedBody?.code) {
     return noAccess('Code is required')
   }

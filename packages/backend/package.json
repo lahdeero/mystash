@@ -20,6 +20,8 @@
     "@aws-sdk/lib-dynamodb": "catalog:",
     "@aws-sdk/s3-request-presigner": "catalog:",
     "@mystash/shared": "workspace:*",
+    "ajv": "catalog:",
+    "ajv-formats": "catalog:",
     "babel-preset-react-app": "catalog:",
     "body-parser": "catalog:",
     "crypto": "catalog:",

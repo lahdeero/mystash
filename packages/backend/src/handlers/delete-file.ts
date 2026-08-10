@@ -16,7 +16,7 @@ const dynamoDb = DynamoDBDocumentClient.from(client)
 const deleteFileHandler: APIGatewayProxyHandler = async (
   event: APIGatewayProxyEvent
 ) => {
-  const userId = event.requestContext.authorizer.userId
+  const userId = event.requestContext.authorizer!.userId
   if (!event.pathParameters) {
     throw new Error('Event has no body!')
   }
@@ -45,7 +45,7 @@ const deleteFileHandler: APIGatewayProxyHandler = async (
   const command = new DeleteCommand({
     TableName: process.env.FILES_TABLE_NAME,
     Key: {
-      id: fileId.toString(),
+      id: fileId!.toString(),
     },
     ReturnValues: 'ALL_OLD',
   })

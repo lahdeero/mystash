@@ -14,7 +14,7 @@ const dynamoDb = DynamoDBDocumentClient.from(client)
 export const loginHandler = async (
   event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> => {
-  const parsedBody = JSON.parse(event.body)
+  const parsedBody = JSON.parse(event.body!)
   if (!(parsedBody?.email && parsedBody?.password)) {
     return noAccess('Email and password are required')
   }

@@ -11,7 +11,7 @@ const uploadFileHandler: Handler<APIGatewayEvent, any> = async (
   _context: Context,
   _callback: Callback
 ) => {
-  const parsedBody = JSON.parse(event.body)
+  const parsedBody = JSON.parse(event.body!)
   const { title, fileName, noteId } = parsedBody
   const mimeType = exntensionToMimeType[fileName.split('.').pop()!]
   if (!noteId) {
@@ -39,7 +39,7 @@ const uploadFileHandler: Handler<APIGatewayEvent, any> = async (
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       noteId,
-      userId: event.requestContext.authorizer.userId,
+      userId: event.requestContext.authorizer!.userId,
     }
     await fileService.saveFileInfo(fileInfo)
     const uploadUrl = await fileService.getUploadUrl(currentUser, fileInfo)

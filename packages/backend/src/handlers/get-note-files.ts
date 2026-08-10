@@ -15,13 +15,13 @@ const getNoteFiles: Handler<APIGatewayEvent, any> = async (
   _context: Context,
   _callback: Callback
 ): Promise<APIGatewayProxyResult> => {
-  const noteId = event.pathParameters.id
+  const noteId = event.pathParameters!.id
   if (!noteId) {
     throw new Error('Missing noteId')
   }
   const currentUser: CurrentUser = {
-    userId: event.requestContext.authorizer.userId,
-    tier: event.requestContext.authorizer.tier,
+    userId: event.requestContext.authorizer!.userId,
+    tier: event.requestContext.authorizer!.tier,
   }
   const fileService = new FileService()
   const response: GetNoteFilesResponse = await fileService.getFilesByNoteId(
