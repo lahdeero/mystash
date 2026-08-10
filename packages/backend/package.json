@@ -39,6 +39,7 @@
     "eslint": "^8.57.1",
     "eslint-plugin-import": "catalog:",
     "serverless": "catalog:",
-    "serverless-offline": "catalog:"
+    "serverless-offline": "catalog:",
+    "typescript": "catalog:"
   }
 }
