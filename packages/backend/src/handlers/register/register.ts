@@ -7,13 +7,13 @@ import {
 } from '@aws-sdk/lib-dynamodb'
 import { v4 as uuidv } from 'uuid'
 
-import { UserTier } from '../types/types.js'
+import { UserTier } from '../../types/types.js'
 import {
   noAccess,
   encryptData,
-} from '../utils/index.js'
-import { parseJsonBody } from '../utils/utils.js'
-import { registerRequestSchema } from '../schemas/registerSchema.js'
+} from '../../utils/index.js'
+import { parseJsonBody } from '../../utils/utils.js'
+import { registerRequestSchema } from './registerSchema.js'
 import { User } from '@mystash/shared'
 
 const client = new DynamoDBClient({
@@ -35,7 +35,9 @@ const checkEmailErrors = async (email: string): Promise<string | null> => {
 }
 
 export const registerHandler = async (
-  event: APIGatewayProxyEvent
+  event: APIGatewayProxyEvent,
+  _context: any,
+  _callback: any,
 ): Promise<APIGatewayProxyResult> => {
   const { email, firstName, lastName, password } = parseJsonBody(event, registerRequestSchema)
 
