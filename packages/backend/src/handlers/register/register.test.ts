@@ -49,6 +49,7 @@ vi.mock('@aws-sdk/lib-dynamodb', () => ({
 describe('register', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    vi.spyOn(console, 'error').mockImplementation(() => {})
     mockClientSend.mockResolvedValue({ Items: [] })
     mockDynamoDbSend.mockResolvedValue({})
   })
@@ -73,16 +74,24 @@ describe('register', () => {
     test('should return 400 when body is missing', async () => {
       await expect(
         handler(getEvent(null, 'POST'), getContext(), vi.fn())
-      ).rejects.toMatchObject({
+      ).rejects.toEqual({
         statusCode: 400,
+        headers: expect.any(Object),
+        body: JSON.stringify({
+          error: { message: 'Request body is required' },
+        }),
       })
     })
 
     test('should return 400 when body is invalid JSON', async () => {
       await expect(
         handler(getEvent('not-json', 'POST'), getContext(), vi.fn())
-      ).rejects.toMatchObject({
+      ).rejects.toEqual({
         statusCode: 400,
+        headers: expect.any(Object),
+        body: JSON.stringify({
+          error: { message: 'Invalid JSON body' },
+        }),
       })
     })
 
@@ -94,8 +103,14 @@ describe('register', () => {
           getContext(),
           vi.fn()
         )
-      ).rejects.toMatchObject({
+      ).rejects.toEqual({
         statusCode: 400,
+        headers: expect.any(Object),
+        body: JSON.stringify({
+          error: {
+            message: '/firstName: must NOT have fewer than 3 characters',
+          },
+        }),
       })
     })
 
@@ -107,8 +122,14 @@ describe('register', () => {
           getContext(),
           vi.fn()
         )
-      ).rejects.toMatchObject({
+      ).rejects.toEqual({
         statusCode: 400,
+        headers: expect.any(Object),
+        body: JSON.stringify({
+          error: {
+            message: '/lastName: must NOT have fewer than 3 characters',
+          },
+        }),
       })
     })
 
@@ -120,8 +141,14 @@ describe('register', () => {
           getContext(),
           vi.fn()
         )
-      ).rejects.toMatchObject({
+      ).rejects.toEqual({
         statusCode: 400,
+        headers: expect.any(Object),
+        body: JSON.stringify({
+          error: {
+            message: '/password: must NOT have fewer than 8 characters',
+          },
+        }),
       })
     })
 
@@ -133,8 +160,14 @@ describe('register', () => {
           getContext(),
           vi.fn()
         )
-      ).rejects.toMatchObject({
+      ).rejects.toEqual({
         statusCode: 400,
+        headers: expect.any(Object),
+        body: JSON.stringify({
+          error: {
+            message: '/email: must match format "email"',
+          },
+        }),
       })
     })
 
@@ -146,8 +179,15 @@ describe('register', () => {
           getContext(),
           vi.fn()
         )
-      ).rejects.toMatchObject({
+      ).rejects.toEqual({
         statusCode: 400,
+        headers: expect.any(Object),
+        body: JSON.stringify({
+          error: {
+            message:
+              "body: must have required property 'firstName', body: must have required property 'lastName', body: must have required property 'password'",
+          },
+        }),
       })
     })
 
@@ -159,8 +199,14 @@ describe('register', () => {
           getContext(),
           vi.fn()
         )
-      ).rejects.toMatchObject({
+      ).rejects.toEqual({
         statusCode: 400,
+        headers: expect.any(Object),
+        body: JSON.stringify({
+          error: {
+            message: 'body: must NOT have additional properties',
+          },
+        }),
       })
     })
 
@@ -188,8 +234,14 @@ describe('register', () => {
           getContext(),
           vi.fn()
         )
-      ).rejects.toMatchObject({
+      ).rejects.toEqual({
         statusCode: 400,
+        headers: expect.any(Object),
+        body: JSON.stringify({
+          error: {
+            message: '/email: must NOT have more than 254 characters',
+          },
+        }),
       })
     })
 
@@ -201,8 +253,14 @@ describe('register', () => {
           getContext(),
           vi.fn()
         )
-      ).rejects.toMatchObject({
+      ).rejects.toEqual({
         statusCode: 400,
+        headers: expect.any(Object),
+        body: JSON.stringify({
+          error: {
+            message: '/password: must NOT have more than 254 characters',
+          },
+        }),
       })
     })
   })
