@@ -1,6 +1,6 @@
 import { createCipheriv, createDecipheriv } from 'crypto'
 
-const iv = process.env.SECRET.slice(0, 16).split('').reverse().join('')!
+const iv = process.env.SECRET!.slice(0, 16).split('').reverse().join('')
 const secret = process.env.SECRET!
 
 export const encryptData = (plaintext: string): string => {

@@ -16,10 +16,10 @@ const dynamoDb = DynamoDBDocumentClient.from(client)
 const updateNoteHandler: APIGatewayProxyHandler = async (
   event: APIGatewayProxyEvent
 ) => {
-  const userId = event.requestContext.authorizer.userId
-  const noteId = event.pathParameters.id
+  const userId = event.requestContext.authorizer!.userId
+  const noteId = event.pathParameters!.id
 
-  const parsedBody = JSON.parse(event.body)
+  const parsedBody = JSON.parse(event.body!)
   const { title, content, tags } = parsedBody
 
   // check if note id belongs to user

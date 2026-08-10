@@ -1,4 +1,5 @@
 import loginService from '../services/loginService'
+import type { RegisterRequest } from '@mystash/shared'
 
 const userReducer = (store = null, action: any) => {
   switch (action.type) {
@@ -13,12 +14,12 @@ const userReducer = (store = null, action: any) => {
   }
 }
 
-export const actionForRegister = (information: any) => {
+export const actionForRegister = (information: RegisterRequest) => {
   return async (dispatch: any) => {
-    await loginService.register(information)
+    const data = await loginService.register(information)
     dispatch({
       type: 'REGISTER',
-      data: null,
+      data,
     })
   }
 }

@@ -2,9 +2,9 @@
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 ENV_FILE="$SCRIPT_DIR/.env"
-
 echo "Setting up development environment for mystash backend..."
 export AWS_REGION=eu-north-1 # Could remove --region flag from AWS CLI commands, but keeping them for now..
+export AWS_PAGER=""
 
 echo "Remove existing Docker containers..."
 docker rm -f dynamodb-local s3-local 2>/dev/null

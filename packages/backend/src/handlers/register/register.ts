@@ -7,8 +7,14 @@ import {
 } from '@aws-sdk/lib-dynamodb'
 import { v4 as uuidv } from 'uuid'
 
-import { UserTier } from '../types/types.js'
-import { noAccess, encryptData, emailPattern } from '../utils/index.js'
+import { UserTier } from '../../types/types.js'
+import {
+  noAccess,
+  encryptData,
+} from '../../utils/index.js'
+import { parseJsonBody } from '../../utils/utils.js'
+import { registerRequestSchema } from './registerSchema.js'
+import { User } from '@mystash/shared'
 
 const client = new DynamoDBClient({
   endpoint: process.env.DYNAMODB_ENDPOINT || undefined,
@@ -16,9 +22,6 @@ const client = new DynamoDBClient({
 const dynamoDb = DynamoDBDocumentClient.from(client)
 
 const checkEmailErrors = async (email: string): Promise<string | null> => {
-  if (!emailPattern.test(email)) {
-    return 'Invalid email format'
-  }
   const command = new QueryCommand({
     TableName: process.env.USERS_TABLE_NAME,
     IndexName: 'email-index',
@@ -32,36 +35,38 @@ const checkEmailErrors = async (email: string): Promise<string | null> => {
 }
 
 export const registerHandler = async (
-  event: APIGatewayProxyEvent
+  event: APIGatewayProxyEvent,
+  _context: any,
+  _callback: any,
 ): Promise<APIGatewayProxyResult> => {
-  const parsedBody = JSON.parse(event.body)
-  const { firstName, lastName, email, password } = parsedBody
-  if (!(firstName && lastName && email && password)) {
-    return noAccess('First name, last name , email and password are required')
-  }
+  const { email, firstName, lastName, password } = parseJsonBody(event, registerRequestSchema)
+
   const emailErrors = await checkEmailErrors(email)
   if (emailErrors) {
     return noAccess(emailErrors)
   }
 
-  // Create user
   const encryptedPassword = encryptData(password)
+  const tier = UserTier.Free
+  const user: User = {
+    email,
+    firstName,
+    lastName,
+    tier,
+  }
   const command = new PutCommand({
     TableName: process.env.USERS_TABLE_NAME,
     Item: {
       id: uuidv(),
-      email,
       password: encryptedPassword,
-      firstName,
-      lastName,
-      tier: UserTier.Free,
+      ...user,
     },
   })
   await dynamoDb.send(command)
   return {
     statusCode: 201,
     headers: { 'content-type': 'application/json; charset=utf-8' },
-    body: '',
+    body: JSON.stringify(user),
   }
 }
 

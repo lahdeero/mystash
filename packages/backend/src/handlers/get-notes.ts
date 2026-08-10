@@ -17,7 +17,7 @@ const dynamoDb = DynamoDBDocumentClient.from(client)
 const getNotesHandler: APIGatewayProxyHandler = async (
   event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> => {
-  const userId = event.requestContext.authorizer.userId
+  const userId = event.requestContext.authorizer!.userId
   const command = new QueryCommand({
     TableName: process.env.NOTES_TABLE_NAME,
     IndexName: 'user-id-index',

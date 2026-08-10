@@ -16,7 +16,7 @@ const dynamoDb = DynamoDBDocumentClient.from(client)
 const deleteNoteHandler: APIGatewayProxyHandler = async (
   event: APIGatewayProxyEvent
 ) => {
-  const userId = event.requestContext.authorizer.userId
+  const userId = event.requestContext.authorizer!.userId
   if (!event.pathParameters) {
     throw new Error('Event has no body!')
   }
@@ -45,7 +45,7 @@ const deleteNoteHandler: APIGatewayProxyHandler = async (
   const command = new DeleteCommand({
     TableName: process.env.NOTES_TABLE_NAME,
     Key: {
-      id: noteId.toString(),
+      id: noteId!.toString(),
     },
     ReturnValues: 'ALL_OLD',
   })

@@ -37,13 +37,13 @@ export class FileService {
     })
     const data = await this.dynamoDb.send(command)
     const files: FileInfo[] = await Promise.all(
-      data.Items.map(async (item) => {
+      data.Items?.map(async (item) => {
         const file = item as FileInfo
         return {
           ...file,
           url: await this.getFileUrl(currentUser, file.fileName),
         }
-      })
+      }) ?? []
     )
     return {
       noteId,

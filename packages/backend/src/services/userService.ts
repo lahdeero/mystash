@@ -37,7 +37,7 @@ export class UserService {
     await this.dynamoDb.send(command)
     return {
       id,
-      email: data.email,
+      email: data.email ?? `${data.login}@70511337.xyz`,
       firstName,
       lastName,
       tier: UserTier.Free,

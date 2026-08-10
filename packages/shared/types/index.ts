@@ -23,7 +23,21 @@ export type User = {
   tier: string
 }
 
+export type UserWithPassword = User & {
+  password: string
+}
+
 export type UserToken = {
   token: string
   user: User
 }
+
+export type ErrorResponse = {
+  error: {
+    message: string
+  }
+}
+
+export type RegisterRequest = Omit<UserWithPassword, 'tier'> & {}
+
+export type RegisterResponse = User

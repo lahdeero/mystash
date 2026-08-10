@@ -189,7 +189,7 @@ export class MystashInfraStack extends cdk.Stack {
       `${stackName}-register-lambda-handler`,
       {
         ...commonHandlerProps,
-        entry: path.join(handlersPath, 'register.ts'),
+        entry: path.join(handlersPath, '/register/register.ts'),
         functionName: `${stackName}-register-lambda`,
       }
     )

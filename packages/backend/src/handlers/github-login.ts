@@ -6,8 +6,8 @@ const githubLoginHandler: APIGatewayProxyHandler = async (
   _event: APIGatewayProxyEvent
 ) => {
   const params = new URLSearchParams({
-    client_id: process.env.GITHUB_CLIENT_ID,
-    redirect_uri: process.env.GITHUB_REDIRECT_URI,
+    client_id: process.env.GITHUB_CLIENT_ID!,
+    redirect_uri: process.env.GITHUB_REDIRECT_URI!,
     scope: 'read:user user:email',
     state: Math.random().toString(36).substring(2),
   })

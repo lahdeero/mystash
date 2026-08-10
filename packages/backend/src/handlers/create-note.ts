@@ -13,7 +13,7 @@ const dynamoDb = DynamoDBDocumentClient.from(client)
 const createNoteHandler: APIGatewayProxyHandler = async (
   event: APIGatewayProxyEvent
 ) => {
-  const userId = event.requestContext.authorizer.userId
+  const userId = event.requestContext.authorizer!.userId
   if (!event.body) {
     throw new Error('Event has no body!')
   }
