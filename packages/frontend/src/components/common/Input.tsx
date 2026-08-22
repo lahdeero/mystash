@@ -1,6 +1,5 @@
 import { useId } from 'react'
 import styled from 'styled-components'
-import ClearIcon from '../../assets/clear.svg'
 
 interface InputWrapperProps {
   id?: string

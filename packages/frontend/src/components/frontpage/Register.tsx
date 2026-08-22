@@ -7,9 +7,11 @@ import { Navbar } from '../common/Navigation'
 import Input from '../common/Input'
 import Button from '../common/Button'
 import Container from '../common/Container'
+import Link from '../common/Link'
 import TextContainer from '../common/TextContainer'
+import Header from '../common/Header'
 
-const Register = ({ notify, errorMessage, actionForRegister, togglePage}: any) => {
+const Register = ({ notify, errorMessage, actionForRegister, togglePage }: any) => {
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
   const [password, setPassword] = useState('')
@@ -45,6 +47,7 @@ const Register = ({ notify, errorMessage, actionForRegister, togglePage}: any) =
       <Navbar brand='mystash' href={"/"} right />
       <Container className="container">
         <ClipLoader loading={loading} color='blue' />
+        <Header text="Register" />
         <div>
           {error && <div className="error">{error}</div>}
           <form onSubmit={handleRegister}>
@@ -58,7 +61,7 @@ const Register = ({ notify, errorMessage, actionForRegister, togglePage}: any) =
           </form>
         </div>
         <TextContainer>
-          Back to <a onClick={togglePage} href={'#'}>login</a>
+          Back to <Link onClick={togglePage}>login</Link>
         </TextContainer>
       </Container>
     </div>

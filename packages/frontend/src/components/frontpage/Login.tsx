@@ -7,15 +7,13 @@ import Input from '../common/Input'
 import Button from '../common/Button'
 import Container from '../common/Container'
 import { resolveUrl } from '../../utils/environmentResolvers'
+import Link from '../common/Link'
+import TextContainer from '../common/TextContainer'
 
 const FlexItem = styled.div`
   display: flex;
   justify-content: center;
   margin: 1rem 0;
-`
-
-const Suggestion = styled.div`
-  margin-top: 10vh;
 `
 
 const LoginSeparator = styled.div`
@@ -104,12 +102,9 @@ const Login = (props: any) => {
           </div>
           <Button type="submit">Login</Button>
         </form>
-        <Suggestion>
-          Dont have account?{' '}
-          <a onClick={props.togglePage} href="/register">
-            Register
-          </a>
-        </Suggestion>
+        <TextContainer>
+          Dont have account? <Link onClick={props.togglePage}>Register</Link>
+        </TextContainer>
       </Container>
     </div>
   )
