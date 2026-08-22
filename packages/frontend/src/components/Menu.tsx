@@ -1,6 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { connect } from 'react-redux'
-import Filter from './Filter'
 import { Navbar } from './common/Navigation'
 import styled from 'styled-components'
 
@@ -45,7 +44,6 @@ const Menu = (props: Props) => {
           Logout
         </Link>
       </Navbar>
-      <Filter filter={props.filter} />
     </MenuWrapper>
   )
 }

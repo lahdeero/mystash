@@ -7,6 +7,7 @@ import Container from '../common/Container'
 import styled from 'styled-components'
 import Pagination from '../paging/Pagination'
 import Info from '../common/Info'
+import Filter from '../Filter'
 
 const SortAndPagingWrapper = styled.div`
   display: flex;
@@ -109,12 +110,14 @@ const List = ({ notes, sortNotes, filter, loading }: any) => {
   const SortAndPaging = ({ itemsLenght: itemsLength, notesPerPage, page, handleSelect, hideSort }: any) => {
     return (
       <SortAndPagingWrapper>
-        {(itemsLength > NOTES_PER_PAGE) && <Pagination
-          itemCount={itemsLength}
-          itemsPerPage={notesPerPage}
-          activePage={page}
-          onSelect={handleSelect}
-        />}
+        {itemsLength > NOTES_PER_PAGE && (
+          <Pagination
+            itemCount={itemsLength}
+            itemsPerPage={notesPerPage}
+            activePage={page}
+            onSelect={handleSelect}
+          />
+        )}
         {hideSort ? <div></div> : <SortDropdown />}
       </SortAndPagingWrapper>
     )
@@ -123,13 +126,14 @@ const List = ({ notes, sortNotes, filter, loading }: any) => {
   return (
     <Container>
       <div>
+        {notes.length > 1 && <Filter filter={filter} />}
         <ClipLoader loading={loading} color='blue' />
-        <SortAndPaging
+        {notes.lenth > 2 && <SortAndPaging
           itemsLenght={filteredNotes.length}
           notesPerPage={notesPerPage}
           page={page}
           handleSelect={handleSelect}
-        />
+        />}
       </div>
       <UnstyledUl>
         {notesToShow.map((note: any) => <li key={note.id}>
@@ -138,6 +142,7 @@ const List = ({ notes, sortNotes, filter, loading }: any) => {
           </div>
         </li>
         )}
+        {notes.length === 0 && <li>You have no notes. Add one by clicking the "Add note" button!</li>}
       </UnstyledUl>
       <div>
         {

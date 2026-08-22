@@ -6,7 +6,7 @@ import { useLocation } from 'react-router-dom'
 
 const FilterContainer = styled.div`
   position: relative;
-  padding: 1rem 2rem 0 2rem;
+  padding: 0rem 2rem 0 2rem;
 
   .filter-icon {
     position: absolute;
