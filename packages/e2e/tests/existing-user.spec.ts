@@ -44,4 +44,5 @@ test('should be able to login and do CRUD actions to note', async ({
   await expect(page.locator('body')).toContainText(
     `you deleted '${updatedNoteTitle}'`
   )
+  await page.getByRole('link', { name: 'Logout' }).click()
 })

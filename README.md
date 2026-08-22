@@ -47,7 +47,7 @@ pnpm run init
 
 ## Development
 
-Login: test@example.com / salasana
+Login: dev@example.com / salasana
 
 ### Backend
 

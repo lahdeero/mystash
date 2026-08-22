@@ -191,7 +191,18 @@ aws dynamodb put-item \
     }' \
     --region eu-north-1 \
     --endpoint-url http://localhost:8001
-echo "Users table seeded."    
+aws dynamodb put-item \
+    --table-name mystash-dev-users \
+    --item '{
+        "id": {"S": "add80a47-7ba6-4b28-8bff-5fdb461f5a5f"},
+        "firstName": {"S": "Dev"},
+        "lastName": {"S": "User"},
+        "email": {"S": "dev@example.com"},
+        "password": {"S": "2dc6e6c891c0e3acfa5b312c0da3e26e"}
+    }' \
+    --region eu-north-1 \
+    --endpoint-url http://localhost:8001
+echo "Users table seeded."
 
 echo "Seed the notes table..."
 for batch in "$SCRIPT_DIR"/seed/notes-seed-batch-*.json; do
