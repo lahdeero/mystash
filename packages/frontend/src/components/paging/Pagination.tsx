@@ -6,7 +6,7 @@ const PaginationButtons = styled.ul`
   justify-content: center;
 
   li {
-    background-color: ${({ theme }) => theme.NavigationButton};
+    background-color: ${({ theme }) => theme.NavigationButtonBackground};
     color: ${({ theme }) => theme.Text};
     margin-left: 1rem;
     cursor: pointer;
@@ -17,7 +17,7 @@ const PaginationButtons = styled.ul`
     &:hover,
     &:active,
     &.active {
-      color: #156057;
+      color: ${({ theme }) => theme.NavigationButtonText};
     }
   }
 

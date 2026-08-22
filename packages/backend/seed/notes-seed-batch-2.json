@@ -1,0 +1,582 @@
+{
+  "mystash-dev-notes": [
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "dad82a95-051c-4cbc-855c-e22b97040175"
+          },
+          "userId": {
+            "S": "b4f437f8-690d-4620-9166-a47887450913"
+          },
+          "title": {
+            "S": "Seed note 26"
+          },
+          "content": {
+            "S": "This is seed note number 26. Some interesting findings from today."
+          },
+          "tags": {
+            "L": [
+              {
+                "S": "ideas"
+              },
+              {
+                "S": "shopping"
+              }
+            ]
+          },
+          "createdAt": {
+            "S": "2024-10-02T14:00:00.000Z"
+          },
+          "updatedAt": {
+            "S": "2024-10-02T14:00:00.000Z"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "eccca5e6-8ee7-4f03-a34b-6a6c943dbedb"
+          },
+          "userId": {
+            "S": "b4f437f8-690d-4620-9166-a47887450913"
+          },
+          "title": {
+            "S": "Seed note 27"
+          },
+          "content": {
+            "S": "This is seed note number 27. Check back on this next week."
+          },
+          "tags": {
+            "L": [
+              {
+                "S": "todo"
+              },
+              {
+                "S": "health"
+              }
+            ]
+          },
+          "createdAt": {
+            "S": "2024-10-02T15:00:00.000Z"
+          },
+          "updatedAt": {
+            "S": "2024-10-02T15:00:00.000Z"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "f83a6521-f442-45da-a3d7-1e08e54d3b6b"
+          },
+          "userId": {
+            "S": "b4f437f8-690d-4620-9166-a47887450913"
+          },
+          "title": {
+            "S": "Seed note 28"
+          },
+          "content": {
+            "S": "This is seed note number 28. Notes from the meeting."
+          },
+          "tags": {
+            "L": [
+              {
+                "S": "research"
+              },
+              {
+                "S": "travel"
+              }
+            ]
+          },
+          "createdAt": {
+            "S": "2024-10-02T16:00:00.000Z"
+          },
+          "updatedAt": {
+            "S": "2024-10-02T16:00:00.000Z"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "fd3c315b-539b-4a00-8ccb-95274885d1cb"
+          },
+          "userId": {
+            "S": "b4f437f8-690d-4620-9166-a47887450913"
+          },
+          "title": {
+            "S": "Seed note 29"
+          },
+          "content": {
+            "S": "This is seed note number 29. Random thoughts worth keeping."
+          },
+          "tags": {
+            "L": [
+              {
+                "S": "shopping"
+              },
+              {
+                "S": "work"
+              }
+            ]
+          },
+          "createdAt": {
+            "S": "2024-10-02T17:00:00.000Z"
+          },
+          "updatedAt": {
+            "S": "2024-10-02T17:00:00.000Z"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "9e03fad3-9e55-4541-a005-4d4c4b592c00"
+          },
+          "userId": {
+            "S": "b4f437f8-690d-4620-9166-a47887450913"
+          },
+          "title": {
+            "S": "Seed note 30"
+          },
+          "content": {
+            "S": "This is seed note number 30. Remember to follow up on this."
+          },
+          "tags": {
+            "L": [
+              {
+                "S": "health"
+              },
+              {
+                "S": "personal"
+              }
+            ]
+          },
+          "createdAt": {
+            "S": "2024-10-02T18:00:00.000Z"
+          },
+          "updatedAt": {
+            "S": "2024-10-02T18:00:00.000Z"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "28831b8d-d1fe-45fd-bb3b-11c59188cbac"
+          },
+          "userId": {
+            "S": "b4f437f8-690d-4620-9166-a47887450913"
+          },
+          "title": {
+            "S": "Seed note 31"
+          },
+          "content": {
+            "S": "This is seed note number 31. Initial draft, needs review."
+          },
+          "tags": {
+            "L": [
+              {
+                "S": "travel"
+              },
+              {
+                "S": "ideas"
+              }
+            ]
+          },
+          "createdAt": {
+            "S": "2024-10-02T19:00:00.000Z"
+          },
+          "updatedAt": {
+            "S": "2024-10-02T19:00:00.000Z"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "8c77f638-abc5-45e9-ad6b-18c4855bf4af"
+          },
+          "userId": {
+            "S": "b4f437f8-690d-4620-9166-a47887450913"
+          },
+          "title": {
+            "S": "Seed note 32"
+          },
+          "content": {
+            "S": "This is seed note number 32. Some interesting findings from today."
+          },
+          "tags": {
+            "L": [
+              {
+                "S": "work"
+              },
+              {
+                "S": "todo"
+              }
+            ]
+          },
+          "createdAt": {
+            "S": "2024-10-02T20:00:00.000Z"
+          },
+          "updatedAt": {
+            "S": "2024-10-02T20:00:00.000Z"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "b8395c67-8616-4714-9c01-1f1f212f7605"
+          },
+          "userId": {
+            "S": "b4f437f8-690d-4620-9166-a47887450913"
+          },
+          "title": {
+            "S": "Seed note 33"
+          },
+          "content": {
+            "S": "This is seed note number 33. Check back on this next week."
+          },
+          "tags": {
+            "L": [
+              {
+                "S": "personal"
+              },
+              {
+                "S": "research"
+              }
+            ]
+          },
+          "createdAt": {
+            "S": "2024-10-02T21:00:00.000Z"
+          },
+          "updatedAt": {
+            "S": "2024-10-02T21:00:00.000Z"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "09ed7479-5b1c-486f-b9e9-4c2b9c012c03"
+          },
+          "userId": {
+            "S": "b4f437f8-690d-4620-9166-a47887450913"
+          },
+          "title": {
+            "S": "Seed note 34"
+          },
+          "content": {
+            "S": "This is seed note number 34. Notes from the meeting."
+          },
+          "tags": {
+            "L": [
+              {
+                "S": "ideas"
+              },
+              {
+                "S": "shopping"
+              }
+            ]
+          },
+          "createdAt": {
+            "S": "2024-10-02T22:00:00.000Z"
+          },
+          "updatedAt": {
+            "S": "2024-10-02T22:00:00.000Z"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "f09fd31f-df33-44ab-975d-2bf5246f5c52"
+          },
+          "userId": {
+            "S": "b4f437f8-690d-4620-9166-a47887450913"
+          },
+          "title": {
+            "S": "Seed note 35"
+          },
+          "content": {
+            "S": "This is seed note number 35. Random thoughts worth keeping."
+          },
+          "tags": {
+            "L": [
+              {
+                "S": "todo"
+              },
+              {
+                "S": "health"
+              }
+            ]
+          },
+          "createdAt": {
+            "S": "2024-10-02T23:00:00.000Z"
+          },
+          "updatedAt": {
+            "S": "2024-10-02T23:00:00.000Z"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "2b828c07-bc62-48f7-b34b-03afe9885b95"
+          },
+          "userId": {
+            "S": "b4f437f8-690d-4620-9166-a47887450913"
+          },
+          "title": {
+            "S": "Seed note 36"
+          },
+          "content": {
+            "S": "This is seed note number 36. Remember to follow up on this."
+          },
+          "tags": {
+            "L": [
+              {
+                "S": "research"
+              },
+              {
+                "S": "travel"
+              }
+            ]
+          },
+          "createdAt": {
+            "S": "2024-10-03T00:00:00.000Z"
+          },
+          "updatedAt": {
+            "S": "2024-10-03T00:00:00.000Z"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "2c4c7311-a3a3-415b-9d3e-8e37e7e05efe"
+          },
+          "userId": {
+            "S": "b4f437f8-690d-4620-9166-a47887450913"
+          },
+          "title": {
+            "S": "Seed note 37"
+          },
+          "content": {
+            "S": "This is seed note number 37. Initial draft, needs review."
+          },
+          "tags": {
+            "L": [
+              {
+                "S": "shopping"
+              },
+              {
+                "S": "work"
+              }
+            ]
+          },
+          "createdAt": {
+            "S": "2024-10-03T01:00:00.000Z"
+          },
+          "updatedAt": {
+            "S": "2024-10-03T01:00:00.000Z"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "80491dc4-25e2-4b60-9bb9-5d6231544baf"
+          },
+          "userId": {
+            "S": "b4f437f8-690d-4620-9166-a47887450913"
+          },
+          "title": {
+            "S": "Seed note 38"
+          },
+          "content": {
+            "S": "This is seed note number 38. Some interesting findings from today."
+          },
+          "tags": {
+            "L": [
+              {
+                "S": "health"
+              },
+              {
+                "S": "personal"
+              }
+            ]
+          },
+          "createdAt": {
+            "S": "2024-10-03T02:00:00.000Z"
+          },
+          "updatedAt": {
+            "S": "2024-10-03T02:00:00.000Z"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "c9a758e6-7280-4f04-93ab-019fcfde77fc"
+          },
+          "userId": {
+            "S": "b4f437f8-690d-4620-9166-a47887450913"
+          },
+          "title": {
+            "S": "Seed note 39"
+          },
+          "content": {
+            "S": "This is seed note number 39. Check back on this next week."
+          },
+          "tags": {
+            "L": [
+              {
+                "S": "travel"
+              },
+              {
+                "S": "ideas"
+              }
+            ]
+          },
+          "createdAt": {
+            "S": "2024-10-03T03:00:00.000Z"
+          },
+          "updatedAt": {
+            "S": "2024-10-03T03:00:00.000Z"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "d8616629-b91a-469d-8bdf-6f235f68970c"
+          },
+          "userId": {
+            "S": "b4f437f8-690d-4620-9166-a47887450913"
+          },
+          "title": {
+            "S": "Seed note 40"
+          },
+          "content": {
+            "S": "This is seed note number 40. Notes from the meeting."
+          },
+          "tags": {
+            "L": [
+              {
+                "S": "work"
+              },
+              {
+                "S": "todo"
+              }
+            ]
+          },
+          "createdAt": {
+            "S": "2024-10-03T04:00:00.000Z"
+          },
+          "updatedAt": {
+            "S": "2024-10-03T04:00:00.000Z"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "cb9d36c2-8e69-41e6-8b37-b102cdaca133"
+          },
+          "userId": {
+            "S": "b4f437f8-690d-4620-9166-a47887450913"
+          },
+          "title": {
+            "S": "Seed note 41"
+          },
+          "content": {
+            "S": "This is seed note number 41. Random thoughts worth keeping."
+          },
+          "tags": {
+            "L": [
+              {
+                "S": "personal"
+              },
+              {
+                "S": "research"
+              }
+            ]
+          },
+          "createdAt": {
+            "S": "2024-10-03T05:00:00.000Z"
+          },
+          "updatedAt": {
+            "S": "2024-10-03T05:00:00.000Z"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "c6c11753-178b-4d18-8133-4343ffbd38a1"
+          },
+          "userId": {
+            "S": "b4f437f8-690d-4620-9166-a47887450913"
+          },
+          "title": {
+            "S": "Seed note 42"
+          },
+          "content": {
+            "S": "This is seed note number 42. Remember to follow up on this."
+          },
+          "tags": {
+            "L": [
+              {
+                "S": "ideas"
+              },
+              {
+                "S": "shopping"
+              }
+            ]
+          },
+          "createdAt": {
+            "S": "2024-10-03T06:00:00.000Z"
+          },
+          "updatedAt": {
+            "S": "2024-10-03T06:00:00.000Z"
+          }
+        }
+      }
+    }
+  ]
+}

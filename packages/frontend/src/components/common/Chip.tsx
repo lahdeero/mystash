@@ -11,7 +11,7 @@ const ChipItem = styled.div`
   padding: 0.2rem 0.3rem;
 
   text-transform: uppercase;
-  border: 3px solid ${({ theme }) => theme.Info};
+  border: 3px solid ${({ theme }) => theme.ChipBorder};
   border-radius: 2em;
   transition: transform 0.2s;
   transition-timing-function: cubic-bezier(0.45, -0.85, 0.55, -0.45);

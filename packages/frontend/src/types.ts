@@ -8,14 +8,16 @@ declare module 'styled-components' {
     Nav: string
     Background: string
     Text: string
-    Info: string
+    InfoBackground: string
     NotificationBackground: string
     ButtonText: string
     ButtonDefault: string
     ButtonDanger: string
+    NavigationButtonBackground: string
+    NavigationButtonText: string
     Border: string
     NoteBackground: string
-    NavigationButton: string
+    ChipBorder: string
     FooterBackground: string
     FooterText: string
   }

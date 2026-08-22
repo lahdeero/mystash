@@ -24,7 +24,7 @@ const InputWrapper = styled.div<InputWrapperProps>`
     position: absolute;
     padding: .2rem .1rem .1rem .3rem;
     opacity: 0;
-    left: ${props => props.imageLeft ? props.imageLeft : '5px' };
+    left: ${props => props.imageLeft ? props.imageLeft : '5px'};
     height: 1.3rem;
     transition: opacity .5s ease-out;
 
@@ -56,8 +56,7 @@ interface InputProps {
   value: string
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
   label?: string
-  clear?: boolean
-  clearCallback?: () => void
+  placeholder?: string
   children?: React.ReactNode
 }
 
@@ -65,27 +64,17 @@ interface InputProps {
 const Input: React.FC<InputProps> = ({
   type,
   name,
+  label,
+  placeholder,
   autocomplete,
   value,
   onChange,
-  label,
-  clear,
-  clearCallback,
   children,
 }) => {
   const suffix = name.replace(/[^a-zA-Z0-9]/g, '-')
   const wrapperId = useId()
   const inputId = `input-${suffix}`
 
-
-  const handleClear = (event: React.MouseEvent) => {
-    event.preventDefault()
-    document.getElementById(inputId)?.querySelector('input')?.focus()
-
-    if (clearCallback) {
-      clearCallback()
-    }
-  }
   label = label ?? name
   return (
     <InputWrapper id={wrapperId}>
@@ -99,12 +88,9 @@ const Input: React.FC<InputProps> = ({
           autoComplete={autocomplete}
           value={value}
           onChange={onChange}
+          placeholder={placeholder}
         />
-        {clear && (
-          <button className="clear-input" onClick={handleClear}>
-            <img src={ClearIcon} alt="Clear" />
-          </button>
-        )}
+
       </>
     </InputWrapper>
   )

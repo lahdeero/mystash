@@ -17,6 +17,7 @@ const DropdownWrapper = styled.div`
   }
 
   select {
+    color: ${({ theme }) => theme.Text};
     background-color: ${({ theme }) => theme.Background};
   }
 `

@@ -3,7 +3,7 @@ import styled from 'styled-components'
 const Info = styled.div`
   padding: 1rem;
   margin: 1rem 0;
-  background-color: ${({ theme }) => theme.Info};
+  background-color: ${({ theme }) => theme.InfoBackground};
   color: ${({ theme }) => theme.Text};
   border-radius: 1rem;
 `

@@ -39,9 +39,11 @@ const UnstyledUl = styled.ul`
   padding: 0;
 `
 
-const List = ( { notes, sortNotes, filter, loading }: any ) => {
+const NOTES_PER_PAGE = 10
+
+const List = ({ notes, sortNotes, filter, loading }: any) => {
   const [page, setPage] = useState(1)
-  const [notesPerPage] = useState(10)
+  const [notesPerPage] = useState(NOTES_PER_PAGE)
 
   if (!notes) {
     return (
@@ -107,13 +109,13 @@ const List = ( { notes, sortNotes, filter, loading }: any ) => {
   const SortAndPaging = ({ itemsLenght: itemsLength, notesPerPage, page, handleSelect, hideSort }: any) => {
     return (
       <SortAndPagingWrapper>
-        <Pagination
+        {(itemsLength > NOTES_PER_PAGE) && <Pagination
           itemCount={itemsLength}
           itemsPerPage={notesPerPage}
           activePage={page}
           onSelect={handleSelect}
-        />
-        { hideSort ? <div></div> : <SortDropdown/> }
+        />}
+        {hideSort ? <div></div> : <SortDropdown />}
       </SortAndPagingWrapper>
     )
   }

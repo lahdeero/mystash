@@ -194,23 +194,13 @@ aws dynamodb put-item \
 echo "Users table seeded."    
 
 echo "Seed the notes table..."
-aws dynamodb put-item \
-    --table-name mystash-dev-notes \
-    --item '{
-        "id": {"S": "42f0ee81-9a6a-4fcf-8754-7071ad5921b6"},
-        "userId": {"S": "b4f437f8-690d-4620-9166-a47887450913"},
-        "title": {"S": "test title"},
-        "content": {"S": "test content"},
-        "tags": {"L": [
-            {"S": "firstTag"},
-            {"S": "secondTag"}
-        ]},
-        "createdAt": {"S": "2024-10-13T17:30:31.222Z"},
-        "updatedAt": {"S": "2024-10-13T17:30:31.222Z"}
-    }' \
-    --region eu-north-1 \
-    --endpoint-url http://localhost:8001
-echo "Notes table seeded."
+for batch in "$SCRIPT_DIR"/seed/notes-seed-batch-*.json; do
+    aws dynamodb batch-write-item \
+        --request-items "file://$batch" \
+        --region eu-north-1 \
+        --endpoint-url http://localhost:8001 > local-init.log 2>&1
+done
+echo "42 notes seeded."
 
 if [ -f .env ]; then
     echo "Setup environment variables..."
