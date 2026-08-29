@@ -17,9 +17,8 @@ export type CreateNoteResponse = Note
 export type DeleteNoteResponse = Note
 
 export type User = {
+  nickname: string
   email: string
-  firstName: string
-  lastName: string
   tier: string
   hasAcceptedTerms?: boolean
 }

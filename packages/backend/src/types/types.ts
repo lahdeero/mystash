@@ -12,8 +12,7 @@ export type UserDbItem = {
   id: string
   email: string
   password?: string
-  firstName: string
-  lastName: string
+  nickname: string
   tier: string
   hasAcceptedTerms?: boolean
 }

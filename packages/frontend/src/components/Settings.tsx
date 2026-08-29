@@ -26,21 +26,19 @@ interface SettingsProps {
 }
 
 const Settings = (props: SettingsProps) => {
-  const [firstName, setFirstname] = useState('Loading...')
-  const [lastName, setLastname] = useState('')
+  const [nickname, setNickname] = useState('Loading...')
   const [tier, setTier] = useState('')
   const [email, setEmail] = useState('')
 
   useEffect(() => {
     const fetchData = async () => {
       const user = await loginService.getUser()
-      setFirstname(user.firstName)
-      setLastname(user.lastName)
+      setNickname(user.nickname)
       setTier(user.tier)
       setEmail(user.email)
     }
     fetchData()
-  }, [setFirstname, setLastname, setTier, setEmail])
+  }, [setNickname, setTier, setEmail])
 
   return (
     <SettingsContainer>
@@ -61,12 +59,8 @@ const Settings = (props: SettingsProps) => {
         <div>
           <div>
             <InfoRow>
-              <label htmlFor="username">Firstname:</label>
-              <input id="username" value={firstName} disabled />
-            </InfoRow>
-            <InfoRow>
-              <label htmlFor="realname">Lastname:</label>
-              <input id="realname" value={lastName} disabled />
+              <label htmlFor="username">Nickname:</label>
+              <input id="username" value={nickname} disabled />
             </InfoRow>
             <InfoRow>
               <label htmlFor="level">Level:</label>

@@ -10,6 +10,7 @@ interface Props {
   className?: string
   onClick?: React.MouseEventHandler<HTMLButtonElement>
   danger?: boolean
+  disabled?: boolean
   children: React.ReactNode
   form?: string
 }
@@ -36,6 +37,12 @@ const ButtonComponent = styled.button<ButtonProps>`
     0 3px 1px -2px rgba(0, 0, 0, 0.2);
   font-weight: 600;
   font-size: 1.1rem;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    box-shadow: none;
+  }
 `
 
 const Button = ({
@@ -43,6 +50,7 @@ const Button = ({
   className,
   onClick,
   danger = false,
+  disabled = false,
   children,
 }: Props) => (
   <ButtonComponent
@@ -50,6 +58,7 @@ const Button = ({
     className={className}
     onClick={onClick}
     danger={danger}
+    disabled={disabled}
   >
     {children}
   </ButtonComponent>

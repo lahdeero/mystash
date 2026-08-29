@@ -8,15 +8,13 @@ import { handler } from './register.js'
 const testUserId = 'f1626fa2-8fe9-48f3-aca3-7d64d65f84f7'
 const validBody = {
   email: 'test@example.com',
-  firstName: 'Test',
-  lastName: 'User',
+  nickname: 'TestUser',
   password: 'password123',
 }
 
 const expectedUser: User = {
   email: validBody.email,
-  firstName: validBody.firstName,
-  lastName: validBody.lastName,
+  nickname: validBody.nickname,
   tier: 'free',
   hasAcceptedTerms: true,
 }
@@ -96,8 +94,8 @@ describe('register', () => {
       })
     })
 
-    test('should return 400 when firstName is too short', async () => {
-      const body = { ...validBody, firstName: 'ab' }
+    test('should return 400 when nickname is too short', async () => {
+      const body = { ...validBody, nickname: 'ab' }
       await expect(
         handler(
           getEvent(JSON.stringify(body), 'POST'),
@@ -109,26 +107,7 @@ describe('register', () => {
         headers: expect.any(Object),
         body: JSON.stringify({
           error: {
-            message: '/firstName: must NOT have fewer than 3 characters',
-          },
-        }),
-      })
-    })
-
-    test('should return 400 when lastName is too short', async () => {
-      const body = { ...validBody, lastName: 'xy' }
-      await expect(
-        handler(
-          getEvent(JSON.stringify(body), 'POST'),
-          getContext(),
-          vi.fn()
-        )
-      ).rejects.toEqual({
-        statusCode: 400,
-        headers: expect.any(Object),
-        body: JSON.stringify({
-          error: {
-            message: '/lastName: must NOT have fewer than 3 characters',
+            message: '/nickname: must NOT have fewer than 3 characters',
           },
         }),
       })
@@ -186,7 +165,7 @@ describe('register', () => {
         body: JSON.stringify({
           error: {
             message:
-              "body: must have required property 'firstName', body: must have required property 'lastName', body: must have required property 'password'",
+              "body: must have required property 'nickname', body: must have required property 'password'",
           },
         }),
       })

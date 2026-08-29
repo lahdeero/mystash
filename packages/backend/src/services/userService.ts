@@ -19,15 +19,14 @@ export class UserService {
   }
 
   async createUser(data: GitHubUser): Promise<UserDbItem> {
-    const [firstName, lastName] = data.name.split(' ')
     const id = uuidv()
+    const nickname = data.name || data.login
     const command = new PutCommand({
       TableName: process.env.USERS_TABLE_NAME,
       Item: {
         id,
         email: data.email ?? `${data.login}@70511337.xyz`,
-        firstName,
-        lastName,
+        nickname,
         githubLogin: data.login,
         githubId: data.id,
         githubAvatar: data.avatar_url,
@@ -40,8 +39,7 @@ export class UserService {
     return {
       id,
       email: data.email ?? `${data.login}@70511337.xyz`,
-      firstName,
-      lastName,
+      nickname,
       tier: UserTier.Free,
       hasAcceptedTerms: false,
     }

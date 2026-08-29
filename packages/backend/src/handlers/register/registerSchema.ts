@@ -5,10 +5,9 @@ export const registerRequestSchema: JSONSchemaType<RegisterRequest> = {
     type: 'object',
     additionalProperties: false,
     properties: {
-        firstName: { type: 'string', minLength: MIN_NICKNAME_LENGTH, maxLength: MAX_NICKNAME_LENGTH },
-        lastName: { type: 'string', minLength: MIN_NICKNAME_LENGTH, maxLength: MAX_NICKNAME_LENGTH },
+        nickname: { type: 'string', minLength: MIN_NICKNAME_LENGTH, maxLength: MAX_NICKNAME_LENGTH },
         email: { type: 'string', format: 'email', maxLength: MAX_EMAIL_LENGTH },
         password: { type: 'string', minLength: MIN_PASSWORD_LENGTH, maxLength: MAX_PASSWORD_LENGTH },
     },
-    required: ['firstName', 'lastName', 'email', 'password'],
+    required: ['nickname', 'email', 'password'],
 }

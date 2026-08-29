@@ -39,7 +39,7 @@ export const registerHandler = async (
   _context: any,
   _callback: any,
 ): Promise<APIGatewayProxyResult> => {
-  const { email, firstName, lastName, password } = parseJsonBody(event, registerRequestSchema)
+  const { email, nickname, password } = parseJsonBody(event, registerRequestSchema)
 
   const emailErrors = await checkEmailErrors(email)
   if (emailErrors) {
@@ -49,9 +49,8 @@ export const registerHandler = async (
   const encryptedPassword = encryptData(password)
   const tier = UserTier.Free
   const user: User = {
+    nickname,
     email,
-    firstName,
-    lastName,
     tier,
     hasAcceptedTerms: true,
   }

@@ -184,8 +184,7 @@ aws dynamodb put-item \
     --table-name mystash-dev-users \
     --item '{
         "id": {"S": "b4f437f8-690d-4620-9166-a47887450913"},
-        "firstName": {"S": "John"},
-        "lastName": {"S": "Doe"},
+        "nickname": {"S": "JohnDoe"},
         "email": {"S": "test@example.com"},
         "password": {"S": "2dc6e6c891c0e3acfa5b312c0da3e26e"},
         "hasAcceptedTerms": {"BOOL": true}
@@ -196,8 +195,7 @@ aws dynamodb put-item \
     --table-name mystash-dev-users \
     --item '{
         "id": {"S": "add80a47-7ba6-4b28-8bff-5fdb461f5a5f"},
-        "firstName": {"S": "Dev"},
-        "lastName": {"S": "User"},
+        "nickname": {"S": "DevUser"},
         "email": {"S": "dev@example.com"},
         "password": {"S": "2dc6e6c891c0e3acfa5b312c0da3e26e"},
         "hasAcceptedTerms": {"BOOL": true}

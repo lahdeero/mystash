@@ -18,8 +18,7 @@ const mockedLoginService = vi.mocked(loginService)
 
 const acceptedUser = {
   email: 'test@example.com',
-  firstName: 'Test',
-  lastName: 'User',
+  nickname: 'TestUser',
   tier: 'free',
   hasAcceptedTerms: true,
 }

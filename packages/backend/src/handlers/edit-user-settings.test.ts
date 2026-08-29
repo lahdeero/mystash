@@ -7,8 +7,7 @@ import { handler } from './edit-user-settings.js'
 
 const dbItem = {
   id: '9e53ca88-44f3-4210-a5f7-90d4717a3d6a',
-  firstName: 'Test',
-  lastName: 'User',
+  nickname: 'TestUser',
   email: 'test@example.com',
   tier: 'free',
   hasAcceptedTerms: false,
@@ -16,8 +15,7 @@ const dbItem = {
 }
 
 const expectedUser = (overrides: Partial<User> = {}): User => ({
-  firstName: dbItem.firstName,
-  lastName: dbItem.lastName,
+  nickname: dbItem.nickname,
   email: dbItem.email,
   tier: dbItem.tier,
   hasAcceptedTerms: dbItem.hasAcceptedTerms,
@@ -69,15 +67,14 @@ describe('edit-user-settings', () => {
   test('should allow editing multiple user settings', async () => {
     const updatedAttributes = {
       ...dbItem,
-      firstName: 'New',
-      lastName: 'Name',
+      nickname: 'NewNick',
       hasAcceptedTerms: true,
     }
     mockDynamoDbSend.mockResolvedValue({ Attributes: updatedAttributes })
 
     const result = (await handler(
       getEvent(
-        JSON.stringify({ firstName: 'New', lastName: 'Name', hasAcceptedTerms: true }),
+        JSON.stringify({ nickname: 'NewNick', hasAcceptedTerms: true }),
         'PUT'
       ),
       getContext(),
@@ -87,10 +84,10 @@ describe('edit-user-settings', () => {
     expect(mockDynamoDbSend).toHaveBeenCalledTimes(1)
     const commandArg = mockDynamoDbSend.mock.calls[0][0]
     expect(commandArg.input.UpdateExpression).toBe(
-      'SET #field0 = :value0, #field1 = :value1, #field2 = :value2'
+      'SET #field0 = :value0, #field1 = :value1'
     )
     expect(JSON.parse(result.body)).toEqual(
-      expectedUser({ firstName: 'New', lastName: 'Name', hasAcceptedTerms: true })
+      expectedUser({ nickname: 'NewNick', hasAcceptedTerms: true })
     )
   })
 

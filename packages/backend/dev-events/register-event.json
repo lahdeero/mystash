@@ -4,5 +4,5 @@
   "headers": {
     "Content-Type": "application/json"
   },
-  "body": "{\"firstName\":\"Matti\",\"lastName\":\"Meikäläinen\",\"email\":\"test@example.com\",\"password\":\"salasana\"}"
+  "body": "{\"nickname\":\"Matti\",\"email\":\"test@example.com\",\"password\":\"salasana\"}"
 }

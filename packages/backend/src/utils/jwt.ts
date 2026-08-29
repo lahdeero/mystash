@@ -122,11 +122,10 @@ export const createToken = (dbUser?: UserDbItem): UserToken => {
   if (!dbUser?.id) {
     throw new Error('User ID missing')
   }
-  const { id, firstName, lastName, email, tier, hasAcceptedTerms } = dbUser
+  const { id, nickname, email, tier, hasAcceptedTerms } = dbUser
   const payload = {
     id,
-    firstName,
-    lastName,
+    nickname,
     email,
     tier,
     hasAcceptedTerms,
@@ -135,8 +134,7 @@ export const createToken = (dbUser?: UserDbItem): UserToken => {
   }
   const token = createJWT(payload, process.env.SECRET!)
   const user: User = {
-    firstName,
-    lastName,
+    nickname,
     tier,
     email,
     hasAcceptedTerms,

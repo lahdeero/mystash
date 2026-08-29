@@ -14,8 +14,7 @@ import { badRequest, jwtMiddleware } from '../utils/index.js'
 // The value is the expected JSON type for the corresponding field.
 const EDITABLE_FIELDS: Record<string, 'string' | 'boolean'> = {
   hasAcceptedTerms: 'boolean',
-  firstName: 'string',
-  lastName: 'string',
+  nickname: 'string',
 }
 
 const client = new DynamoDBClient({
@@ -24,8 +23,7 @@ const client = new DynamoDBClient({
 const dynamoDb = DynamoDBDocumentClient.from(client)
 
 const toUser = (item: Record<string, unknown>): User => ({
-  firstName: item.firstName as string,
-  lastName: item.lastName as string,
+  nickname: item.nickname as string,
   email: item.email as string,
   tier: item.tier as string,
   hasAcceptedTerms: item.hasAcceptedTerms as boolean | undefined,
