@@ -4,10 +4,11 @@ import type {
   APIGatewayProxyResult,
 } from 'aws-lambda'
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
-import { DynamoDBDocumentClient, UpdateCommand } from '@aws-sdk/lib-dynamodb'
+import { DynamoDBDocumentClient, QueryCommand, UpdateCommand } from '@aws-sdk/lib-dynamodb'
 import type { User } from '@mystash/shared'
 
 import { badRequest, jwtMiddleware } from '../utils/index.js'
+import { emailPattern } from '../utils/validation.js'
 
 // Whitelist of user settings that can be modified through this endpoint.
 // Extend this map to allow editing additional user information in the future.
@@ -15,6 +16,7 @@ import { badRequest, jwtMiddleware } from '../utils/index.js'
 const EDITABLE_FIELDS: Record<string, 'string' | 'boolean'> = {
   hasAcceptedTerms: 'boolean',
   nickname: 'string',
+  email: 'string',
 }
 
 const client = new DynamoDBClient({
@@ -28,6 +30,23 @@ const toUser = (item: Record<string, unknown>): User => ({
   tier: item.tier as string,
   hasAcceptedTerms: item.hasAcceptedTerms as boolean | undefined,
 })
+
+const checkEmailAvailable = async (
+  email: string,
+  userId: string,
+): Promise<string | null> => {
+  const command = new QueryCommand({
+    TableName: process.env.USERS_TABLE_NAME,
+    IndexName: 'email-index',
+    KeyConditionExpression: 'email = :email',
+    ExpressionAttributeValues: {
+      ':email': email,
+    },
+  })
+  const data = await dynamoDb.send(command)
+  const taken = data.Items?.some((item: any) => item.id !== userId) ?? false
+  return taken ? 'Email already exists' : null
+}
 
 const editUserSettingsHandler: APIGatewayProxyHandler = async (
   event: APIGatewayProxyEvent
@@ -61,6 +80,17 @@ const editUserSettingsHandler: APIGatewayProxyHandler = async (
   }
   if (Object.keys(changes).length === 0) {
     return badRequest('No settings provided')
+  }
+
+  if ('email' in changes) {
+    const email = changes.email as string
+    if (!emailPattern.test(email)) {
+      return badRequest('/email: must match format "email"')
+    }
+    const emailError = await checkEmailAvailable(email, userId)
+    if (emailError) {
+      return badRequest(emailError)
+    }
   }
 
   const setClauses: string[] = []

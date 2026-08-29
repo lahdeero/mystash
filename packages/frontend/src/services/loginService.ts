@@ -8,12 +8,11 @@ const backendUrl = resolveUrl()
 const baseUrl = backendUrl + '/api'
 
 const getUser = async (): Promise<User> => {
-  const response: AxiosResponse<UserToken> = await API.get(
+  const response: AxiosResponse<User> = await API.get(
     `${baseUrl}/user`,
     getRequestConfig()
   )
-  const { user } = response.data
-  return user
+  return response.data
 }
 
 const register = async (information: RegisterRequest): Promise<User | ErrorResponse> => {

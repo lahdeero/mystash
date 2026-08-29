@@ -22,9 +22,10 @@ const expectedUser = (overrides: Partial<User> = {}): User => ({
   ...overrides,
 })
 
-const { mockDynamoDbSend } = vi.hoisted(() => {
+const { mockDynamoDbSend, emailState } = vi.hoisted(() => {
   const mockDynamoDbSend = vi.fn()
-  return { mockDynamoDbSend }
+  const emailState = { taken: [] as Array<{ id: string }> }
+  return { mockDynamoDbSend, emailState }
 })
 
 vi.mock('@aws-sdk/client-dynamodb', () => ({
@@ -38,13 +39,20 @@ vi.mock('@aws-sdk/lib-dynamodb', () => ({
     })),
   },
   UpdateCommand: vi.fn((input: any) => ({ input })),
+  QueryCommand: vi.fn((input: any) => ({ input })),
 }))
 
 describe('edit-user-settings', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     vi.spyOn(console, 'error').mockImplementation(() => {})
-    mockDynamoDbSend.mockResolvedValue({ Attributes: dbItem })
+    emailState.taken = []
+    mockDynamoDbSend.mockImplementation((command: any) => {
+      if (command.input.IndexName === 'email-index') {
+        return Promise.resolve({ Items: emailState.taken })
+      }
+      return Promise.resolve({ Attributes: dbItem })
+    })
   })
 
   test('should allow accepting the terms by setting hasAcceptedTerms to true', async () => {
@@ -89,6 +97,50 @@ describe('edit-user-settings', () => {
     expect(JSON.parse(result.body)).toEqual(
       expectedUser({ nickname: 'NewNick', hasAcceptedTerms: true })
     )
+  })
+
+  test('should allow changing the email', async () => {
+    const result = (await handler(
+      getEvent(JSON.stringify({ email: 'new@example.com' }), 'PUT'),
+      getContext(),
+      vi.fn()
+    )) as APIGatewayProxyResult
+
+    expect(mockDynamoDbSend).toHaveBeenCalledTimes(2)
+    const queryArg = mockDynamoDbSend.mock.calls[0][0]
+    expect(queryArg.input.IndexName).toBe('email-index')
+    const updateArg = mockDynamoDbSend.mock.calls[1][0]
+    expect(updateArg.input.UpdateExpression).toBe('SET #field0 = :value0')
+    expect(result.statusCode).toBe(200)
+  })
+
+  test('should reject an invalid email format with a 400', async () => {
+    const result = (await handler(
+      getEvent(JSON.stringify({ email: 'not-an-email' }), 'PUT'),
+      getContext(),
+      vi.fn()
+    )) as APIGatewayProxyResult
+
+    expect(result.statusCode).toBe(400)
+    expect(JSON.parse(result.body)).toEqual({
+      error: { message: '/email: must match format "email"' },
+    })
+    expect(mockDynamoDbSend).not.toHaveBeenCalled()
+  })
+
+  test('should reject an email that is already taken by another user', async () => {
+    emailState.taken = [{ id: 'different-user-id' }]
+    const result = (await handler(
+      getEvent(JSON.stringify({ email: 'taken@example.com' }), 'PUT'),
+      getContext(),
+      vi.fn()
+    )) as APIGatewayProxyResult
+
+    expect(result.statusCode).toBe(400)
+    expect(JSON.parse(result.body)).toEqual({
+      error: { message: 'Email already exists' },
+    })
+    expect(mockDynamoDbSend).toHaveBeenCalledTimes(1)
   })
 
   test('should reject unknown fields with a 400', async () => {

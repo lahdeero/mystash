@@ -46,6 +46,13 @@ functions:
           path: api/user/settings
           method: put
 
+  getUser:
+    handler: dist/handlers/get-user.handler
+    events:
+      - http:
+          path: api/user
+          method: get
+
   githubLogin:
     handler: dist/handlers/github-login.handler
     events:
