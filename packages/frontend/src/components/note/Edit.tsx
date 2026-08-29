@@ -1,9 +1,9 @@
-import { connect } from 'react-redux'
 import { useParams, useNavigate } from 'react-router-dom'
 
 import { modifyNote } from '../../reducers/noteReducer'
-import { updateEditNote, clearEditNote } from '../../reducers/editNoteReducer'
+import { updateEditNote } from '../../reducers/editNoteReducer'
 import { notify, errorMessage } from '../../reducers/notificationReducer'
+import { useAppDispatch, useAppSelector } from '../../store'
 import Container from '../common/Container'
 import Input from '../common/Input'
 import Button from '../common/Button'
@@ -21,26 +21,22 @@ const ChipContainer = styled.div`
   display: flex;
 `
 
-const Edit = ({
-  notes,
-  errorMessage,
-  modifyNote,
-  notify,
-  editNote,
-  updateEditNote,
-}: any) => {
+const Edit = () => {
+  const dispatch = useAppDispatch()
+  const notes = useAppSelector((state) => state.notes)
+  const editNote = useAppSelector((state) => state.editNote)
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const note = notes.find((note: any) => note.id === id)
   if (!editNote?.id || editNote.id !== note.id) {
-    updateEditNote({
+    dispatch(updateEditNote({
       id: note.id,
       title: note.title,
       content: note.content,
       tags: note.tags.filter((tag: any) => tag !== null),
       newTags: note.tags.filter((tag: any) => tag !== null),
       tagText: '',
-    })
+    }))
   }
 
   const handleSubmit = async (event: any) => {
@@ -52,31 +48,31 @@ const Edit = ({
         content: editNote.content,
         tags: editNote.newTags,
       }
-      await modifyNote(noteObject)
-      await notify(`you modified '${noteObject.title}'`)
+      await dispatch(modifyNote(noteObject))
+      await dispatch(notify(`you modified '${noteObject.title}'`))
       navigate('/')
     } catch (exception) {
       console.error(exception)
-      errorMessage('ERROR WHILE EDITING NOTE')
+      dispatch(errorMessage('ERROR WHILE EDITING NOTE'))
     }
   }
 
   const handleTagTextChange = (event: any) => {
-    updateEditNote({
+    dispatch(updateEditNote({
       tagText: event.target.value,
-    })
+    }))
   }
 
   const handleFieldChange = (event: any) => {
-    updateEditNote({
+    dispatch(updateEditNote({
       title: event.target.value,
-    })
+    }))
   }
 
   const handleContent = (event: any) => {
-    updateEditNote({
+    dispatch(updateEditNote({
       content: event.target.value,
-    })
+    }))
   }
 
   const addTag = async (event: any) => {
@@ -93,19 +89,19 @@ const Edit = ({
     tagTemp.push(editNote.tagText)
 
     if (tagTemp.length < maxTags) {
-      updateEditNote({
+      dispatch(updateEditNote({
         newTags: tagTemp,
         tagText: '',
-      })
+      }))
     } else {
-      notify(`Maxium number of tags is '${maxTags}'`)
+      dispatch(notify(`Maxium number of tags is '${maxTags}'`))
     }
   }
 
   const removeTag = (tagName: any) => {
-    updateEditNote({
+    dispatch(updateEditNote({
       newTags: editNote.newTags.filter((tag: any) => tag !== tagName),
-    })
+    }))
   }
 
   return (
@@ -175,19 +171,4 @@ const Edit = ({
   )
 }
 
-const mapStateToProps = (store: any) => {
-  return {
-    notes: store.notes,
-    editNote: store.editNote,
-  }
-}
-
-const mapDispatchToProps = {
-  updateEditNote,
-  clearEditNote,
-  modifyNote,
-  notify,
-  errorMessage,
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Edit)
+export default Edit

@@ -1,7 +1,7 @@
-import { connect } from 'react-redux'
 import styled from 'styled-components'
 
 import { hideNotification } from '../reducers/notificationReducer'
+import { useAppDispatch, useAppSelector } from '../store'
 import ContentSpan from './common/ContentSpan'
 import ClearIcon from '../assets/clear.svg'
 
@@ -40,7 +40,9 @@ const HideButton = styled.button`
   }
 `
 
-const Notification = ({ notification, hideNotification }: any) => {
+const Notification = () => {
+  const dispatch = useAppDispatch()
+  const notification = useAppSelector((state) => state.notification)
   const text = notification[0]
   if (typeof text !== 'string' || text.length < 2) {
     return <div />
@@ -50,7 +52,7 @@ const Notification = ({ notification, hideNotification }: any) => {
     event.preventDefault()
     event.target.closest('div.notification-wrapper').classList.add('hidden')
     setTimeout(() => {
-      hideNotification()
+      dispatch(hideNotification())
     }, 1000)
   }
 
@@ -64,18 +66,4 @@ const Notification = ({ notification, hideNotification }: any) => {
   )
 }
 
-const mapStateToProps = (store: any) => {
-  return {
-    notification: store.notification,
-  }
-}
-const mapDispatchToProps = {
-  hideNotification,
-}
-
-const ConnectedNotification = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Notification)
-
-export default ConnectedNotification
+export default Notification

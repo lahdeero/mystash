@@ -1,4 +1,3 @@
-import { connect } from 'react-redux'
 import styled from 'styled-components'
 import {
   sortOptions,
@@ -6,6 +5,7 @@ import {
   sortCreated,
   sortModified,
 } from '../../reducers/sortReducer'
+import { useAppDispatch, useAppSelector } from '../../store'
 
 const DropdownWrapper = styled.div`
   display: flex;
@@ -22,22 +22,19 @@ const DropdownWrapper = styled.div`
   }
 `
 
-const SortDropdown = ({
-  sortNotes,
-  sortAlphabetic,
-  sortCreated,
-  sortModified,
-}: any) => {
+const SortDropdown = () => {
+  const dispatch = useAppDispatch()
+  const sortNotes = useAppSelector((state) => state.sortNotes)
   const handleChange = (event: any) => {
     switch (event.target.value) {
       case 'ALPHABETIC':
-        sortAlphabetic()
+        dispatch(sortAlphabetic())
         break
       case 'CREATED':
-        sortCreated()
+        dispatch(sortCreated())
         break
       case 'MODIFIED':
-        sortModified()
+        dispatch(sortModified())
         break
       default:
     }
@@ -57,15 +54,4 @@ const SortDropdown = ({
   )
 }
 
-const mapStateToProps = (store: any) => {
-  return {
-    sortNotes: store.sortNotes,
-  }
-}
-const mapDispatchToProps = {
-  sortAlphabetic,
-  sortCreated,
-  sortModified,
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(SortDropdown)
+export default SortDropdown

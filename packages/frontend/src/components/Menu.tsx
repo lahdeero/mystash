@@ -1,5 +1,4 @@
 import { Link, useNavigate } from 'react-router-dom'
-import { connect } from 'react-redux'
 import { Navbar } from './common/Navigation'
 import styled from 'styled-components'
 
@@ -48,4 +47,4 @@ const Menu = (props: Props) => {
   )
 }
 
-export default connect(null)(Menu)
+export default Menu

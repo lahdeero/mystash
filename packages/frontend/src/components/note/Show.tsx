@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import ReactMarkddown from 'react-markdown'
 import styled from 'styled-components'
@@ -7,7 +6,8 @@ import { ClipLoader } from 'react-spinners'
 import { useParams, useNavigate } from 'react-router-dom'
 
 import { removeNote } from '../../reducers/noteReducer'
-import { notify, errorMessage } from '../../reducers/notificationReducer'
+import { notify } from '../../reducers/notificationReducer'
+import { useAppDispatch, useAppSelector } from '../../store'
 import Button from '../common/Button'
 import Container from '../common/Container'
 import { useEffect } from 'react'
@@ -74,7 +74,9 @@ const FilePreview = styled.div`
   }
 `
 
-const Show = ({ notes, notify, removeNote }: any) => {
+const Show = () => {
+  const dispatch = useAppDispatch()
+  const notes = useAppSelector((state) => state.notes)
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const note = notes.find((note: any) => note.id === id)
@@ -98,19 +100,19 @@ const Show = ({ notes, notify, removeNote }: any) => {
         setDataFilesInfo(dataFiles)
       } catch (e) {
         console.error(e)
-        notify('Could not scan files')
+        dispatch(notify('Could not scan files'))
       }
       setLoading(false)
     }
     scanFiles(note.id)
-  }, [note.id, notify])
+  }, [note.id, dispatch])
 
   const deleteNote = async (event: any) => {
     event.preventDefault()
     if (window.confirm(`Are you sure you want to delete '${note.title}' ?`)) {
-      const removedNote = await removeNote(note)
+      const removedNote = await dispatch(removeNote(note))
       if (removedNote.id.length > 0) {
-        notify(`you deleted '${removedNote.title}'`)
+        dispatch(notify(`you deleted '${removedNote.title}'`))
         navigate('/')
       }
     }
@@ -120,7 +122,7 @@ const Show = ({ notes, notify, removeNote }: any) => {
     if (window.confirm('Are you sure you want to delete this file?')) {
       try {
         await fileService.deleteFile(fileId)
-        notify('File successfully deleted!')
+        dispatch(notify('File successfully deleted!'))
         type === 'image'
           ? setImagesInfo(imagesInfo.filter((img: any) => img.id !== fileId))
           : setDataFilesInfo(
@@ -128,7 +130,7 @@ const Show = ({ notes, notify, removeNote }: any) => {
             )
       } catch (e) {
         console.error(e)
-        notify('Could not delete file')
+        dispatch(notify('Could not delete file'))
       }
     }
   }
@@ -247,17 +249,4 @@ const Show = ({ notes, notify, removeNote }: any) => {
   )
 }
 
-const mapStateToProps = (store: any) => {
-  return {
-    notes: store.notes,
-  }
-}
-const mapDispatchToProps = {
-  removeNote,
-  notify,
-  errorMessage,
-}
-
-const ConnectedShowNote = connect(mapStateToProps, mapDispatchToProps)(Show)
-
-export default ConnectedShowNote
+export default Show

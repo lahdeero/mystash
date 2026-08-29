@@ -1,11 +1,11 @@
 import { useState } from 'react'
-import { connect } from 'react-redux'
 import { useParams, useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 
 import fileService from '../../services/fileService'
 import { modifyLocally } from '../../reducers/noteReducer'
 import { notify, errorMessage } from '../../reducers/notificationReducer'
+import { useAppDispatch, useAppSelector } from '../../store'
 import Container from '../common/Container'
 import Button from '../common/Button'
 import type { Note } from '@mystash/shared'
@@ -32,7 +32,9 @@ const FileInfo = styled.div`
   color: ${({ theme }) => theme.Text};
 `
 
-const Upload = ({ notes, modifyLocally, notify, errorMessage }: any) => {
+const Upload = () => {
+  const dispatch = useAppDispatch()
+  const notes = useAppSelector((state) => state.notes)
   const { id } = useParams()
   const navigate = useNavigate()
 
@@ -92,7 +94,7 @@ const Upload = ({ notes, modifyLocally, notify, errorMessage }: any) => {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
     if (files.length === 0) {
-      errorMessage('No files selected')
+      dispatch(errorMessage('No files selected'))
       return
     }
 
@@ -115,9 +117,9 @@ const Upload = ({ notes, modifyLocally, notify, errorMessage }: any) => {
           uploadedIds.push(fileId)
         }
       }
-      notify(`${uploadedIds.length} file(s) successfully uploaded!`)
+      dispatch(notify(`${uploadedIds.length} file(s) successfully uploaded!`))
     } catch (exception) {
-      errorMessage('Error while uploading files')
+      dispatch(errorMessage('Error while uploading files'))
       console.error(exception)
       return
     }
@@ -128,10 +130,10 @@ const Upload = ({ notes, modifyLocally, notify, errorMessage }: any) => {
       const noteFiles = note.files || []
       const newFiles = [...noteFiles, ...serverFileIds.filter((id: string) => !noteFiles.includes(id))]
       if (newFiles.length > 0) {
-        modifyLocally({
+        dispatch(modifyLocally({
           ...note,
           files: newFiles,
-        })
+        }))
       }
     } catch (e) {
       console.error('Could not refresh files after upload', e)
@@ -188,14 +190,4 @@ const Upload = ({ notes, modifyLocally, notify, errorMessage }: any) => {
 
 export const UploadComponent = Upload
 
-const mapStateToProps = (store: any) => ({
-  notes: store.notes,
-})
-
-const mapDispatchToProps = {
-  modifyLocally,
-  notify,
-  errorMessage,
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Upload)
+export default Upload

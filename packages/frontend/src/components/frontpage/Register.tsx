@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { connect } from 'react-redux'
 import { actionForRegister } from '../../reducers/userReducer'
 import { notify as notifyReducer, errorMessage as errorMessageReducer } from '../../reducers/notificationReducer'
+import { useAppDispatch } from '../../store'
 import { ClipLoader } from 'react-spinners'
 import { Navbar } from '../common/Navigation'
 import Input from '../common/Input'
@@ -11,7 +11,8 @@ import Link from '../common/Link'
 import TextContainer from '../common/TextContainer'
 import Header from '../common/Header'
 
-const Register = ({ notify, errorMessage, actionForRegister, togglePage }: any) => {
+const Register = ({ togglePage }: any) => {
+  const dispatch = useAppDispatch()
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
   const [password, setPassword] = useState('')
@@ -23,18 +24,18 @@ const Register = ({ notify, errorMessage, actionForRegister, togglePage }: any) 
     event.preventDefault()
     setLoading(true)
     try {
-      await actionForRegister({
+      await dispatch(actionForRegister({
         firstName,
         lastName,
         password,
         email
-      })
-      notify(`Registered successfully with email: ${email}`)
+      }))
+      dispatch(notifyReducer(`Registered successfully with email: ${email}`))
       togglePage(event)
     } catch (exception) {
       setLoading(false)
       console.error(exception)
-      errorMessage('Registration failed')
+      dispatch(errorMessageReducer('Registration failed'))
       setError('Could not register..')
       setTimeout(() => {
         setError('')
@@ -68,18 +69,4 @@ const Register = ({ notify, errorMessage, actionForRegister, togglePage }: any) 
   )
 }
 
-const mapStateToProps = (store: any) => {
-  return {
-    notes: store.notes,
-    user: store.user
-  }
-}
-const mapDispatchToProps = {
-  actionForRegister,
-  notify: notifyReducer,
-  errorMessage: errorMessageReducer
-}
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Register)
+export default Register

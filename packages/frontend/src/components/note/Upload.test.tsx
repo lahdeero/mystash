@@ -1,7 +1,11 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { vi, describe, test, expect, beforeEach } from 'vitest'
+import { Provider } from 'react-redux'
+import { configureStore } from '@reduxjs/toolkit'
 import { UploadComponent } from './Upload'
 import fileService from '../../services/fileService'
+import notes from '../../reducers/noteReducer'
+import notification from '../../reducers/notificationReducer'
 import type { Note } from '@mystash/shared'
 
 vi.mock('../../services/fileService', () => ({
@@ -33,9 +37,6 @@ const defaultNote = {
   createdAt: '2024-01-01T00:00:00Z',
 } satisfies Note
 
-const notify = vi.fn()
-const errorMessage = vi.fn()
-
 const createFileList = (files: File[]) => {
   const list: any = {
     length: files.length,
@@ -48,14 +49,23 @@ const createFileList = (files: File[]) => {
 }
 
 const renderUpload = (note: Note = defaultNote) => {
-  return render(
-    <UploadComponent
-      notes={[note]}
-      modifyLocally={vi.fn()}
-      notify={notify}
-      errorMessage={errorMessage}
-    />
+  const store = configureStore({
+    reducer: {
+      notes,
+      notification,
+    },
+    preloadedState: {
+      notes: [note],
+      notification: [],
+    },
+  })
+
+  render(
+    <Provider store={store}>
+      <UploadComponent />
+    </Provider>
   )
+  return store
 }
 
 describe('Upload', () => {
@@ -87,7 +97,7 @@ describe('Upload', () => {
     mockedFileService.upload.mockResolvedValue({})
     mockedFileService.scanFiles.mockResolvedValue([{ id: 'file-1' }, { id: 'file-2' }])
 
-    renderUpload()
+    const store = renderUpload()
 
     const fileInput = screen.getByTestId('upload-file-input') as HTMLInputElement
     const files = [new File(['abc'], 'one.txt', { type: 'text/plain' }), new File(['def'], 'two.txt', { type: 'text/plain' })]
@@ -100,17 +110,17 @@ describe('Upload', () => {
       expect(mockedFileService.create).toHaveBeenCalledTimes(2)
       expect(mockedFileService.upload).toHaveBeenCalledTimes(2)
       expect(mockedFileService.scanFiles).toHaveBeenCalledWith(defaultNote.id)
-      expect(notify).toHaveBeenCalledWith('2 file(s) successfully uploaded!')
+      expect(store.getState().notification[0]).toBe('2 file(s) successfully uploaded!')
     })
   })
 
   test('shows error when no files are selected', async () => {
-    renderUpload()
+    const store = renderUpload()
     const form = screen.getByTestId('upload-form')
     fireEvent.submit(form)
 
     await waitFor(() => {
-      expect(errorMessage).toHaveBeenCalledWith('No files selected')
+      expect(store.getState().notification[0]).toBe('No files selected')
     })
   })
 })

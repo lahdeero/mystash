@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import queryString from 'query-string'
-import { connect } from 'react-redux'
 import styled, { ThemeProvider } from 'styled-components'
 import './App.css'
 import Frontpage from './components/frontpage/Frontpage'
@@ -20,6 +19,7 @@ import List from './components/note/List'
 import Create from './components/note/Create'
 import Settings from './components/Settings'
 import { Theme, themes } from './layout/colors'
+import { useAppDispatch, useAppSelector } from './store'
 
 const Content = styled.div`
   flex: 1 0 auto;
@@ -40,7 +40,9 @@ const Content = styled.div`
 const MS_TOKEN = 'MS_token'
 const MS_THEME = 'MS_theme'
 
-const App = (props: any) => {
+const App = () => {
+  const dispatch = useAppDispatch()
+  const user = useAppSelector((state) => state.user)
   const filter = useFilter()
   const [logged, setLogged] = useState(false)
   const [loading, setLoading] = useState(true)
@@ -75,7 +77,7 @@ const App = (props: any) => {
       return
     }
     callback()
-  }, [props.user])
+  }, [user])
 
   useEffect(() => {
     window.localStorage.setItem(MS_THEME, currentTheme)
@@ -84,9 +86,9 @@ const App = (props: any) => {
   const init = async () => {
     try {
       setLoading(true)
-      await props.noteInitialization()
+      await dispatch(noteInitialization())
     } catch (e) {
-      props.notify(e)
+      dispatch(notify(e))
     } finally {
       setLoading(false)
     }
@@ -96,10 +98,12 @@ const App = (props: any) => {
     event.preventDefault()
     window.localStorage.removeItem(MS_TOKEN)
     filter.setFilter('')
-    props.clearNotes()
-    props.actionForLogout()
+    dispatch(clearNotes())
+    dispatch(actionForLogout())
     setLogged(false)
   }
+
+  const login = (credentials: any) => dispatch(actionForLogin(credentials))
 
   if (logged) {
     return (
@@ -138,7 +142,7 @@ const App = (props: any) => {
       <ThemeProvider theme={themes[currentTheme]}>
         <Content>
           <Notification />
-          <Frontpage actionForLogin={props.actionForLogin} init={init} />
+          <Frontpage actionForLogin={login} init={init} />
         </Content>
         <Footer />
       </ThemeProvider>
@@ -146,16 +150,4 @@ const App = (props: any) => {
   }
 }
 
-const mapStateToProps = (store: any) => ({
-  notes: store.notes,
-  user: store.user,
-})
-
-const mapDispatchToProps = {
-  noteInitialization,
-  actionForLogin,
-  actionForLogout,
-  clearNotes,
-  notify,
-}
-export default connect(mapStateToProps, mapDispatchToProps)(App)
+export default App

@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { connect } from 'react-redux'
 import { ClipLoader } from 'react-spinners'
 import ListNote from './ListNote'
 import SortDropdown from './SortDropdown'
@@ -8,6 +7,7 @@ import styled from 'styled-components'
 import Pagination from '../paging/Pagination'
 import Info from '../common/Info'
 import Filter from '../Filter'
+import { useAppSelector } from '../../store'
 
 const SortAndPagingWrapper = styled.div`
   display: flex;
@@ -42,7 +42,9 @@ const UnstyledUl = styled.ul`
 
 const NOTES_PER_PAGE = 10
 
-const List = ({ notes, sortNotes, filter, loading }: any) => {
+const List = ({ filter, loading }: any) => {
+  const notes = useAppSelector((state) => state.notes)
+  const sortNotes = useAppSelector((state) => state.sortNotes)
   const [page, setPage] = useState(1)
   const [notesPerPage] = useState(NOTES_PER_PAGE)
 
@@ -160,13 +162,4 @@ const List = ({ notes, sortNotes, filter, loading }: any) => {
   )
 }
 
-const mapStateToProps = (store: any) => {
-  return {
-    notes: store.notes,
-    sortNotes: store.sortNotes,
-  }
-}
-
-export default connect(
-  mapStateToProps
-)(List)
+export default List

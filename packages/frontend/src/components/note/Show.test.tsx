@@ -1,5 +1,5 @@
 import { render, screen, within } from '@testing-library/react'
-import { vi, describe, test, expect } from 'vitest'
+import { describe, test, expect } from 'vitest'
 import { Provider } from 'react-redux'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { configureStore } from '@reduxjs/toolkit'
@@ -16,9 +16,6 @@ const defaultNote = {
   createdAt: '2024-01-01T00:00:00Z',
 } satisfies Note
 
-const notify = vi.fn()
-const removeNote = vi.fn()
-
 const renderShow = (note: Note = defaultNote) => {
   const store = configureStore({
     reducer: {
@@ -33,7 +30,7 @@ const renderShow = (note: Note = defaultNote) => {
         <Routes>
           <Route
             path="/notes/:id"
-            element={<Show notify={notify} removeNote={removeNote} />}
+            element={<Show />}
           />
         </Routes>
       </MemoryRouter>
