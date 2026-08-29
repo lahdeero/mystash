@@ -39,6 +39,13 @@ functions:
           path: api/login
           method: post
 
+  editUserSettings:
+    handler: dist/handlers/edit-user-settings.handler
+    events:
+      - http:
+          path: api/user/settings
+          method: put
+
   githubLogin:
     handler: dist/handlers/github-login.handler
     events:

@@ -53,6 +53,7 @@ export const registerHandler = async (
     firstName,
     lastName,
     tier,
+    hasAcceptedTerms: true,
   }
   const command = new PutCommand({
     TableName: process.env.USERS_TABLE_NAME,

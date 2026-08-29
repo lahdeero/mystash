@@ -187,7 +187,8 @@ aws dynamodb put-item \
         "firstName": {"S": "John"},
         "lastName": {"S": "Doe"},
         "email": {"S": "test@example.com"},
-        "password": {"S": "2dc6e6c891c0e3acfa5b312c0da3e26e"}
+        "password": {"S": "2dc6e6c891c0e3acfa5b312c0da3e26e"},
+        "hasAcceptedTerms": {"BOOL": true}
     }' \
     --region eu-north-1 \
     --endpoint-url http://localhost:8001
@@ -198,7 +199,8 @@ aws dynamodb put-item \
         "firstName": {"S": "Dev"},
         "lastName": {"S": "User"},
         "email": {"S": "dev@example.com"},
-        "password": {"S": "2dc6e6c891c0e3acfa5b312c0da3e26e"}
+        "password": {"S": "2dc6e6c891c0e3acfa5b312c0da3e26e"},
+        "hasAcceptedTerms": {"BOOL": true}
     }' \
     --region eu-north-1 \
     --endpoint-url http://localhost:8001

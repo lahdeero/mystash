@@ -202,6 +202,15 @@ export class MystashInfraStack extends cdk.Stack {
         functionName: `${stackName}-login-lambda`,
       }
     )
+    const editUserSettingsHandler = new lambdaNodeJs.NodejsFunction(
+      this,
+      `${stackName}-edit-user-settings-lambda-handler`,
+      {
+        ...commonHandlerProps,
+        entry: path.join(handlersPath, 'edit-user-settings.ts'),
+        functionName: `${stackName}-edit-user-settings-lambda`,
+      }
+    )
     const createNoteHandler = new lambdaNodeJs.NodejsFunction(
       this,
       `${stackName}-create-note-lambda-handler`,
@@ -292,6 +301,7 @@ export class MystashInfraStack extends cdk.Stack {
     userDb.grantReadWriteData(registerHandler)
     userDb.grantReadWriteData(loginHandler)
     userDb.grantReadWriteData(githubVerifyHandler)
+    userDb.grantReadWriteData(editUserSettingsHandler)
 
     noteDb.grantWriteData(createNoteHandler)
     noteDb.grantReadData(getNotesHandler)
@@ -321,6 +331,11 @@ export class MystashInfraStack extends cdk.Stack {
       'LambdaIntegration',
       loginHandler
     )
+    const editUserSettingsIntegration =
+      new apiGatewayIntegrations.HttpLambdaIntegration(
+        'LambdaIntegration',
+        editUserSettingsHandler
+      )
     const createNoteIntegration =
       new apiGatewayIntegrations.HttpLambdaIntegration(
         'LambdaIntegration',
@@ -390,6 +405,11 @@ export class MystashInfraStack extends cdk.Stack {
       path: '/api/login',
       methods: [apigateway.HttpMethod.POST],
       integration: loginIntegration,
+    })
+    api.addRoutes({
+      path: '/api/user/settings',
+      methods: [apigateway.HttpMethod.PUT],
+      integration: editUserSettingsIntegration,
     })
     api.addRoutes({
       path: '/api/note',

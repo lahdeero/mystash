@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import queryString from 'query-string'
 import styled, { ThemeProvider } from 'styled-components'
 import './App.css'
@@ -10,6 +10,7 @@ import Upload from './components/note/Upload'
 import Footer from './components/Footer'
 import Notification from './components/Notification'
 import Menu from './components/Menu'
+import TermsAndConditions from './components/TermsAndConditions'
 import { noteInitialization, clearNotes } from './reducers/noteReducer'
 import { notify } from './reducers/notificationReducer'
 import { actionForLogin, actionForLogout } from './reducers/userReducer'
@@ -49,8 +50,9 @@ const App = () => {
   const [currentTheme, setCurrentTheme] = useState(Theme.Light)
 
   const getToken = async (code: any) => {
-    const { token, user: _user } = await loginService.githubVerify(code)
+    const { token, user } = await loginService.githubVerify(code)
     window.localStorage.setItem(MS_TOKEN, token)
+    return user
   }
 
   useEffect(() => {
@@ -72,8 +74,14 @@ const App = () => {
       callback()
     } else if (parsed.code) {
       setLoading(true)
-      getToken(parsed.code).then(callback)
-      setLoading(false)
+      getToken(parsed.code)
+        .then((user) => {
+          if (user) {
+            dispatch({ type: 'LOGIN', data: user })
+          }
+          callback()
+        })
+        .finally(() => setLoading(false))
       return
     }
     callback()
@@ -106,6 +114,26 @@ const App = () => {
   const login = (credentials: any) => dispatch(actionForLogin(credentials))
 
   if (logged) {
+    if (user && !user.hasAcceptedTerms) {
+      return (
+        <ThemeProvider theme={themes[currentTheme]}>
+          <Content>
+            <Notification />
+            <Routes>
+              <Route
+                path="/terms-and-conditions"
+                element={<TermsAndConditions />}
+              />
+              <Route
+                path="*"
+                element={<Navigate to="/terms-and-conditions" replace />}
+              />
+            </Routes>
+          </Content>
+          <Footer />
+        </ThemeProvider>
+      )
+    }
     return (
       <ThemeProvider theme={themes[currentTheme]}>
         <Content>

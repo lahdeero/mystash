@@ -38,5 +38,14 @@ const githubVerify = async (code: any): Promise<any> => {
   return response.data
 }
 
-const loginService = { getUser, register, login, githubVerify }
+const editUserSettings = async (settings: Record<string, unknown>): Promise<User> => {
+  const response: AxiosResponse<User> = await API.put(
+    `${baseUrl}/user/settings`,
+    settings,
+    getRequestConfig()
+  )
+  return response.data
+}
+
+const loginService = { getUser, register, login, githubVerify, editUserSettings }
 export default loginService

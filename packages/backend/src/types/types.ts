@@ -15,6 +15,7 @@ export type UserDbItem = {
   firstName: string
   lastName: string
   tier: string
+  hasAcceptedTerms?: boolean
 }
 
 export type FileInfo = {

@@ -18,6 +18,7 @@ const expectedUser: User = {
   firstName: validBody.firstName,
   lastName: validBody.lastName,
   tier: 'free',
+  hasAcceptedTerms: true,
 }
 
 const { mockClientSend, mockDynamoDbSend } = vi.hoisted(() => {

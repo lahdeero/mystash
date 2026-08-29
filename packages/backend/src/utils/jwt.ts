@@ -122,13 +122,14 @@ export const createToken = (dbUser?: UserDbItem): UserToken => {
   if (!dbUser?.id) {
     throw new Error('User ID missing')
   }
-  const { id, firstName, lastName, email, tier } = dbUser
+  const { id, firstName, lastName, email, tier, hasAcceptedTerms } = dbUser
   const payload = {
     id,
     firstName,
     lastName,
     email,
     tier,
+    hasAcceptedTerms,
     iat: Math.floor(Date.now() / 1000),
     exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7, // Expire after 1 week
   }
@@ -138,6 +139,7 @@ export const createToken = (dbUser?: UserDbItem): UserToken => {
     lastName,
     tier,
     email,
+    hasAcceptedTerms,
   }
   return { token, user }
 }

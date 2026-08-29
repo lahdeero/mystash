@@ -32,6 +32,8 @@ export class UserService {
         githubId: data.id,
         githubAvatar: data.avatar_url,
         githubUrl: data.html_url,
+        // GitHub login users must accept the terms before using the app
+        hasAcceptedTerms: false,
       },
     })
     await this.dynamoDb.send(command)
@@ -41,6 +43,7 @@ export class UserService {
       firstName,
       lastName,
       tier: UserTier.Free,
+      hasAcceptedTerms: false,
     }
   }
 

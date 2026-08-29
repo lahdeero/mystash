@@ -21,6 +21,7 @@ export type User = {
   firstName: string
   lastName: string
   tier: string
+  hasAcceptedTerms?: boolean
 }
 
 export type UserWithPassword = User & {
@@ -38,6 +39,6 @@ export type ErrorResponse = {
   }
 }
 
-export type RegisterRequest = Omit<UserWithPassword, 'tier'> & {}
+export type RegisterRequest = Omit<UserWithPassword, 'tier' | 'hasAcceptedTerms'> & {}
 
 export type RegisterResponse = User
