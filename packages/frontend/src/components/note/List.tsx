@@ -105,7 +105,7 @@ const List = ({ filter, loading }: any) => {
     }
   }
 
-  const filteredNotes = filterNotes(notes.sort(sortFunction), filter.value)
+  const filteredNotes = filterNotes([...notes].sort(sortFunction), filter.value)
   const notesToShow = filteredNotes.slice((page - 1) * notesPerPage, (page - 1) * notesPerPage + notesPerPage)
   const showBottomPagination = notes.length > 7 ? true : false
 
@@ -130,7 +130,7 @@ const List = ({ filter, loading }: any) => {
       <div>
         {notes.length > 1 && <Filter filter={filter} />}
         <ClipLoader loading={loading} color='blue' />
-        {notes.lenth > 2 && <SortAndPaging
+        {notes.length > 2 && <SortAndPaging
           itemsLenght={filteredNotes.length}
           notesPerPage={notesPerPage}
           page={page}
