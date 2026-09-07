@@ -10,6 +10,7 @@ import Container from '../common/Container'
 import Link from '../common/Link'
 import TextContainer from '../common/TextContainer'
 import Header from '../common/Header'
+import Modal from '../common/Modal'
 import { TermsText } from '../TermsContent'
 
 const Register = ({ togglePage }: any) => {
@@ -20,7 +21,7 @@ const Register = ({ togglePage }: any) => {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [termsAccepted, setTermsAccepted] = useState(false)
-  const [showTerms, setShowTerms] = useState(false)
+  const [termsModalOpen, setTermsModalOpen] = useState(false)
 
   const handleRegister = async (event: any) => {
     event.preventDefault()
@@ -79,13 +80,12 @@ const Register = ({ togglePage }: any) => {
                 <Link
                   onClick={(event) => {
                     event.preventDefault()
-                    setShowTerms((show) => !show)
+                    setTermsModalOpen(true)
                   }}
                 >
-                  {showTerms ? 'Hide' : 'View'} Terms and Conditions
+                  View Terms and Conditions
                 </Link>
               </div>
-              {showTerms && <TermsText />}
             </div>
             <Button type="submit" disabled={!termsAccepted}>
               Register
@@ -96,6 +96,14 @@ const Register = ({ togglePage }: any) => {
           Back to <Link onClick={togglePage}>login</Link>
         </TextContainer>
       </Container>
+      <Modal
+        isOpen={termsModalOpen}
+        onClose={() => setTermsModalOpen(false)}
+        title="Terms and Conditions"
+      >
+        <TermsText />
+        <Button onClick={() => setTermsModalOpen(false)}>Close</Button>
+      </Modal>
     </div>
   )
 }

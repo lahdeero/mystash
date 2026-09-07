@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react'
+import { render, screen, fireEvent, waitFor, within } from '@testing-library/react'
 import { describe, test, expect, vi } from 'vitest'
 import { Provider } from 'react-redux'
 import { configureStore } from '@reduxjs/toolkit'
@@ -67,21 +67,19 @@ describe('Register', () => {
     expect(button.disabled).toBe(false)
   })
 
-  test('shows and hides the terms content via the link', () => {
+  test('opens the terms and conditions in a modal via the link', () => {
     renderRegister()
-    const toggle = screen.getByRole('link', { name: 'View Terms and Conditions' })
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
 
-    fireEvent.click(toggle)
-    expect(screen.getAllByText(/experimental/).length).toBeGreaterThanOrEqual(1)
-    expect(screen.getByText(/free from any responsibility/)).toBeInTheDocument()
-    expect(
-      screen.getByRole('link', { name: 'Hide Terms and Conditions' })
-    ).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('link', { name: 'View Terms and Conditions' }))
 
-    fireEvent.click(screen.getByRole('link', { name: 'Hide Terms and Conditions' }))
-    expect(
-      screen.queryByText(/free from any responsibility/)
-    ).not.toBeInTheDocument()
+    const dialog = screen.getByRole('dialog')
+    expect(dialog).toBeInTheDocument()
+    expect(within(dialog).getAllByText(/experimental/).length).toBeGreaterThanOrEqual(1)
+    expect(within(dialog).getByText(/free from any responsibility/)).toBeInTheDocument()
+
+    fireEvent.click(screen.getByRole('button', { name: 'Close' }))
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
   })
 
   test('does not register when the terms are not accepted', async () => {

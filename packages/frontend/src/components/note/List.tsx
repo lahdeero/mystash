@@ -144,7 +144,7 @@ const List = ({ filter, loading }: any) => {
           </div>
         </li>
         )}
-        {notes.length === 0 && <li>You have no notes. Add one by clicking the "Add note" button!</li>}
+        {!loading && notes.length === 0 && <li>You have no notes. Add one by clicking the "Add note" button!</li>}
       </UnstyledUl>
       <div>
         {
