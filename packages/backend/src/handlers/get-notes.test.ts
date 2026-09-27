@@ -40,8 +40,7 @@ describe('get-notes', () => {
     test('should return notes', async () => {
       const result = (await handler(
         getEvent(),
-        getContext(),
-        vi.fn()
+        getContext()
       )) as APIGatewayProxyResult
       expect(result.statusCode).toBe(200)
       expect(testNotes[0].id).toBe(testNote.id)

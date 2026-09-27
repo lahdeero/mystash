@@ -64,8 +64,7 @@ describe('edit-user-settings', () => {
   test('should allow accepting the terms by setting hasAcceptedTerms to true', async () => {
     const result = (await handler(
       getEvent(JSON.stringify({ hasAcceptedTerms: true }), 'PUT'),
-      getContext(),
-      vi.fn()
+      getContext()
     )) as APIGatewayProxyResult
 
     expect(mockDynamoDbSend).toHaveBeenCalledTimes(1)
@@ -91,8 +90,7 @@ describe('edit-user-settings', () => {
         JSON.stringify({ nickname: 'NewNick', hasAcceptedTerms: true }),
         'PUT'
       ),
-      getContext(),
-      vi.fn()
+      getContext()
     )) as APIGatewayProxyResult
 
     expect(mockDynamoDbSend).toHaveBeenCalledTimes(1)
@@ -108,8 +106,7 @@ describe('edit-user-settings', () => {
   test('should allow changing the email', async () => {
     const result = (await handler(
       getEvent(JSON.stringify({ email: 'new@example.com' }), 'PUT'),
-      getContext(),
-      vi.fn()
+      getContext()
     )) as APIGatewayProxyResult
 
     expect(mockDynamoDbSend).toHaveBeenCalledTimes(2)
@@ -123,8 +120,7 @@ describe('edit-user-settings', () => {
   test('should reject an invalid email format with a 400', async () => {
     const result = (await handler(
       getEvent(JSON.stringify({ email: 'not-an-email' }), 'PUT'),
-      getContext(),
-      vi.fn()
+      getContext()
     )) as APIGatewayProxyResult
 
     expect(result.statusCode).toBe(400)
@@ -138,8 +134,7 @@ describe('edit-user-settings', () => {
     emailState.taken = [{ id: 'different-user-id' }]
     const result = (await handler(
       getEvent(JSON.stringify({ email: 'taken@example.com' }), 'PUT'),
-      getContext(),
-      vi.fn()
+      getContext()
     )) as APIGatewayProxyResult
 
     expect(result.statusCode).toBe(400)
@@ -152,8 +147,7 @@ describe('edit-user-settings', () => {
   test('should reject unknown fields with a 400', async () => {
     const result = (await handler(
       getEvent(JSON.stringify({ tier: 'admin' }), 'PUT'),
-      getContext(),
-      vi.fn()
+      getContext()
     )) as APIGatewayProxyResult
 
     expect(result.statusCode).toBe(400)
@@ -166,8 +160,7 @@ describe('edit-user-settings', () => {
   test('should reject an empty body with a 400', async () => {
     const result = (await handler(
       getEvent('{}', 'PUT'),
-      getContext(),
-      vi.fn()
+      getContext()
     )) as APIGatewayProxyResult
 
     expect(result.statusCode).toBe(400)
@@ -180,8 +173,7 @@ describe('edit-user-settings', () => {
   test('should reject a malformed body with a 400', async () => {
     const result = (await handler(
       getEvent('not-json', 'PUT'),
-      getContext(),
-      vi.fn()
+      getContext()
     )) as APIGatewayProxyResult
 
     expect(result.statusCode).toBe(400)
@@ -194,11 +186,7 @@ describe('edit-user-settings', () => {
   test('should reject missing authorization', async () => {
     const event = getEvent(JSON.stringify({ hasAcceptedTerms: true }), 'PUT')
     event.headers.authorization = ''
-    const callback = vi.fn()
-    await handler(event, getContext(), callback)
-
-    expect(callback).toHaveBeenCalled()
-    const [, result] = callback.mock.calls[0] as [unknown, APIGatewayProxyResult]
+    const result = await handler(event, getContext())
     expect(result.statusCode).toBe(401)
     expect(mockDynamoDbSend).not.toHaveBeenCalled()
   })

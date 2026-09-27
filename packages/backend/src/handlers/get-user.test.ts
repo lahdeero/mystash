@@ -53,8 +53,7 @@ describe('get-user', () => {
   test('should return the current user without the password', async () => {
     const result = (await handler(
       getEvent(),
-      getContext(),
-      vi.fn()
+      getContext()
     )) as APIGatewayProxyResult
 
     expect(mockDynamoDbSend).toHaveBeenCalledTimes(1)
@@ -67,8 +66,7 @@ describe('get-user', () => {
     mockDynamoDbSend.mockResolvedValue({})
     const result = (await handler(
       getEvent(),
-      getContext(),
-      vi.fn()
+      getContext()
     )) as APIGatewayProxyResult
 
     expect(result.statusCode).toBe(400)
@@ -80,11 +78,7 @@ describe('get-user', () => {
   test('should reject missing authorization', async () => {
     const event = getEvent()
     event.headers.authorization = ''
-    const callback = vi.fn()
-    await handler(event, getContext(), callback)
-
-    expect(callback).toHaveBeenCalled()
-    const [, result] = callback.mock.calls[0] as [unknown, APIGatewayProxyResult]
+    const result = await handler(event, getContext())
     expect(result.statusCode).toBe(401)
     expect(mockDynamoDbSend).not.toHaveBeenCalled()
   })

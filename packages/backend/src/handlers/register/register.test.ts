@@ -2,7 +2,7 @@ import { vi, describe, test, expect, beforeEach } from 'vitest'
 import { APIGatewayProxyResult } from 'aws-lambda'
 import type { User } from '@mystash/shared'
 
-import { getEvent, getContext } from '../../utils/test-utils.js'
+import { getEvent } from '../../utils/test-utils.js'
 import { handler } from './register.js'
 
 const testUserId = 'f1626fa2-8fe9-48f3-aca3-7d64d65f84f7'
@@ -56,9 +56,7 @@ describe('register', () => {
   describe('registerHandler', () => {
     test('should register a new user successfully', async () => {
       const result = (await handler(
-        getEvent(JSON.stringify(validBody), 'POST'),
-        getContext(),
-        vi.fn()
+        getEvent(JSON.stringify(validBody), 'POST')
       )) as APIGatewayProxyResult
 
       expect(result.statusCode).toBe(201)
@@ -72,7 +70,7 @@ describe('register', () => {
 
     test('should return 400 when body is missing', async () => {
       await expect(
-        handler(getEvent(null, 'POST'), getContext(), vi.fn())
+        handler(getEvent(null, 'POST'))
       ).rejects.toEqual({
         statusCode: 400,
         headers: expect.any(Object),
@@ -84,7 +82,7 @@ describe('register', () => {
 
     test('should return 400 when body is invalid JSON', async () => {
       await expect(
-        handler(getEvent('not-json', 'POST'), getContext(), vi.fn())
+        handler(getEvent('not-json', 'POST'))
       ).rejects.toEqual({
         statusCode: 400,
         headers: expect.any(Object),
@@ -98,9 +96,7 @@ describe('register', () => {
       const body = { ...validBody, nickname: 'ab' }
       await expect(
         handler(
-          getEvent(JSON.stringify(body), 'POST'),
-          getContext(),
-          vi.fn()
+          getEvent(JSON.stringify(body), 'POST')
         )
       ).rejects.toEqual({
         statusCode: 400,
@@ -117,9 +113,7 @@ describe('register', () => {
       const body = { ...validBody, password: 'short' }
       await expect(
         handler(
-          getEvent(JSON.stringify(body), 'POST'),
-          getContext(),
-          vi.fn()
+          getEvent(JSON.stringify(body), 'POST')
         )
       ).rejects.toEqual({
         statusCode: 400,
@@ -136,9 +130,7 @@ describe('register', () => {
       const body = { ...validBody, email: 'not-an-email' }
       await expect(
         handler(
-          getEvent(JSON.stringify(body), 'POST'),
-          getContext(),
-          vi.fn()
+          getEvent(JSON.stringify(body), 'POST')
         )
       ).rejects.toEqual({
         statusCode: 400,
@@ -155,9 +147,7 @@ describe('register', () => {
       const body = { email: 'test@example.com' }
       await expect(
         handler(
-          getEvent(JSON.stringify(body), 'POST'),
-          getContext(),
-          vi.fn()
+          getEvent(JSON.stringify(body), 'POST')
         )
       ).rejects.toEqual({
         statusCode: 400,
@@ -175,9 +165,7 @@ describe('register', () => {
       const body = { ...validBody, extraField: 'hacker' }
       await expect(
         handler(
-          getEvent(JSON.stringify(body), 'POST'),
-          getContext(),
-          vi.fn()
+          getEvent(JSON.stringify(body), 'POST')
         )
       ).rejects.toEqual({
         statusCode: 400,
@@ -194,9 +182,7 @@ describe('register', () => {
       mockClientSend.mockResolvedValue({ Items: [{ email: validBody.email }] })
 
       const result = (await handler(
-        getEvent(JSON.stringify(validBody), 'POST'),
-        getContext(),
-        vi.fn()
+        getEvent(JSON.stringify(validBody), 'POST')
       )) as APIGatewayProxyResult
 
       expect(result.statusCode).toBe(401)
@@ -210,9 +196,7 @@ describe('register', () => {
       const body = { ...validBody, email: longEmail }
       await expect(
         handler(
-          getEvent(JSON.stringify(body), 'POST'),
-          getContext(),
-          vi.fn()
+          getEvent(JSON.stringify(body), 'POST')
         )
       ).rejects.toEqual({
         statusCode: 400,
@@ -229,9 +213,7 @@ describe('register', () => {
       const body = { ...validBody, password: 'a'.repeat(255) }
       await expect(
         handler(
-          getEvent(JSON.stringify(body), 'POST'),
-          getContext(),
-          vi.fn()
+          getEvent(JSON.stringify(body), 'POST')
         )
       ).rejects.toEqual({
         statusCode: 400,

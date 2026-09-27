@@ -1,8 +1,6 @@
+import type { AsyncApiHandler } from '../types/handler.js'
 import {
   APIGatewayEvent,
-  Context,
-  Callback,
-  Handler,
   APIGatewayProxyResult,
 } from 'aws-lambda'
 
@@ -10,10 +8,8 @@ import { jwtMiddleware } from '../utils/index.js'
 import { CurrentUser, GetNoteFilesResponse } from '../types/types.js'
 import { FileService } from '../services/fileService.js'
 
-const getNoteFiles: Handler<APIGatewayEvent, any> = async (
-  event: APIGatewayEvent,
-  _context: Context,
-  _callback: Callback
+const getNoteFiles: AsyncApiHandler = async (
+  event: APIGatewayEvent
 ): Promise<APIGatewayProxyResult> => {
   const noteId = event.pathParameters!.id
   if (!noteId) {

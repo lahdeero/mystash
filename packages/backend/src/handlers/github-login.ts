@@ -1,8 +1,9 @@
-import type { APIGatewayProxyEvent, APIGatewayProxyHandler } from 'aws-lambda'
+import type { AsyncApiHandler } from '../types/handler.js'
+import type { APIGatewayProxyEvent } from 'aws-lambda'
 
 const GITHUB_OAUTH_URL = 'https://github.com/login/oauth/authorize'
 
-const githubLoginHandler: APIGatewayProxyHandler = async (
+const githubLoginHandler: AsyncApiHandler = async (
   _event: APIGatewayProxyEvent
 ) => {
   const params = new URLSearchParams({

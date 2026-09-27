@@ -1,4 +1,5 @@
-import { APIGatewayEvent, Context, Callback, Handler } from 'aws-lambda'
+import type { AsyncApiHandler } from '../types/handler.js'
+import { APIGatewayEvent } from 'aws-lambda'
 import { v4 as uuidv4 } from 'uuid'
 
 import { FileInfo } from '../types/types.js'
@@ -6,10 +7,8 @@ import { exntensionToMimeType, jwtMiddleware } from '../utils/index.js'
 import { FileService } from '../services/fileService.js'
 import { getCurrentUser, isHighTierUser } from '../utils/utils.js'
 
-const uploadFileHandler: Handler<APIGatewayEvent, any> = async (
-  event: APIGatewayEvent,
-  _context: Context,
-  _callback: Callback
+const uploadFileHandler: AsyncApiHandler = async (
+  event: APIGatewayEvent
 ) => {
   const parsedBody = JSON.parse(event.body!)
   const { title, fileName, noteId } = parsedBody

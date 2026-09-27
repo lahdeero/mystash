@@ -36,8 +36,6 @@ const checkEmailErrors = async (email: string): Promise<string | null> => {
 
 export const registerHandler = async (
   event: APIGatewayProxyEvent,
-  _context: any,
-  _callback: any,
 ): Promise<APIGatewayProxyResult> => {
   const { email, nickname, password } = parseJsonBody(event, registerRequestSchema)
 

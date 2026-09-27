@@ -1,9 +1,8 @@
+import type { AsyncApiHandler } from '../types/handler.js'
 import type { User, UserToken } from '@mystash/shared'
 import {
   APIGatewayEventRequestContext,
   APIGatewayProxyEvent,
-  APIGatewayProxyHandler,
-  Callback,
   Context,
 } from 'aws-lambda'
 import { createHmac } from 'crypto'
@@ -58,36 +57,33 @@ export const verifyJWT = (token: string, secret: string): string | null => {
 }
 
 export const jwtMiddleware = (
-  handler: APIGatewayProxyHandler,
+  handler: AsyncApiHandler,
   secret: string
-): APIGatewayProxyHandler => {
-  return (async (
+): AsyncApiHandler => {
+  return async (
     event: APIGatewayProxyEvent,
-    context: Context,
-    callback: Callback
+    context: Context
   ) => {
     const authorization =
       event.headers.Authorization || event.headers.authorization
 
     // Check for the authorization header
     if (!authorization) {
-      callback(null, {
+      return {
         statusCode: 401,
         body: JSON.stringify({ message: 'Authorization header missing' }),
-      })
-      return
+      }
     }
 
     // Split the token from the header
     const [_bearer, token] = authorization.split(' ')
     if (!_bearer || _bearer.toLowerCase() !== 'bearer' || !token) {
-      callback(null, {
+      return {
         statusCode: 401,
         body: JSON.stringify({
           message: 'Invalid Authorization header format',
         }),
-      })
-      return
+      }
     }
 
     // Verify the JWT
@@ -104,18 +100,17 @@ export const jwtMiddleware = (
       event.requestContext.authorizer = { userId } // Store userId in event for later use
     } catch (error) {
       console.error('JWT verification failed', error)
-      callback(null, {
+      return {
         statusCode: 401,
         body: JSON.stringify({ message: 'Unauthorized' }),
-      })
-      return
+      }
     }
-    const result = await handler(event, context, callback)
+    const result = await handler(event, context)
     if (!result) {
       throw new Error('Handler did not return a result')
     }
     return result!
-  }) as APIGatewayProxyHandler
+  }
 }
 
 export const createToken = (dbUser?: UserDbItem): UserToken => {

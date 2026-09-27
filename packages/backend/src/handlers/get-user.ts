@@ -1,6 +1,6 @@
+import type { AsyncApiHandler } from '../types/handler.js'
 import type {
   APIGatewayProxyEvent,
-  APIGatewayProxyHandler,
   APIGatewayProxyResult,
 } from 'aws-lambda'
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
@@ -21,7 +21,7 @@ const toUser = (item: Record<string, unknown>): User => ({
   hasAcceptedTerms: item.hasAcceptedTerms as boolean | undefined,
 })
 
-const getCurrentUserHandler: APIGatewayProxyHandler = async (
+const getCurrentUserHandler: AsyncApiHandler = async (
   event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> => {
   const userId = event.requestContext.authorizer!.userId

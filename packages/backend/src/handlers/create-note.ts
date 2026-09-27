@@ -1,4 +1,5 @@
-import type { APIGatewayProxyEvent, APIGatewayProxyHandler } from 'aws-lambda'
+import type { AsyncApiHandler } from '../types/handler.js'
+import type { APIGatewayProxyEvent } from 'aws-lambda'
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
 import { DynamoDBDocumentClient, PutCommand } from '@aws-sdk/lib-dynamodb'
 import { v4 as uuidv4 } from 'uuid'
@@ -10,7 +11,7 @@ const client = new DynamoDBClient({
 })
 const dynamoDb = DynamoDBDocumentClient.from(client)
 
-const createNoteHandler: APIGatewayProxyHandler = async (
+const createNoteHandler: AsyncApiHandler = async (
   event: APIGatewayProxyEvent
 ) => {
   const userId = event.requestContext.authorizer!.userId
