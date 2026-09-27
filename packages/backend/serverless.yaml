@@ -2,7 +2,7 @@ service: mystash
 
 provider:
   name: aws
-  runtime: nodejs22.x
+  runtime: nodejs24.x
   region: eu-north-1
   stage: ''
   timeout: 30

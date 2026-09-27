@@ -6,7 +6,7 @@
     "esbuild": "catalog:"
   },
   "devDependencies": {
-    "@types/node": "^20.19.42",
+    "@types/node": "catalog:",
     "ts-node": "catalog:",
     "typescript": "catalog:"
   }

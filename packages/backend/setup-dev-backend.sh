@@ -1,13 +1,22 @@
 #!/bin/bash
 
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+set -Eeuo pipefail
+trap 'echo "Backend setup failed at line $LINENO" >&2' ERR
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$SCRIPT_DIR"
 ENV_FILE="$SCRIPT_DIR/.env"
 echo "Setting up development environment for mystash backend..."
 export AWS_REGION=eu-north-1 # Could remove --region flag from AWS CLI commands, but keeping them for now..
 export AWS_PAGER=""
 
 echo "Remove existing Docker containers..."
-docker rm -f dynamodb-local s3-local 2>/dev/null
+docker info >/dev/null
+for container in dynamodb-local s3-local; do
+    if docker container inspect "$container" >/dev/null 2>&1; then
+        docker rm -f "$container"
+    fi
+done
 echo "Removed existing Docker containers."
 
 echo "Start DynamoDB Local in Docker..."
@@ -25,6 +34,23 @@ echo "Shared package built."
 echo "Transpile typescript..."
 tsc --build
 echo "Typescript transpiled."
+
+wait_for_service() {
+    local name="$1"
+    shift
+    local deadline=$((SECONDS + 60))
+    echo "Waiting for $name..."
+    until "$@" >/dev/null 2>&1; do
+        if (( SECONDS >= deadline )); then
+            echo "Timed out waiting for $name" >&2
+            return 1
+        fi
+        sleep 1
+    done
+}
+
+wait_for_service "DynamoDB" aws --cli-connect-timeout 2 --cli-read-timeout 2 --endpoint-url=http://localhost:8001 --region eu-north-1 dynamodb list-tables
+wait_for_service "S3" aws --cli-connect-timeout 2 --cli-read-timeout 2 --endpoint-url=http://localhost:4566 --region eu-north-1 s3api list-buckets
 
 echo "Create s3 bucket..."
 aws --endpoint-url=http://localhost:4566 --region eu-north-1 s3 mb s3://mystash-dev-infra-files-bucket --region eu-north-1
@@ -116,7 +142,7 @@ aws dynamodb create-table \
         }]' \
     --billing-mode PAY_PER_REQUEST \
     --region eu-north-1 \
-    --endpoint-url http://localhost:8001 > local-init.log 2>&1
+    --endpoint-url http://localhost:8001
 echo "Notes table created."
 
 echo "Create the files table..."
@@ -163,17 +189,13 @@ aws dynamodb create-table \
         }]' \
     --billing-mode PAY_PER_REQUEST \
     --region eu-north-1 \
-    --endpoint-url http://localhost:8001 > local-init.log 2>&1
+    --endpoint-url http://localhost:8001
 echo "Files table created."
 
 echo "Waiting for mystash-dev-users table to be active..."
 aws dynamodb wait table-exists --table-name mystash-dev-users --endpoint-url http://localhost:8001 --region eu-north-1
 echo "Waiting for mystash-dev-notes table to be active..."
-
-echo "Waiting for mystash-dev-notes table to be active..."
 aws dynamodb wait table-exists --table-name mystash-dev-notes --endpoint-url http://localhost:8001 --region eu-north-1
-echo "Waiting for mystash-dev-files table to be active..."
-
 echo "Waiting for mystash-dev-files table to be active..."
 aws dynamodb wait table-exists --table-name mystash-dev-files --endpoint-url http://localhost:8001 --region eu-north-1
 echo "All tables are active."
@@ -209,7 +231,7 @@ for batch in "$SCRIPT_DIR"/seed/notes-seed-batch-*.json; do
     aws dynamodb batch-write-item \
         --request-items "file://$batch" \
         --region eu-north-1 \
-        --endpoint-url http://localhost:8001 > local-init.log 2>&1
+        --endpoint-url http://localhost:8001
 done
 echo "42 notes seeded."
 

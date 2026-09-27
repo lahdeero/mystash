@@ -8,9 +8,6 @@ export default defineConfig({
       jsxRuntime: 'automatic', // this is default, but make it explicit
     }),
   ],
-  optimizeDeps: {
-    include: ['redux'],
-  },
   server: {
     host: true,
     port: 3000,

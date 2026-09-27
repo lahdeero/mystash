@@ -8,14 +8,15 @@ mystash
 ## Install development environment
 
 ### Backend
-- PNPM is required
+- Node.js 24 is required (`nvm install` and `nvm use`)
+- pnpm 12 is required
 - Docker is required
 - Serverless is required
 - AWS CLI is required
 
 Install pnpm
 ```bash
-npm install pnpm --global
+npm install pnpm@12.7.0 --global
 pnpm setup
 ```
 

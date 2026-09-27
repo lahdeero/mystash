@@ -19,6 +19,7 @@ catalog:
   '@types/aws-lambda': ^8.10.145
   '@types/busboy': ^1.5.4
   '@types/mime-types': ^2.1.4
+  '@types/node': ^24.0.0
   '@types/react': ^19.1.2
   '@types/react-dom': ^19.1.2
   '@types/styled-components': ^5.1.34
