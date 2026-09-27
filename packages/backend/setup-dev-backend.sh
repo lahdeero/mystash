@@ -28,11 +28,11 @@ docker run -d --name s3-local -p 4566:4566 -e SERVICES=s3 localstack/localstack:
 echo "LocalStack started in Docker."
 
 echo "Build shared package..."
-cd ../shared && pnpm run build && cd ../backend
+pnpm --dir "$SCRIPT_DIR/../shared" run build
 echo "Shared package built."
 
 echo "Transpile typescript..."
-tsc --build
+pnpm exec tsc --build
 echo "Typescript transpiled."
 
 wait_for_service() {
