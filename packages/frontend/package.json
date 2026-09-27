@@ -33,7 +33,7 @@
     "@types/react-dom": "catalog:",
     "@types/styled-components": "catalog:",
     "@vitejs/plugin-react": "catalog:",
-    "eslint": "^9.25.0",
+    "eslint": "^9.39.5",
     "eslint-plugin-react-hooks": "catalog:",
     "eslint-plugin-react-refresh": "catalog:",
     "globals": "catalog:",

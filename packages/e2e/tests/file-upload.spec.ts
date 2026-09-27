@@ -20,7 +20,6 @@ for (const count of [1, 2]) {
     await page.getByLabel('Content').fill('A note with uploaded attachments')
     await page.getByLabel('Tags').fill('e2e-upload')
     await page.getByRole('button', { name: 'Create', exact: true }).click()
-    await page.getByPlaceholder('Filter notes...').fill(title)
     await page.getByRole('link', { name: title, exact: true }).click()
     await page.getByRole('link', { name: 'ADD FILE' }).click()
     await page.getByTestId('upload-file-input').setInputFiles(files)
@@ -34,7 +33,12 @@ for (const count of [1, 2]) {
     await page.getByLabel('Email').fill('test@example.com')
     await page.getByLabel('Password').fill('salasana')
     await page.getByRole('button', { name: 'Login' }).click()
-    await page.getByPlaceholder('Filter notes...').fill(title)
+    const filter = page.getByPlaceholder('Filter notes...')
+    const noteLink = page.getByRole('link', { name: title, exact: true })
+    await expect(noteLink.or(filter).first()).toBeVisible()
+    if (await filter.isVisible()) {
+      await filter.fill(title)
+    }
     await page.getByRole('link', { name: title, exact: true }).click()
     for (const file of files) {
       const link = page.getByRole('link', { name: file.name, exact: true })

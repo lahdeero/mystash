@@ -29,7 +29,9 @@ const { mockDynamoDbSend, emailState } = vi.hoisted(() => {
 })
 
 vi.mock('@aws-sdk/client-dynamodb', () => ({
-  DynamoDBClient: vi.fn(() => ({})),
+  DynamoDBClient: vi.fn(function () {
+    return {}
+  }),
 }))
 
 vi.mock('@aws-sdk/lib-dynamodb', () => ({
@@ -38,8 +40,12 @@ vi.mock('@aws-sdk/lib-dynamodb', () => ({
       send: mockDynamoDbSend,
     })),
   },
-  UpdateCommand: vi.fn((input: any) => ({ input })),
-  QueryCommand: vi.fn((input: any) => ({ input })),
+  UpdateCommand: vi.fn(function (input: any) {
+    return { input }
+  }),
+  QueryCommand: vi.fn(function (input: any) {
+    return { input }
+  }),
 }))
 
 describe('edit-user-settings', () => {

@@ -30,9 +30,9 @@ vi.mock('uuid', () => ({
 }))
 
 vi.mock('@aws-sdk/client-dynamodb', () => ({
-  DynamoDBClient: vi.fn(() => ({
-    send: mockClientSend,
-  })),
+  DynamoDBClient: vi.fn(function () {
+    return { send: mockClientSend }
+  }),
 }))
 
 vi.mock('@aws-sdk/lib-dynamodb', () => ({

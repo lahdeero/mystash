@@ -27,7 +27,9 @@ const { mockDynamoDbSend } = vi.hoisted(() => {
 })
 
 vi.mock('@aws-sdk/client-dynamodb', () => ({
-  DynamoDBClient: vi.fn(() => ({})),
+  DynamoDBClient: vi.fn(function () {
+    return {}
+  }),
 }))
 
 vi.mock('@aws-sdk/lib-dynamodb', () => ({
@@ -36,7 +38,9 @@ vi.mock('@aws-sdk/lib-dynamodb', () => ({
       send: mockDynamoDbSend,
     })),
   },
-  GetCommand: vi.fn((input: any) => ({ input })),
+  GetCommand: vi.fn(function (input: any) {
+    return { input }
+  }),
 }))
 
 describe('get-user', () => {
