@@ -12,13 +12,14 @@ import Notification from './components/Notification'
 import Menu from './components/Menu'
 import TermsAndConditions from './components/TermsAndConditions'
 import { noteInitialization, clearNotes } from './reducers/noteReducer'
-import { notify } from './reducers/notificationReducer'
+import { notify, errorMessage } from './reducers/notificationReducer'
 import { actionForLogin, actionForLogout } from './reducers/userReducer'
 import useFilter from './hooks/useFilter'
 import loginService from './services/loginService'
 import List from './components/note/List'
 import Create from './components/note/Create'
 import Settings from './components/Settings'
+import { consumeGitHubOAuth } from './utils/githubOAuth'
 import { Theme, themes } from './layout/colors'
 import { useAppDispatch, useAppSelector } from './store'
 
@@ -49,8 +50,9 @@ const App = () => {
   const [loading, setLoading] = useState(true)
   const [currentTheme, setCurrentTheme] = useState(Theme.Light)
 
-  const getToken = async (code: any) => {
-    const { token, user } = await loginService.githubVerify(code)
+  const getToken = async (code: unknown, state: unknown) => {
+    const attempt = consumeGitHubOAuth(code, state)
+    const { token, user } = await loginService.githubVerify(attempt)
     window.localStorage.setItem(MS_TOKEN, token)
     return user
   }
@@ -72,14 +74,18 @@ const App = () => {
     if (parsed.token) {
       window.localStorage.setItem(MS_TOKEN, JSON.stringify(parsed.token))
       callback()
-    } else if (parsed.code) {
+    } else if (parsed.code || parsed.error) {
+      window.history.replaceState({}, '', '/')
       setLoading(true)
-      getToken(parsed.code)
+      getToken(parsed.code, parsed.state)
         .then((user) => {
           if (user) {
             dispatch({ type: 'LOGIN', data: user })
           }
           callback()
+        })
+        .catch(() => {
+          dispatch(errorMessage('GitHub login failed or expired. Please try again.'))
         })
         .finally(() => setLoading(false))
       return

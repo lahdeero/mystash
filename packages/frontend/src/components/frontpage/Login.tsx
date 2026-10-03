@@ -7,6 +7,7 @@ import { Navbar } from '../common/Navigation'
 import Input from '../common/Input'
 import Button from '../common/Button'
 import Container from '../common/Container'
+import { startGitHubOAuth } from '../../utils/githubOAuth'
 import { resolveUrl } from '../../utils/environmentResolvers'
 import Link from '../common/Link'
 import TextContainer from '../common/TextContainer'
@@ -65,7 +66,14 @@ const Login = (props: any) => {
       <Navbar brand="mystash" href={'/'} right></Navbar>
       <Container>
         <FlexItem>
-          <a href={githubLoginUrl}>
+          <a href={githubLoginUrl} onClick={(event) => {
+            event.preventDefault()
+            try {
+              window.location.assign(startGitHubOAuth(githubLoginUrl))
+            } catch {
+              dispatch(errorMessage('Could not start GitHub login. Please try again.'))
+            }
+          }}>
             <img src={githubLoginImage} alt="Login with GitHub" />
           </a>
         </FlexItem>

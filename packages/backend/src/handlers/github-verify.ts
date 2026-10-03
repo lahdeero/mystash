@@ -3,19 +3,29 @@ import axios from 'axios'
 
 import { GitHubUser } from '../types/types.js'
 import { noAccess, createToken } from '../utils/index.js'
+import { verifyOAuthState } from '../utils/oauth-state.js'
 import { UserService } from '../services/userService.js'
 
 export const verifyGithubHandler = async (
   event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> => {
-  const parsedBody = JSON.parse(event.body!)
-  if (!parsedBody?.code) {
+  let parsedBody: any
+  try {
+    parsedBody = JSON.parse(event.body ?? '{}')
+  } catch {
+    return noAccess('Invalid OAuth login attempt')
+  }
+  if (!verifyOAuthState(parsedBody?.state, parsedBody?.nonce, process.env.SECRET!)) {
+    return noAccess('Invalid or expired OAuth state')
+  }
+  if (typeof parsedBody?.code !== 'string' || !parsedBody.code) {
     return noAccess('Code is required')
   }
   const params = {
     client_id: process.env.GITHUB_CLIENT_ID,
     client_secret: process.env.GITHUB_CLIENT_SECRET,
     code: parsedBody.code,
+    redirect_uri: process.env.GITHUB_REDIRECT_URI,
   }
   const { data: tokenData } = await axios.post<string>(
     'https://github.com/login/oauth/access_token',

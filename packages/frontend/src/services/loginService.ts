@@ -28,11 +28,10 @@ const login = async (credentials: any): Promise<UserToken> => {
   return response.data
 }
 
-// TODO: Typing
-const githubVerify = async (code: any): Promise<any> => {
-  const response: AxiosResponse<any> = await API.post(
+const githubVerify = async (attempt: { code: string; state: string; nonce: string }): Promise<UserToken> => {
+  const response: AxiosResponse<UserToken> = await API.post(
     `${baseUrl}/login/github/verify`,
-    { code }
+    attempt
   )
   return response.data
 }
