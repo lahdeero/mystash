@@ -9,5 +9,8 @@
     "@types/node": "catalog:",
     "ts-node": "catalog:",
     "typescript": "catalog:"
+  },
+  "scripts": {
+    "check:tsc-errors": "tsc --noEmit"
   }
 }

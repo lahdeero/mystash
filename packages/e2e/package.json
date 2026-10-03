@@ -4,7 +4,8 @@
   "main": "index.js",
   "scripts": {
     "test": "playwright test",
-    "debug": "playwright test --debug"
+    "debug": "playwright test --debug",
+    "check:tsc-errors": "tsc --noEmit"
   },
   "keywords": [],
   "author": "",
