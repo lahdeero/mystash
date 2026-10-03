@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { useAppDispatch } from '../../store'
+import { errorMessage } from '../../reducers/notificationReducer'
 import styled from 'styled-components'
 import githubLoginImage from '../../assets/github_login.png'
 import { Navbar } from '../common/Navigation'
@@ -28,20 +30,10 @@ const LoginSeparator = styled.div`
   }
 `
 
-const ErrorText = styled.div`
-  color: ${({ theme }) => theme.Text};
-  background-color: ${({ theme }) => theme.ButtonDanger};
-  font-size: 20px;
-  border-style: solid;
-  border-radius: 5px;
-  padding: 10px;
-  margin: 0 0 10px;
-`
-
 const Login = (props: any) => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
+  const dispatch = useAppDispatch()
   const [loading, setLoading] = useState(false)
 
   const backendUrl = resolveUrl()
@@ -59,9 +51,9 @@ const Login = (props: any) => {
     } catch (exception) {
       console.error(exception)
       if ((exception as any).code === 'ERR_BAD_REQUEST') {
-        setError('Invalid credentials')
+        dispatch(errorMessage('Invalid credentials'))
       } else {
-        setError('Error')
+        dispatch(errorMessage('Error'))
       }
     } finally {
       setLoading(false)
@@ -80,7 +72,6 @@ const Login = (props: any) => {
         <LoginSeparator>
           <span>OR</span>
         </LoginSeparator>
-        {error !== '' ? <ErrorText>{error}</ErrorText> : <div></div>}
         <form onSubmit={handleLogin}>
           <div>
             <Input
