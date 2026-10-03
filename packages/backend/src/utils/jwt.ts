@@ -26,10 +26,9 @@ export const createJWT = (
   const encodedPayload = base64UrlEncode(JSON.stringify(payload))
 
   const signatureBase = `${encodedHeader}.${encodedPayload}`
-  const signature = createHmac('sha256', secret)
+  const encodedSignature = createHmac('sha256', secret)
     .update(signatureBase)
-    .digest('base64')
-  const encodedSignature = base64UrlEncode(signature)
+    .digest('base64url')
 
   return `${encodedHeader}.${encodedPayload}.${encodedSignature}`
 }
@@ -38,10 +37,9 @@ export const verifyJWT = (token: string, secret: string): string | null => {
   const [encodedHeader, encodedPayload, encodedSignature] = token.split('.')
   const signatureBase = `${encodedHeader}.${encodedPayload}`
 
-  const signature = createHmac('sha256', secret!)
+  const validSignature = createHmac('sha256', secret)
     .update(signatureBase)
-    .digest('base64')
-  const validSignature = base64UrlEncode(signature)
+    .digest('base64url')
 
   // Check if the provided signature matches the valid signature
 
