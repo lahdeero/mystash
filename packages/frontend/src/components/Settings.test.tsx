@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react'
+import { act, render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { describe, test, expect, vi, beforeEach } from 'vitest'
 import { Provider } from 'react-redux'
 import { configureStore } from '@reduxjs/toolkit'
@@ -83,6 +83,34 @@ describe('Settings', () => {
       })
       expect(store.getState().user.nickname).toBe('NewNick')
     })
+  })
+
+  test.each(['success', 'failure'])('disables Save while pending and re-enables it after %s', async (outcome) => {
+    let resolveSave!: (user: typeof currentUser) => void
+    let rejectSave!: (error: Error) => void
+    mockedLoginService.editUserSettings.mockImplementation(() => new Promise((resolve, reject) => {
+      resolveSave = resolve
+      rejectSave = reject
+    }))
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {})
+    try {
+      renderSettings()
+      const button = screen.getByRole('button', { name: 'Save' })
+      await waitFor(() => expect(button).toBeEnabled())
+      fireEvent.click(button)
+      expect(button).toBeDisabled()
+      expect(button).toHaveAttribute('aria-busy', 'true')
+      fireEvent.click(button)
+      expect(mockedLoginService.editUserSettings).toHaveBeenCalledTimes(1)
+      await act(async () => {
+        if (outcome === 'success') resolveSave(currentUser)
+        else rejectSave(new Error('Request failed'))
+      })
+      expect(button).toBeEnabled()
+      expect(button).toHaveAttribute('aria-busy', 'false')
+    } finally {
+      consoleError.mockRestore()
+    }
   })
 
   test('shows level as read-only text, not an input', async () => {

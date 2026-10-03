@@ -6,7 +6,7 @@ import { ClipLoader } from 'react-spinners'
 import { useParams, useNavigate } from 'react-router-dom'
 
 import { removeNote } from '../../reducers/noteReducer'
-import { notify } from '../../reducers/notificationReducer'
+import { notify, errorMessage } from '../../reducers/notificationReducer'
 import { useAppDispatch, useAppSelector } from '../../store'
 import Button from '../common/Button'
 import Container from '../common/Container'
@@ -84,6 +84,7 @@ const Show = () => {
   const [dataFilesInfo, setDataFilesInfo] = useState([])
   const [imagesInfo, setImagesInfo] = useState([])
   const [loading, setLoading] = useState(false)
+  const [deleting, setDeleting] = useState(false)
 
   useEffect(() => {
     const scanFiles = async (noteId: any) => {
@@ -109,11 +110,20 @@ const Show = () => {
 
   const deleteNote = async (event: any) => {
     event.preventDefault()
+    if (deleting) return
     if (window.confirm(`Are you sure you want to delete '${note.title}' ?`)) {
-      const removedNote = await dispatch(removeNote(note))
-      if (removedNote.id.length > 0) {
-        dispatch(notify(`you deleted '${removedNote.title}'`))
-        navigate('/')
+      setDeleting(true)
+      try {
+        const removedNote = await dispatch(removeNote(note))
+        if (removedNote.id.length > 0) {
+          dispatch(notify(`you deleted '${removedNote.title}'`))
+          navigate('/')
+        }
+      } catch (exception) {
+        console.error(exception)
+        dispatch(errorMessage('ERROR WHILE DELETING NOTE'))
+      } finally {
+        setDeleting(false)
       }
     }
   }
@@ -235,13 +245,13 @@ const Show = () => {
         </DataFilesWrapper>
       </FilesWrapper>
       <div className="note-action-buttons">
-        <Link to={`/notes/edit/${note.id}`}>
-          <Button>EDIT</Button>
+        <Link to={`/notes/edit/${note.id}`} onClick={(event) => { if (deleting) event.preventDefault() }}>
+          <Button disabled={deleting}>EDIT</Button>
         </Link>
-        <Link to={`/notes/upload/${note.id}`}>
-          <Button>ADD FILE</Button>
+        <Link to={`/notes/upload/${note.id}`} onClick={(event) => { if (deleting) event.preventDefault() }}>
+          <Button disabled={deleting}>ADD FILE</Button>
         </Link>
-        <Button onClick={deleteNote} danger={true}>
+        <Button onClick={deleteNote} danger={true} loading={deleting}>
           DELETE
         </Button>
       </div>

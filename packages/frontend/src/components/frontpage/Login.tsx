@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { ClipLoader } from 'react-spinners'
 import styled from 'styled-components'
 import githubLoginImage from '../../assets/github_login.png'
 import { Navbar } from '../common/Navigation'
@@ -50,6 +49,7 @@ const Login = (props: any) => {
 
   const handleLogin = async (event: any) => {
     event.preventDefault()
+    if (loading) return
     try {
       setLoading(true)
       await props.actionForLogin({
@@ -58,12 +58,13 @@ const Login = (props: any) => {
       })
     } catch (exception) {
       console.error(exception)
-      setLoading(false)
       if ((exception as any).code === 'ERR_BAD_REQUEST') {
         setError('Invalid credentials')
       } else {
         setError('Error')
       }
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -79,7 +80,6 @@ const Login = (props: any) => {
         <LoginSeparator>
           <span>OR</span>
         </LoginSeparator>
-        <ClipLoader loading={loading} color="blue" />
         {error !== '' ? <ErrorText>{error}</ErrorText> : <div></div>}
         <form onSubmit={handleLogin}>
           <div>
@@ -100,7 +100,7 @@ const Login = (props: any) => {
               onChange={(event) => setPassword(event.target.value)}
             />
           </div>
-          <Button type="submit">Login</Button>
+          <Button type="submit" loading={loading}>Login</Button>
         </form>
         <TextContainer>
           Dont have account? <Link onClick={props.togglePage}>Register</Link>

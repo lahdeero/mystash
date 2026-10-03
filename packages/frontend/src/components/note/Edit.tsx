@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 
 import { modifyNote } from '../../reducers/noteReducer'
@@ -23,6 +24,7 @@ const ChipContainer = styled.div`
 
 const Edit = () => {
   const dispatch = useAppDispatch()
+  const [loading, setLoading] = useState(false)
   const notes = useAppSelector((state) => state.notes)
   const editNote = useAppSelector((state) => state.editNote)
   const { id } = useParams<{ id: string }>()
@@ -41,6 +43,8 @@ const Edit = () => {
 
   const handleSubmit = async (event: any) => {
     event.preventDefault()
+    if (loading) return
+    setLoading(true)
     try {
       const noteObject = {
         id: editNote.id,
@@ -54,6 +58,8 @@ const Edit = () => {
     } catch (exception) {
       console.error(exception)
       dispatch(errorMessage('ERROR WHILE EDITING NOTE'))
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -163,7 +169,7 @@ const Edit = () => {
           minRows={10}
         />
         <br />
-        <Button className="red accent-2" type="submit">
+        <Button className="red accent-2" type="submit" loading={loading}>
           Save
         </Button>
       </form>

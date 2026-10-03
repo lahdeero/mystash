@@ -57,6 +57,7 @@ const Settings = ({ currentTheme, setCurrentTheme }: SettingsProps) => {
   const [email, setEmail] = useState('')
   const [tier, setTier] = useState('')
   const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -76,6 +77,8 @@ const Settings = ({ currentTheme, setCurrentTheme }: SettingsProps) => {
   }, [dispatch])
 
   const handleSave = async () => {
+    if (loading || saving) return
+    setSaving(true)
     try {
       const user = await loginService.editUserSettings({ nickname, email })
       dispatch({ type: 'LOGIN', data: user })
@@ -84,6 +87,8 @@ const Settings = ({ currentTheme, setCurrentTheme }: SettingsProps) => {
     } catch (exception) {
       console.error(exception)
       dispatch(errorMessageReducer('Could not update settings'))
+    } finally {
+      setSaving(false)
     }
   }
 
@@ -126,7 +131,7 @@ const Settings = ({ currentTheme, setCurrentTheme }: SettingsProps) => {
           <label htmlFor="level">Level:</label>
           <StyledText id="level">{tier || 'free'}</StyledText>
         </Field>
-        <Button onClick={handleSave} disabled={loading}>
+        <Button onClick={handleSave} disabled={loading} loading={saving}>
           Save
         </Button>
       </UserInfoWrapper>

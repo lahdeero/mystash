@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import { ClipLoader } from 'react-spinners'
 
 interface ButtonProps {
   danger?: boolean
@@ -11,6 +12,7 @@ interface Props {
   onClick?: React.MouseEventHandler<HTMLButtonElement>
   danger?: boolean
   disabled?: boolean
+  loading?: boolean
   children: React.ReactNode
   form?: string
 }
@@ -51,6 +53,8 @@ const Button = ({
   onClick,
   danger = false,
   disabled = false,
+  loading = false,
+  form,
   children,
 }: Props) => (
   <ButtonComponent
@@ -58,8 +62,18 @@ const Button = ({
     className={className}
     onClick={onClick}
     danger={danger}
-    disabled={disabled}
+    disabled={disabled || loading}
+    aria-busy={loading}
+    form={form}
   >
+    {loading && (
+      <ClipLoader
+        size={16}
+        color="currentColor"
+        aria-hidden="true"
+        cssOverride={{ verticalAlign: 'middle', marginRight: '0.5rem' }}
+      />
+    )}
     {children}
   </ButtonComponent>
 )

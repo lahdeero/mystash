@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { actionForRegister } from '../../reducers/userReducer'
 import { notify as notifyReducer, errorMessage as errorMessageReducer } from '../../reducers/notificationReducer'
 import { useAppDispatch } from '../../store'
-import { ClipLoader } from 'react-spinners'
 import { Navbar } from '../common/Navigation'
 import Input from '../common/Input'
 import Button from '../common/Button'
@@ -25,6 +24,7 @@ const Register = ({ togglePage }: any) => {
 
   const handleRegister = async (event: any) => {
     event.preventDefault()
+    if (loading) return
     if (!termsAccepted) {
       setError('You must accept the Terms and Conditions to register')
       setTimeout(() => {
@@ -42,13 +42,14 @@ const Register = ({ togglePage }: any) => {
       dispatch(notifyReducer(`Registered successfully with email: ${email}`))
       togglePage(event)
     } catch (exception) {
-      setLoading(false)
       console.error(exception)
       dispatch(errorMessageReducer('Registration failed'))
       setError('Could not register..')
       setTimeout(() => {
         setError('')
       }, 5000)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -56,7 +57,6 @@ const Register = ({ togglePage }: any) => {
     <div>
       <Navbar brand='mystash' href={"/"} right />
       <Container className="container">
-        <ClipLoader loading={loading} color='blue' />
         <Header text="Register" />
         <div>
           {error && <div className="error">{error}</div>}
@@ -87,7 +87,7 @@ const Register = ({ togglePage }: any) => {
                 </Link>
               </div>
             </div>
-            <Button type="submit" disabled={!termsAccepted}>
+            <Button type="submit" disabled={!termsAccepted} loading={loading}>
               Register
             </Button>
           </form>

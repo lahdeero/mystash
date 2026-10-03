@@ -17,9 +17,11 @@ const Create = () => {
   const currentNote = useAppSelector((state) => state.currentNote)
   const [tags, setTags] = useState([])
   const navigate = useNavigate()
+  const [loading, setLoading] = useState(false)
 
-  const handleSubmit = (event: any) => {
+  const handleSubmit = async (event: any) => {
     event.preventDefault()
+    if (loading) return
     try {
       const noteObject = {
         title: currentNote.title,
@@ -30,14 +32,16 @@ const Create = () => {
         dispatch(notify('Add atleast one tag'))
         return
       }
+      setLoading(true)
+      await dispatch(createNote(noteObject))
       dispatch(clearCurrentNote())
-      dispatch(createNote(noteObject)).then(() => {
-        navigate('/')
-      })
       dispatch(notify(`you created '${noteObject.title}'`))
+      navigate('/')
     } catch (exception) {
       console.error(exception)
       dispatch(errorMessage('ERROR WHILE ADDING NOTE'))
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -69,7 +73,7 @@ const Create = () => {
       </FormElement>
       <TagComponent tags={tags} setTags={setTags} notify={notifyMessage} currentNote={currentNote} updateCurrentNote={updateCurrent} errorMessage={errorMsg} handleChange={handleChange} />
       <div>
-        <Button form="noteform" type="submit" onClick={handleSubmit}>Create</Button>
+        <Button form="noteform" type="submit" onClick={handleSubmit} loading={loading}>Create</Button>
       </div>
     </Container>
 
