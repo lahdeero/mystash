@@ -169,8 +169,7 @@ export class MystashInfraStack extends cdk.Stack {
       OAUTH_STATE_SECRET: ssm.StringParameter.valueForStringParameter(this, 'PROD_MYSTASH_OAUTH_STATE_SECRET'),
       LEGACY_PASSWORD_SECRET: secret
         .secretValueFromJson('mystash-secret')
-        .toString()
-        .slice(0, 32),
+        .toString(),
     }
 
     const projectRoot = path.join(__dirname, '../../')
@@ -200,6 +199,8 @@ export class MystashInfraStack extends cdk.Stack {
       {
         ...commonHandlerProps,
         entry: path.join(handlersPath, '/register/register.ts'),
+        memorySize: 512,
+        timeout: cdk.Duration.seconds(30),
         functionName: `${stackName}-register-lambda`,
       }
     )
@@ -209,6 +210,8 @@ export class MystashInfraStack extends cdk.Stack {
       {
         ...commonHandlerProps,
         entry: path.join(handlersPath, 'login.ts'),
+        memorySize: 512,
+        timeout: cdk.Duration.seconds(30),
         functionName: `${stackName}-login-lambda`,
       }
     )
