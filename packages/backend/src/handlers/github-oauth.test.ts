@@ -22,7 +22,7 @@ const verify = (body: unknown) => verifyGithubHandler(getEvent(JSON.stringify(bo
 describe('GitHub OAuth state', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    vi.mocked(axios.post).mockResolvedValue({ data: { access_token: 'github-token' } })
+    vi.mocked(axios.post).mockResolvedValue({ data: 'access_token=github-token' })
     vi.mocked(axios.get).mockResolvedValue({ data: { id: 1 } })
   })
   afterEach(() => vi.useRealTimers())

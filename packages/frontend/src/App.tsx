@@ -71,10 +71,7 @@ const App = () => {
         setCurrentTheme(theme)
       }
     }
-    if (parsed.token) {
-      window.localStorage.setItem(MS_TOKEN, JSON.stringify(parsed.token))
-      callback()
-    } else if (parsed.code || parsed.error) {
+    if (parsed.code || parsed.error) {
       window.history.replaceState({}, '', '/')
       setLoading(true)
       getToken(parsed.code, parsed.state)
