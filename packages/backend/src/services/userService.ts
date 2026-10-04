@@ -57,7 +57,6 @@ export class UserService {
       },
     })
     const data = await this.dynamoDb.send(command)
-    console.info('data', { ...data, password: '<REDACTED>' })
     return data.Items?.[0] as UserDbItem | undefined
   }
 }

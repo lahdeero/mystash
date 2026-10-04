@@ -35,3 +35,17 @@ test('upgrades legacy passwords on successful login only', async () => {
   expect(update.ExpressionAttributeValues[':previous']).toBe(password)
   expect(await verifyPassword('password123', update.ExpressionAttributeValues[':hash'])).toBe(true)
 })
+
+test('does not log nested password records or submitted passwords', async () => {
+  const info = vi.spyOn(console, 'info').mockImplementation(() => {})
+  const error = vi.spyOn(console, 'error').mockImplementation(() => {})
+  send.mockResolvedValue({ Items: [{ id: 'user', password: 'stored-password-one' }, { password: 'stored-password-two' }] })
+  try {
+    expect((await login('submitted-password')).statusCode).toBe(401)
+    const output = JSON.stringify([...info.mock.calls, ...error.mock.calls])
+    for (const password of ['stored-password-one', 'stored-password-two', 'submitted-password']) expect(output).not.toContain(password)
+  } finally {
+    info.mockRestore()
+    error.mockRestore()
+  }
+})

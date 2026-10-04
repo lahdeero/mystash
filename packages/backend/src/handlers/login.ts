@@ -32,7 +32,6 @@ export const loginHandler = async (
     },
   })
   const data = await dynamoDb.send(command)
-  console.info('data', { ...data, password: '<REDACTED>' })
   const item = data.Items?.[0] as UserDbItem | undefined
   const dbPassword = item?.password
   const invalidUserNameOrPassword = 'Invalid username or password'
