@@ -45,5 +45,9 @@ const editUserSettings = async (settings: Record<string, unknown>): Promise<User
   return response.data
 }
 
-const loginService = { getUser, register, login, githubVerify, editUserSettings }
+const logout = async (): Promise<void> => {
+  await API.post(`${baseUrl}/logout`, {}, getRequestConfig())
+}
+
+const loginService = { logout, getUser, register, login, githubVerify, editUserSettings }
 export default loginService

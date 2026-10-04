@@ -29,6 +29,7 @@ export class MystashInfraStack extends cdk.Stack {
         type: dynamoDb.AttributeType.STRING,
       },
       billingMode: dynamoDb.BillingMode.PROVISIONED,
+      timeToLiveAttribute: 'expiresAt',
       readCapacity: 1,
       writeCapacity: 1,
     })
@@ -184,6 +185,13 @@ export class MystashInfraStack extends cdk.Stack {
       environment,
     }
 
+    const logoutHandler = new lambdaNodeJs.NodejsFunction(this, `${stackName}-logout-lambda-handler`, {
+      ...commonHandlerProps,
+      entry: path.join(handlersPath, 'logout.ts'),
+      functionName: `${stackName}-logout-lambda`,
+    })
+    userDb.grantReadWriteData(logoutHandler)
+
     const registerHandler = new lambdaNodeJs.NodejsFunction(
       this,
       `${stackName}-register-lambda-handler`,
@@ -313,6 +321,10 @@ export class MystashInfraStack extends cdk.Stack {
     userDb.grantReadWriteData(editUserSettingsHandler)
     userDb.grantReadData(getUserHandler)
 
+    for (const handler of [createNoteHandler, getNotesHandler, getNoteFilesHandler, updateNoteHandler, deleteNoteHandler, uploadFileHandler, deleteFileHandler]) {
+      userDb.grantReadData(handler)
+    }
+
     noteDb.grantWriteData(createNoteHandler)
     noteDb.grantReadData(getNotesHandler)
     noteDb.grantReadWriteData(updateNoteHandler)
@@ -410,6 +422,11 @@ export class MystashInfraStack extends cdk.Stack {
       },
     })
 
+    api.addRoutes({
+      path: '/api/logout',
+      methods: [apigateway.HttpMethod.POST],
+      integration: new apiGatewayIntegrations.HttpLambdaIntegration('LogoutIntegration', logoutHandler),
+    })
     api.addRoutes({
       path: '/api/register',
       methods: [apigateway.HttpMethod.POST],

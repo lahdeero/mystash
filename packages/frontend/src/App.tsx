@@ -108,8 +108,14 @@ const App = () => {
     }
   }
 
-  const handleLogout = (event: any) => {
+  const handleLogout = async (event: any) => {
     event.preventDefault()
+    try {
+      await loginService.logout()
+    } catch {
+      dispatch(errorMessage("Logout failed. Please try again."))
+      return
+    }
     window.localStorage.removeItem(MS_TOKEN)
     filter.setFilter('')
     dispatch(clearNotes())

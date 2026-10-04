@@ -25,6 +25,13 @@ provider:
     GITHUB_REDIRECT_URI: ${env:GITHUB_REDIRECT_URI}
 
 functions:
+  logout:
+    handler: dist/handlers/logout.handler
+    events:
+      - http:
+          path: api/logout
+          method: post
+
   register:
     handler: dist/handlers/register/register.handler
     events:

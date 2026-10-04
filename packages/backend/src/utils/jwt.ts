@@ -5,7 +5,8 @@ import {
   APIGatewayProxyEvent,
   Context,
 } from 'aws-lambda'
-import { createHmac } from 'crypto'
+import { createHmac, randomUUID, timingSafeEqual } from 'crypto'
+import { isTokenRevoked } from './token-revocation.js'
 
 import { UserDbItem } from '../types/types.js'
 
@@ -34,24 +35,21 @@ export const createJWT = (
 }
 
 export const verifyJWT = (token: string, secret: string): string | null => {
-  const [encodedHeader, encodedPayload, encodedSignature] = token.split('.')
-  const signatureBase = `${encodedHeader}.${encodedPayload}`
-
-  const validSignature = createHmac('sha256', secret)
-    .update(signatureBase)
-    .digest('base64url')
-
-  // Check if the provided signature matches the valid signature
-
-  if (validSignature !== encodedSignature) {
-    return null // Invalid token
+  try {
+    const parts = token.split('.')
+    if (parts.length !== 3) return null
+    const [encodedHeader, encodedPayload, encodedSignature] = parts
+    const header = JSON.parse(Buffer.from(encodedHeader, 'base64url').toString('utf8'))
+    if (header.alg !== 'HS256' || header.typ !== 'JWT') return null
+    const expected = createHmac('sha256', secret).update(`${encodedHeader}.${encodedPayload}`).digest()
+    const actual = Buffer.from(encodedSignature, 'base64url')
+    if (actual.length !== expected.length || !timingSafeEqual(actual, expected)) return null
+    const payload = JSON.parse(Buffer.from(encodedPayload, 'base64url').toString('utf8'))
+    if (typeof payload.id !== 'string' || !payload.id || !Number.isSafeInteger(payload.exp) || payload.exp <= Math.floor(Date.now() / 1000)) return null
+    return payload.id
+  } catch {
+    return null
   }
-
-  // Decode payload
-  const decodedPayload = JSON.parse(
-    Buffer.from(encodedPayload, 'base64url').toString('utf8')
-  )
-  return decodedPayload.id
 }
 
 export const jwtMiddleware = (
@@ -92,7 +90,7 @@ export const jwtMiddleware = (
       if (!event.requestContext) {
         event.requestContext = {} as APIGatewayEventRequestContext
       }
-      if (!userId) {
+      if (!userId || await isTokenRevoked(token)) {
         throw new Error('Invalid JWT')
       }
       event.requestContext.authorizer = { userId } // Store userId in event for later use
@@ -118,6 +116,7 @@ export const createToken = (dbUser?: UserDbItem): UserToken => {
   const { id, nickname, email, tier, hasAcceptedTerms } = dbUser
   const payload = {
     id,
+    jti: randomUUID(),
     nickname,
     email,
     tier,

@@ -20,7 +20,7 @@ test('passes authenticated requests and returns the handler response', async () 
   const response = { statusCode: 200, body: 'ok' }
   const next = vi.fn().mockResolvedValue(response)
   const event = getEvent()
-  event.headers = { authorization: `Bearer ${createJWT({ id: 'user-id' }, 'test-secret')}` }
+  event.headers = { authorization: `Bearer ${createJWT({ id: 'user-id', exp: 4102444800 }, 'test-secret')}` }
   const context = getContext()
   await expect(jwtMiddleware(next, 'test-secret')(event, context)).resolves.toEqual(response)
   expect(next).toHaveBeenCalledWith(event, context)
@@ -31,7 +31,7 @@ test('propagates errors from an authenticated handler', async () => {
   const error = new Error('handler failed')
   const next = vi.fn().mockRejectedValue(error)
   const event = getEvent()
-  event.headers = { authorization: `Bearer ${createJWT({ id: 'user-id' }, 'test-secret')}` }
+  event.headers = { authorization: `Bearer ${createJWT({ id: 'user-id', exp: 4102444800 }, 'test-secret')}` }
   await expect(jwtMiddleware(next, 'test-secret')(event, getContext())).rejects.toBe(error)
 })
 
@@ -40,7 +40,7 @@ test('creates a JWT matching the standard HS256 fixture', () => {
 })
 
 test('accepts a standard HS256 signature', () => {
-  expect(verifyJWT(testToken, 'test-secret')).toBe('user-id')
+  expect(verifyJWT(createJWT({ id: 'user-id', exp: 4102444800 }, 'test-secret'), 'test-secret')).toBe('user-id')
 })
 
 test('rejects tokens with the legacy double-encoded signature', async () => {
@@ -58,4 +58,18 @@ test('rejects a wrong signing key or tampered payload', () => {
   const [header, , signature] = testToken.split('.')
   const changedPayload = Buffer.from(JSON.stringify({ id: 'another-user' })).toString('base64url')
   expect(verifyJWT(`${header}.${changedPayload}.${signature}`, 'test-secret')).toBeNull()
+})
+
+ test.each([1, Math.floor(Date.now() / 1000), undefined, '4102444800'])('rejects invalid expiration %s', (exp) => {
+  expect(verifyJWT(createJWT({ id: 'user-id', exp }, 'test-secret'), 'test-secret')).toBeNull()
+})
+
+test('rejects revoked tokens before calling the handler', async () => {
+  const { isTokenRevoked } = await import('./token-revocation.js')
+  vi.mocked(isTokenRevoked).mockResolvedValueOnce(true)
+  const next = vi.fn()
+  const event = getEvent()
+  event.headers.authorization = `Bearer ${createJWT({ id: 'user-id', exp: 4102444800 }, 'test-secret')}`
+  expect((await jwtMiddleware(next, 'test-secret')(event, getContext())).statusCode).toBe(401)
+  expect(next).not.toHaveBeenCalled()
 })
