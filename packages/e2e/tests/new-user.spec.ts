@@ -41,8 +41,14 @@ test('should be able to register a new user and login with it', async ({
     timeout: SLOW_TIMEOUT,
   })
 
+  const token = await page.evaluate(() => localStorage.getItem('MS_token'))
+  expect(token).toBeTruthy()
   await page.getByRole('link', { name: 'Logout' }).click()
   await expect(page.getByRole('link', { name: 'Register' })).toBeVisible({
     timeout: SLOW_TIMEOUT,
   })
+  const response = await page.request.get('http://localhost:8000/api/user', {
+    headers: { Authorization: `Bearer ${token}` },
+  })
+  expect(response.status()).toBe(401)
 })

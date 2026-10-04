@@ -29,6 +29,7 @@ for (const count of [1, 2]) {
 
     // Reopen the note to verify persisted metadata, not just local upload state.
     await page.getByRole('link', { name: 'Logout' }).click()
+    await expect(page.getByLabel('Email')).toBeVisible()
     await page.goto('/')
     await page.getByLabel('Email').fill('test@example.com')
     await page.getByLabel('Password').fill('salasana')

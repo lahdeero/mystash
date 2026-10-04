@@ -45,4 +45,5 @@ test('should be able to login and do CRUD actions to note', async ({
     `you deleted '${updatedNoteTitle}'`
   )
   await page.getByRole('link', { name: 'Logout' }).click()
+  await expect(page.getByLabel('Email')).toBeVisible()
 })
