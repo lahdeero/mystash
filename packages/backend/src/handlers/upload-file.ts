@@ -60,4 +60,4 @@ const uploadFileHandler: AsyncApiHandler = async (
   }
 }
 
-export const handler = jwtMiddleware(uploadFileHandler, process.env.SECRET!)
+export const handler = jwtMiddleware(uploadFileHandler, process.env.JWT_SECRET!)

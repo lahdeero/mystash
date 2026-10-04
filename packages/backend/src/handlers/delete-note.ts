@@ -58,4 +58,4 @@ const deleteNoteHandler: AsyncApiHandler = async (
   }
 }
 
-export const handler = jwtMiddleware(deleteNoteHandler, process.env.SECRET!)
+export const handler = jwtMiddleware(deleteNoteHandler, process.env.JWT_SECRET!)

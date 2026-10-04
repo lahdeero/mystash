@@ -124,7 +124,7 @@ export const createToken = (dbUser?: UserDbItem): UserToken => {
     iat: Math.floor(Date.now() / 1000),
     exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7, // Expire after 1 week
   }
-  const token = createJWT(payload, process.env.SECRET!)
+  const token = createJWT(payload, process.env.JWT_SECRET!)
   const user: User = {
     nickname,
     tier,

@@ -42,4 +42,4 @@ const getCurrentUserHandler: AsyncApiHandler = async (
   }
 }
 
-export const handler = jwtMiddleware(getCurrentUserHandler, process.env.SECRET!)
+export const handler = jwtMiddleware(getCurrentUserHandler, process.env.JWT_SECRET!)

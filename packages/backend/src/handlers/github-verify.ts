@@ -15,7 +15,7 @@ export const verifyGithubHandler = async (
   } catch {
     return noAccess('Invalid OAuth login attempt')
   }
-  if (!verifyOAuthState(parsedBody?.state, parsedBody?.nonce, process.env.SECRET!)) {
+  if (!verifyOAuthState(parsedBody?.state, parsedBody?.nonce, process.env.OAUTH_STATE_SECRET!)) {
     return noAccess('Invalid or expired OAuth state')
   }
   if (typeof parsedBody?.code !== 'string' || !parsedBody.code) {

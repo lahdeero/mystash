@@ -122,4 +122,4 @@ const editUserSettingsHandler: AsyncApiHandler = async (
   }
 }
 
-export const handler = jwtMiddleware(editUserSettingsHandler, process.env.SECRET!)
+export const handler = jwtMiddleware(editUserSettingsHandler, process.env.JWT_SECRET!)

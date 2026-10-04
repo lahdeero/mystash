@@ -15,7 +15,7 @@ vi.mock('../services/userService.js', () => ({
 }))
 
 const nonce = 'a'.repeat(64)
-const secret = process.env.SECRET!
+const secret = process.env.OAUTH_STATE_SECRET!
 const attempt = () => ({ code: 'github-code', nonce, state: createOAuthState(nonce, secret) })
 const verify = (body: unknown) => verifyGithubHandler(getEvent(JSON.stringify(body), 'POST'))
 

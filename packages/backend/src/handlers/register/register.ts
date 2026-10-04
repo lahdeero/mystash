@@ -10,7 +10,7 @@ import { v4 as uuidv } from 'uuid'
 import { UserTier } from '../../types/types.js'
 import {
   noAccess,
-  encryptData,
+  hashPassword,
 } from '../../utils/index.js'
 import { parseJsonBody } from '../../utils/utils.js'
 import { registerRequestSchema } from './registerSchema.js'
@@ -44,7 +44,7 @@ export const registerHandler = async (
     return noAccess(emailErrors)
   }
 
-  const encryptedPassword = encryptData(password)
+  const passwordHash = await hashPassword(password)
   const tier = UserTier.Free
   const user: User = {
     nickname,
@@ -56,7 +56,7 @@ export const registerHandler = async (
     TableName: process.env.USERS_TABLE_NAME,
     Item: {
       id: uuidv(),
-      password: encryptedPassword,
+      password: passwordHash,
       ...user,
     },
   })

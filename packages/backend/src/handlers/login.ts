@@ -1,8 +1,8 @@
 import type { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda'
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
-import { DynamoDBDocumentClient, QueryCommand } from '@aws-sdk/lib-dynamodb'
+import { DynamoDBDocumentClient, QueryCommand, UpdateCommand } from '@aws-sdk/lib-dynamodb'
 
-import { createToken, noAccess, decryptData } from '../utils/index.js'
+import { createToken, noAccess, verifyPassword, hashPassword, isPasswordHash } from '../utils/index.js'
 import { UserDbItem } from '../types/types.js'
 
 const client = new DynamoDBClient({
@@ -39,15 +39,18 @@ export const loginHandler = async (
   if (!dbPassword) {
     return noAccess(invalidUserNameOrPassword)
   }
-  let passwordCorrect: boolean
-  try {
-    passwordCorrect = decryptData(dbPassword) === parsedBody.password
-  } catch (e) {
-    console.error('Error decrypting password', e)
-    passwordCorrect = false
-  }
+  const passwordCorrect = typeof parsedBody.password === 'string' && await verifyPassword(parsedBody.password, dbPassword)
   if (!passwordCorrect) {
     return noAccess(invalidUserNameOrPassword)
+  }
+  if (!isPasswordHash(dbPassword)) {
+    await dynamoDb.send(new UpdateCommand({
+      TableName: process.env.USERS_TABLE_NAME,
+      Key: { id: item!.id },
+      UpdateExpression: 'SET password = :hash',
+      ConditionExpression: 'password = :previous',
+      ExpressionAttributeValues: { ':hash': await hashPassword(parsedBody.password), ':previous': dbPassword },
+    }))
   }
   const { token, user } = createToken(item)
 

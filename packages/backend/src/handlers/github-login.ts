@@ -15,7 +15,7 @@ const githubLoginHandler: AsyncApiHandler = async (
     client_id: process.env.GITHUB_CLIENT_ID!,
     redirect_uri: process.env.GITHUB_REDIRECT_URI!,
     scope: 'read:user user:email',
-    state: createOAuthState(nonce, process.env.SECRET!),
+    state: createOAuthState(nonce, process.env.OAUTH_STATE_SECRET!),
   })
   const redirectUrl = `${GITHUB_OAUTH_URL}?${params.toString()}`
   return {

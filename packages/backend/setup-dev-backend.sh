@@ -239,7 +239,9 @@ if [ -f .env ]; then
     echo "Setup environment variables..."
     . "$ENV_FILE"
     export ENVIRONMENT
-    export MYSTASH_SECRET
+    export MYSTASH_JWT_SECRET
+    export MYSTASH_OAUTH_STATE_SECRET
+    export MYSTASH_LEGACY_PASSWORD_SECRET
     export GITHUB_CLIENT_ID
     export GITHUB_CLIENT_SECRET
     export GITHUB_REDIRECT_URI

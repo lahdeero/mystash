@@ -13,7 +13,9 @@ provider:
       - 'image/jpeg'
   environment:
     ENVIRONMENT: ${env:ENVIRONMENT, 'dev'}
-    SECRET: ${env:MYSTASH_SECRET}
+    JWT_SECRET: ${env:MYSTASH_JWT_SECRET}
+    OAUTH_STATE_SECRET: ${env:MYSTASH_OAUTH_STATE_SECRET}
+    LEGACY_PASSWORD_SECRET: ${env:MYSTASH_LEGACY_PASSWORD_SECRET, ''}
     DYNAMODB_ENDPOINT: ${env:DYNAMODB_ENDPOINT} # http://localhost:8001 # http://host.docker.internal:8001
     USERS_TABLE_NAME: mystash-dev-users
     NOTES_TABLE_NAME: mystash-dev-notes

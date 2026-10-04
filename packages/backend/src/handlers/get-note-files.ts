@@ -31,4 +31,4 @@ const getNoteFiles: AsyncApiHandler = async (
   }
 }
 
-export const handler = jwtMiddleware(getNoteFiles, process.env.SECRET!)
+export const handler = jwtMiddleware(getNoteFiles, process.env.JWT_SECRET!)

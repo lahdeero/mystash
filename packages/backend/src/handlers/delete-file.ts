@@ -58,4 +58,4 @@ const deleteFileHandler: AsyncApiHandler = async (
   }
 }
 
-export const handler = jwtMiddleware(deleteFileHandler, process.env.SECRET!)
+export const handler = jwtMiddleware(deleteFileHandler, process.env.JWT_SECRET!)

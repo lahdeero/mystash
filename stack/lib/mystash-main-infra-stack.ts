@@ -165,7 +165,9 @@ export class MystashInfraStack extends cdk.Stack {
       GITHUB_CLIENT_ID: githubClientId,
       GITHUB_CLIENT_SECRET: githubClientSecret,
       GITHUB_REDIRECT_URI: 'https://mystash.70511337.xyz/',
-      SECRET: secret
+      JWT_SECRET: ssm.StringParameter.valueForStringParameter(this, 'PROD_MYSTASH_JWT_SECRET'),
+      OAUTH_STATE_SECRET: ssm.StringParameter.valueForStringParameter(this, 'PROD_MYSTASH_OAUTH_STATE_SECRET'),
+      LEGACY_PASSWORD_SECRET: secret
         .secretValueFromJson('mystash-secret')
         .toString()
         .slice(0, 32),
