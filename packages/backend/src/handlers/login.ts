@@ -1,6 +1,6 @@
 import type { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda'
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
-import { DynamoDBDocumentClient, QueryCommand, UpdateCommand } from '@aws-sdk/lib-dynamodb'
+import { DynamoDBDocumentClient, QueryCommand, UpdateCommand, GetCommand } from '@aws-sdk/lib-dynamodb'
 
 import { createToken, noAccess, verifyPassword, hashPassword, isPasswordHash } from '../utils/index.js'
 import { UserDbItem } from '../types/types.js'
@@ -43,13 +43,25 @@ export const loginHandler = async (
     return noAccess(invalidUserNameOrPassword)
   }
   if (!isPasswordHash(dbPassword)) {
-    await dynamoDb.send(new UpdateCommand({
-      TableName: process.env.USERS_TABLE_NAME,
-      Key: { id: item!.id },
-      UpdateExpression: 'SET password = :hash',
-      ConditionExpression: 'password = :previous',
-      ExpressionAttributeValues: { ':hash': await hashPassword(parsedBody.password), ':previous': dbPassword },
-    }))
+    try {
+      await dynamoDb.send(new UpdateCommand({
+        TableName: process.env.USERS_TABLE_NAME,
+        Key: { id: item!.id },
+        UpdateExpression: 'SET password = :hash',
+        ConditionExpression: 'password = :previous',
+        ExpressionAttributeValues: { ':hash': await hashPassword(parsedBody.password), ':previous': dbPassword },
+      }))
+    } catch (error) {
+      if (!(error instanceof Error) || error.name !== 'ConditionalCheckFailedException') throw error
+      const current = await dynamoDb.send(new GetCommand({
+        TableName: process.env.USERS_TABLE_NAME,
+        Key: { id: item!.id },
+        ConsistentRead: true,
+      }))
+      if (typeof current.Item?.password !== 'string' || !isPasswordHash(current.Item.password) || !await verifyPassword(parsedBody.password, current.Item.password)) {
+        return noAccess(invalidUserNameOrPassword)
+      }
+    }
   }
   const { token, user } = createToken(item)
 

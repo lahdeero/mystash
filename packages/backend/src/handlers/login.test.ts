@@ -9,6 +9,7 @@ vi.mock('@aws-sdk/client-dynamodb', () => ({ DynamoDBClient: vi.fn(function () {
 vi.mock('@aws-sdk/lib-dynamodb', () => ({
   DynamoDBDocumentClient: { from: () => ({ send }) },
   QueryCommand: class { constructor(public input: unknown) {} },
+  GetCommand: class { constructor(public input: unknown) {} },
   UpdateCommand: class { constructor(public input: unknown) {} },
 }))
 const login = (password: string) => loginHandler(getEvent(JSON.stringify({ email: 'test@example.com', password })))
@@ -48,4 +49,16 @@ test('does not log nested password records or submitted passwords', async () => 
     info.mockRestore()
     error.mockRestore()
   }
+})
+
+test.each([['password123', 200], ['changed-password', 401]])('rechecks the current password after a concurrent migration to %s', async (currentPassword, expectedStatus) => {
+  const secret = process.env.LEGACY_PASSWORD_SECRET!
+  const cipher = createCipheriv('aes-256-cbc', secret, secret.slice(0, 16).split('').reverse().join(''))
+  const password = cipher.update('password123', 'utf8', 'hex') + cipher.final('hex')
+  const conflict = Object.assign(new Error('concurrent update'), { name: 'ConditionalCheckFailedException' })
+  send.mockResolvedValueOnce({ Items: [{ id: 'user', password }] })
+  send.mockRejectedValueOnce(conflict)
+  send.mockResolvedValueOnce({ Item: { password: await hashPassword(currentPassword) } })
+  expect((await login('password123')).statusCode).toBe(expectedStatus)
+  expect(send.mock.calls[2][0].input.ConsistentRead).toBe(true)
 })
