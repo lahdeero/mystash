@@ -1,0 +1,1 @@
+export const SMALL_SPACE = '0.2rem'

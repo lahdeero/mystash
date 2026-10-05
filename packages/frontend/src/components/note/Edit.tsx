@@ -113,8 +113,7 @@ const Edit = () => {
   return (
     <Container>
       <div>
-        <h3>Note tags:</h3>
-        <p>Click tag to remove</p>
+        <h3>Tags</h3>
       </div>
       <div>
         <div>
@@ -126,8 +125,7 @@ const Edit = () => {
                   removeTag(tag)
                 }}
               >
-                {' '}
-                {tag}{' '}
+                {` ${tag} `}
               </Chip>
             ))}
           </ChipContainer>
@@ -136,9 +134,9 @@ const Edit = () => {
       <div>
         <AddTagForm id="tagform" onSubmit={addTag}>
           <div>
-            Add tag{' '}
             <Input
               name="tagText"
+              label="Add tags"
               value={editNote.tagText}
               onChange={handleTagTextChange}
               type="text"
@@ -152,10 +150,9 @@ const Edit = () => {
       <h2>Edit note</h2>
       <form onSubmit={handleSubmit}>
         <div>
-          Title
-          <br />
           <Input
             name="title"
+            label="Title"
             value={editNote.title}
             onChange={handleFieldChange}
             type="text"
@@ -164,6 +161,7 @@ const Edit = () => {
         <Textarea
           id="edit-note"
           className="note-edit"
+          label="Content"
           value={editNote.content}
           onChange={handleContent}
           minRows={10}

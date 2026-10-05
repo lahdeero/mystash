@@ -69,7 +69,7 @@ const Create = () => {
         <div>
           <Input label="Title" name='title' value={currentNote.title} onChange={handleChange} type="text" />
         </div>
-          <Textarea className="note-edit" id={textAreaId} value={currentNote.content} onChange={handleContent} minRows={10} />
+        <Textarea className="note-edit" id={textAreaId} label="Content" value={currentNote.content} onChange={handleContent} minRows={10} />
       </FormElement>
       <TagComponent tags={tags} setTags={setTags} notify={notifyMessage} currentNote={currentNote} updateCurrentNote={updateCurrent} errorMessage={errorMsg} handleChange={handleChange} />
       <div>
