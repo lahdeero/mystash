@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { SMALL_SPACE } from '../../layout/spacing'
+import { SPACE_SMALL } from '../../layout/spacing'
 
 const TextAreaWrapper = styled.div`
   display: flex;
@@ -8,7 +8,7 @@ const TextAreaWrapper = styled.div`
 
   textarea {
     width: 100%;
-    margin-top: ${SMALL_SPACE};
+    margin-top: ${SPACE_SMALL};
 `
 
 interface TextareaProps {

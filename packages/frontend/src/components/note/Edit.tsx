@@ -8,18 +8,20 @@ import { useAppDispatch, useAppSelector } from '../../store'
 import Container from '../common/Container'
 import Input from '../common/Input'
 import Button from '../common/Button'
-import Chip from '../common/Chip'
 import styled from 'styled-components'
 import Textarea from '../common/Textarea'
+import ChipGroup from '../common/ChipGroup'
+
+
 
 const AddTagForm = styled.form`
   display: flex;
   flex-direction: column;
-  margin: 2rem 0;
 `
 
-const ChipContainer = styled.div`
+const EditNoteForm = styled.form`
   display: flex;
+  flex-direction: column;
 `
 
 const Edit = () => {
@@ -53,7 +55,7 @@ const Edit = () => {
         tags: editNote.newTags,
       }
       await dispatch(modifyNote(noteObject))
-      await dispatch(notify(`you modified '${noteObject.title}'`))
+      dispatch(notify(`you modified '${noteObject.title}'`))
       navigate('/')
     } catch (exception) {
       console.error(exception)
@@ -112,25 +114,8 @@ const Edit = () => {
 
   return (
     <Container>
-      <div>
-        <h3>Tags</h3>
-      </div>
-      <div>
-        <div>
-          <ChipContainer>
-            {editNote.newTags.map((tag: any) => (
-              <Chip
-                key={tag}
-                onClick={() => {
-                  removeTag(tag)
-                }}
-              >
-                {` ${tag} `}
-              </Chip>
-            ))}
-          </ChipContainer>
-        </div>
-      </div>
+      <h2>Edit note</h2>
+      <ChipGroup label="Tags" items={editNote.newTags} onClick={removeTag} />
       <div>
         <AddTagForm id="tagform" onSubmit={addTag}>
           <div>
@@ -147,8 +132,7 @@ const Edit = () => {
           </Button>
         </AddTagForm>
       </div>
-      <h2>Edit note</h2>
-      <form onSubmit={handleSubmit}>
+      <EditNoteForm onSubmit={handleSubmit}>
         <div>
           <Input
             name="title"
@@ -170,8 +154,8 @@ const Edit = () => {
         <Button className="red accent-2" type="submit" loading={loading}>
           Save
         </Button>
-      </form>
-    </Container>
+      </EditNoteForm>
+    </Container >
   )
 }
 

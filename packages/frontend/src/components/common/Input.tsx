@@ -1,6 +1,6 @@
 import { useId } from 'react'
 import styled from 'styled-components'
-import { SMALL_SPACE } from '../../layout/spacing'
+import { SPACE_SMALL } from '../../layout/spacing'
 
 interface InputWrapperProps {
   id?: string
@@ -16,7 +16,7 @@ const InputWrapper = styled.div<InputWrapperProps>`
   margin-bottom: 1rem;
 
   input {
-    margin-top: ${SMALL_SPACE};
+    margin-top: ${SPACE_SMALL};
     width: calc(100% - 3rem);
     height: 1.8rem;
   }
