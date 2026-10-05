@@ -52,3 +52,28 @@ test('should be able to register a new user and login with it', async ({
   })
   expect(response.status()).toBe(401)
 })
+
+test('clears the browser session when logout rejects an invalid token', async ({ page }) => {
+  const email = randomEmail()
+  const password = 'password123'
+  const registration = await page.request.post('http://localhost:8000/api/register', {
+    data: { email, password, nickname: 'e2e-expired-session' },
+  })
+  expect(registration.status()).toBe(201)
+  const login = await page.request.post('http://localhost:8000/api/login', { data: { email, password } })
+  expect(login.status()).toBe(200)
+  const { token } = await login.json()
+  await page.goto('/')
+  await page.evaluate(token => localStorage.setItem('MS_token', token), token)
+  await page.reload()
+  await expect(page.getByRole('link', { name: 'Logout' })).toBeVisible()
+  await page.route('**/api/logout', route => route.fulfill({ status: 401, json: { message: 'Unauthorized' } }))
+  await page.getByRole('link', { name: 'Logout' }).click()
+  await expect(page.getByLabel('Email')).toBeVisible()
+  expect(await page.evaluate(() => localStorage.getItem('MS_token'))).toBeNull()
+  await expect(page.getByText('Logout failed. Please try again.')).toHaveCount(0)
+  const cleanup = await page.request.post('http://localhost:8000/api/logout', {
+    headers: { Authorization: `Bearer ${token}` },
+  })
+  expect(cleanup.status()).toBe(204)
+})

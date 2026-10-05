@@ -1,4 +1,4 @@
-import API from 'axios'
+import API, { isAxiosError } from 'axios'
 import type { AxiosResponse } from 'axios'
 import { resolveUrl } from '../utils/environmentResolvers'
 import getRequestConfig from '../utils/requestConfigResolver'
@@ -46,7 +46,11 @@ const editUserSettings = async (settings: Record<string, unknown>): Promise<User
 }
 
 const logout = async (): Promise<void> => {
-  await API.post(`${baseUrl}/logout`, {}, getRequestConfig())
+  try {
+    await API.post(`${baseUrl}/logout`, {}, getRequestConfig())
+  } catch (error) {
+    if (!isAxiosError(error) || error.response?.status !== 401) throw error
+  }
 }
 
 const loginService = { logout, getUser, register, login, githubVerify, editUserSettings }
