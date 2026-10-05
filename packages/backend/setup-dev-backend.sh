@@ -202,13 +202,14 @@ echo "All tables are active."
 
 
 echo "Seed the users table..."
+seeded_password_hash=$(node --input-type=module -e 'import { hashPassword } from "./dist/utils/cryptography.js"; console.log(await hashPassword("salasana"))')
 aws dynamodb put-item \
     --table-name mystash-dev-users \
     --item '{
         "id": {"S": "b4f437f8-690d-4620-9166-a47887450913"},
         "nickname": {"S": "JohnDoe"},
         "email": {"S": "test@example.com"},
-        "password": {"S": "2dc6e6c891c0e3acfa5b312c0da3e26e"},
+        "password": {"S": "'"$seeded_password_hash"'"},
         "hasAcceptedTerms": {"BOOL": true}
     }' \
     --region eu-north-1 \
@@ -219,7 +220,7 @@ aws dynamodb put-item \
         "id": {"S": "add80a47-7ba6-4b28-8bff-5fdb461f5a5f"},
         "nickname": {"S": "DevUser"},
         "email": {"S": "dev@example.com"},
-        "password": {"S": "2dc6e6c891c0e3acfa5b312c0da3e26e"},
+        "password": {"S": "'"$seeded_password_hash"'"},
         "hasAcceptedTerms": {"BOOL": true}
     }' \
     --region eu-north-1 \
