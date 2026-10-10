@@ -139,6 +139,40 @@ describe('List', () => {
     expect(titles).toEqual(['Apple', 'Banana'])
   })
 
+  test.each`
+    sortNotes         | expectedTitles
+    ${'ALPHABETIC'}   | ${['Apple', 'Banana', 'Cherry']}
+    ${'!ALPHABETIC'}  | ${['Cherry', 'Banana', 'Apple']}
+    ${'MODIFIED'}     | ${['Cherry', 'Banana', 'Apple']}
+    ${'!MODIFIED'}    | ${['Apple', 'Banana', 'Cherry']}
+    ${'CREATED'}      | ${['Cherry', 'Apple', 'Banana']}
+    ${'!CREATED'}     | ${['Banana', 'Apple', 'Cherry']}
+  `('sorts notes using $sortNotes order', ({ sortNotes, expectedTitles }) => {
+    const { container } = renderList(
+      [
+        buildNote({ id: '1', title: 'Banana', updatedAt: '2024-01-02T00:00:00Z' }),
+        buildNote({ id: '3', title: 'Cherry', updatedAt: '2024-01-03T00:00:00Z' }),
+        buildNote({ id: '2', title: 'Apple', updatedAt: '2024-01-01T00:00:00Z' }),
+      ],
+      { sortNotes }
+    )
+    const titles = Array.from(container.querySelectorAll('a')).map(
+      (a) => a.textContent
+    )
+    expect(titles).toEqual(expectedTitles)
+  })
+
+  test('shows the reverse sort choices in the dropdown', () => {
+    renderList([
+      buildNote({ id: '1', title: 'A' }),
+      buildNote({ id: '2', title: 'B' }),
+      buildNote({ id: '3', title: 'C' }),
+    ])
+    expect(screen.getByRole('option', { name: 'alphabetic reverse' })).toBeInTheDocument()
+    expect(screen.getByRole('option', { name: 'modified reverse' })).toBeInTheDocument()
+    expect(screen.getByRole('option', { name: 'created reverse' })).toBeInTheDocument()
+  })
+
   test('truncates long note content to 150 characters', () => {
     const longContent = 'x'.repeat(200)
     renderList([buildNote({ id: '1', title: 'Long', content: longContent })])

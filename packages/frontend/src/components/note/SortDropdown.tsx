@@ -30,11 +30,20 @@ const SortDropdown = () => {
       case 'ALPHABETIC':
         dispatch(sortAlphabetic())
         break
+      case '!ALPHABETIC':
+        dispatch({ type: '!ALPHABETIC' })
+        break
       case 'CREATED':
         dispatch(sortCreated())
         break
+      case '!CREATED':
+        dispatch({ type: '!CREATED' })
+        break
       case 'MODIFIED':
         dispatch(sortModified())
+        break
+      case '!MODIFIED':
+        dispatch({ type: '!MODIFIED' })
         break
       default:
     }
@@ -46,7 +55,13 @@ const SortDropdown = () => {
       <select id="sort-select" onChange={handleChange} value={sortNotes}>
         {sortOptions.map((o) => (
           <option key={o} value={o}>
-            {o}
+            {o === '!ALPHABETIC'
+              ? 'alphabetic reverse'
+              : o === '!MODIFIED'
+                ? 'modified reverse'
+                : o === '!CREATED'
+                  ? 'created reverse'
+                  : o.toLowerCase()}
           </option>
         ))}
       </select>

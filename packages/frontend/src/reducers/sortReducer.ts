@@ -1,4 +1,4 @@
-export const sortOptions = ['ALPHABETIC', 'CREATED', 'MODIFIED']
+export const sortOptions = ['ALPHABETIC', '!ALPHABETIC', 'CREATED', '!CREATED', 'MODIFIED', '!MODIFIED']
 const defaultSort = 'MODIFIED'
 
 const sortReducer = (store = defaultSort, action = { type: 'DEFAULT' }) => {
