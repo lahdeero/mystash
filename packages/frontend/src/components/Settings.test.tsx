@@ -85,7 +85,11 @@ describe('Settings', () => {
     })
   })
 
-  test.each(['success', 'failure'])('disables Save while pending and re-enables it after %s', async (outcome) => {
+  test.each`
+    outcome
+    ${'success'}
+    ${'failure'}
+  `('disables Save while pending and re-enables it after $outcome', async ({ outcome }) => {
     let resolveSave!: (user: typeof currentUser) => void
     let rejectSave!: (error: Error) => void
     mockedLoginService.editUserSettings.mockImplementation(() => new Promise((resolve, reject) => {

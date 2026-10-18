@@ -51,7 +51,11 @@ test('does not log nested password records or submitted passwords', async () => 
   }
 })
 
-test.each([['password123', 200], ['changed-password', 401]])('rechecks the current password after a concurrent migration to %s', async (currentPassword, expectedStatus) => {
+test.each`
+  currentPassword       | expectedStatus
+  ${'password123'}      | ${200}
+  ${'changed-password'} | ${401}
+`('rechecks the current password after a concurrent migration to $currentPassword', async ({ currentPassword, expectedStatus }) => {
   const secret = process.env.LEGACY_PASSWORD_SECRET!
   const cipher = createCipheriv('aes-256-cbc', secret, secret.slice(0, 16).split('').reverse().join(''))
   const password = cipher.update('password123', 'utf8', 'hex') + cipher.final('hex')

@@ -19,7 +19,13 @@ test('allows local logout when the server rejects an invalid session', async () 
   await expect(loginService.logout()).resolves.toBeUndefined()
 })
 
-test.each([403, 404, 500, 503])('preserves errors for HTTP %s so logout can be retried', async (status) => {
+test.each`
+  status
+  ${403}
+  ${404}
+  ${500}
+  ${503}
+`('preserves errors for HTTP $status so logout can be retried', async ({ status }) => {
   const error = { isAxiosError: true, response: { status } }
   vi.spyOn(API, 'post').mockRejectedValue(error)
   await expect(loginService.logout()).rejects.toBe(error)

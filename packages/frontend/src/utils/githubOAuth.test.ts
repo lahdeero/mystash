@@ -24,7 +24,13 @@ describe('GitHub OAuth browser session', () => {
     expect(() => consumeGitHubOAuth('code', 'signed-state')).toThrow()
   })
 
-  test.each([[undefined, 'state'], ['code', undefined], [['code'], 'state'], ['code', ['state']]])('rejects malformed callback %j, %j and consumes the nonce', (code, state) => {
+  test.each`
+    code        | state
+    ${undefined} | ${'state'}
+    ${'code'}    | ${undefined}
+    ${['code']}  | ${'state'}
+    ${'code'}    | ${['state']}
+  `('rejects malformed callback $code, $state and consumes the nonce', ({ code, state }) => {
     startGitHubOAuth(loginUrl)
     expect(() => consumeGitHubOAuth(code, state)).toThrow()
     expect(() => consumeGitHubOAuth('code', 'state')).toThrow()

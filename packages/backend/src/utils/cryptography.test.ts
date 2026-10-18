@@ -25,6 +25,11 @@ test('supports legacy verification only with the migration secret', async () => 
   }
 })
 
-test.each(['scrypt$1$8$1$aa$bb', 'scrypt$131072$8$1$aa$bb', 'malformed'])('rejects malformed password records', async (stored) => {
+test.each`
+  stored
+  ${'scrypt$1$8$1$aa$bb'}
+  ${'scrypt$131072$8$1$aa$bb'}
+  ${'malformed'}
+`('rejects malformed password records', async ({ stored }) => {
   expect(await verifyPassword('password', stored)).toBe(false)
 })

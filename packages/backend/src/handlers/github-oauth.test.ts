@@ -47,7 +47,15 @@ describe('GitHub OAuth state', () => {
     expect(axios.post).toHaveBeenCalledTimes(1)
   })
 
-  test.each(['missing state', 'missing nonce', 'wrong nonce', 'tampered state', 'malformed state', 'missing code'])('rejects %s before contacting GitHub', async (failure) => {
+  test.each`
+    failure
+    ${'missing state'}
+    ${'missing nonce'}
+    ${'wrong nonce'}
+    ${'tampered state'}
+    ${'malformed state'}
+    ${'missing code'}
+  `('rejects $failure before contacting GitHub', async ({ failure }) => {
     const body: Record<string, unknown> = attempt()
     if (failure === 'missing state') delete body.state
     if (failure === 'missing nonce') delete body.nonce

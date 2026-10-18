@@ -17,7 +17,11 @@ const renderLogin = (props: React.ComponentProps<typeof Login>) => {
 }
 
 describe('login', () => {
-  test.each([['ERR_BAD_REQUEST', 'Invalid credentials'], ['ERR_NETWORK', 'Error']])('shows %s in the notification and allows retry after failure', async (code, message) => {
+  test.each`
+    code                | message
+    ${'ERR_BAD_REQUEST'} | ${'Invalid credentials'}
+    ${'ERR_NETWORK'}     | ${'Error'}
+  `('shows $code in the notification and allows retry after failure', async ({ code, message }) => {
     let rejectLogin!: (error: Error) => void
     const actionForLogin = vi.fn(() => new Promise<void>((_resolve, reject) => {
       rejectLogin = reject

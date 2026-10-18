@@ -60,7 +60,13 @@ test('rejects a wrong signing key or tampered payload', () => {
   expect(verifyJWT(`${header}.${changedPayload}.${signature}`, 'test-secret')).toBeNull()
 })
 
- test.each([1, Math.floor(Date.now() / 1000), undefined, '4102444800'])('rejects invalid expiration %s', (exp) => {
+ test.each`
+  exp
+  ${1}
+  ${Math.floor(Date.now() / 1000)}
+  ${undefined}
+  ${'4102444800'}
+`('rejects invalid expiration $exp', ({ exp }) => {
   expect(verifyJWT(createJWT({ id: 'user-id', exp }, 'test-secret'), 'test-secret')).toBeNull()
 })
 
