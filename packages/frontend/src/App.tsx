@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { isAxiosError } from 'axios'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import queryString from 'query-string'
 import styled, { ThemeProvider } from 'styled-components'
@@ -59,35 +60,45 @@ const App = () => {
 
   useEffect(() => {
     const parsed = queryString.parse(window.location.search)
-    const callback = () => {
+    const callback = async () => {
       const loggedUserJSON = window.localStorage.getItem(MS_TOKEN)
       window.history.pushState({ path: '/' }, 'title', '/')
       if (!logged && loggedUserJSON) {
-        setLogged(true)
-        init()
+        try {
+          const currentUser = await loginService.getUser()
+          setLogged(true)
+          dispatch({ type: 'LOGIN', data: currentUser })
+          await init()
+        } catch (error) {
+          if (isAxiosError(error) && error.response?.status === 401) {
+            window.localStorage.removeItem(MS_TOKEN)
+            window.localStorage.removeItem('app-state')
+            dispatch(actionForLogout())
+            dispatch(clearNotes())
+            dispatch(errorMessage('Your session has expired. Please sign in again.'))
+          } else {
+            dispatch(notify(error))
+          }
+        }
       }
       const theme = window.localStorage.getItem(MS_THEME) as Theme
       if (Object.values(Theme).includes(theme)) {
         setCurrentTheme(theme)
       }
+      setLoading(false)
     }
     if (parsed.code || parsed.error) {
       window.history.replaceState({}, '', '/')
       setLoading(true)
       getToken(parsed.code, parsed.state)
-        .then((user) => {
-          if (user) {
-            dispatch({ type: 'LOGIN', data: user })
-          }
-          callback()
-        })
+        .then(() => callback())
         .catch(() => {
           dispatch(errorMessage('GitHub login failed or expired. Please try again.'))
         })
         .finally(() => setLoading(false))
       return
     }
-    callback()
+    void callback()
   }, [user])
 
   useEffect(() => {
@@ -121,6 +132,10 @@ const App = () => {
   }
 
   const login = (credentials: any) => dispatch(actionForLogin(credentials))
+
+  if (loading && !logged) {
+    return null
+  }
 
   if (logged) {
     if (user && !user.hasAcceptedTerms) {
