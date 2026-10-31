@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 
 const useFilter = () => {
   const [value, setValue] = useState('')
@@ -7,9 +7,9 @@ const useFilter = () => {
     setValue(event.target.value)
   }
 
-  const setFilter = (value: any) => {
+  const setFilter = useCallback((value: any) => {
     setValue(value)
-  }
+  }, [])
 
   return {
     value,

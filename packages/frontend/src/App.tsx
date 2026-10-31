@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
-import { Routes, Route, Navigate } from 'react-router-dom'
+import axios, { isAxiosError } from 'axios'
+import { Routes, Route, Navigate, useNavigate } from 'react-router-dom'
 import queryString from 'query-string'
 import styled, { ThemeProvider } from 'styled-components'
 import './App.css'
@@ -44,11 +45,45 @@ const MS_THEME = 'MS_theme'
 
 const App = () => {
   const dispatch = useAppDispatch()
+  const navigate = useNavigate()
   const user = useAppSelector((state) => state.user)
   const filter = useFilter()
   const [logged, setLogged] = useState(false)
   const [loading, setLoading] = useState(true)
   const [currentTheme, setCurrentTheme] = useState(Theme.Light)
+
+  useEffect(() => {
+    const interceptorId = axios.interceptors.response.use(
+      (response) => response,
+      (error) => {
+        if (
+          isAxiosError(error) &&
+          error.response?.status === 401 &&
+          typeof error.config?.headers?.Authorization === 'string' &&
+          error.config.headers.Authorization.startsWith('Bearer ') &&
+          window.localStorage.getItem(MS_TOKEN)
+        ) {
+          window.dispatchEvent(new Event('mystash:session-expired'))
+        }
+        return Promise.reject(error)
+      }
+    )
+    const handleSessionExpired = () => {
+      window.localStorage.removeItem(MS_TOKEN)
+      filter.setFilter('')
+      dispatch(clearNotes())
+      dispatch(actionForLogout())
+      dispatch(errorMessage('Your session has expired. Please sign in again.'))
+      setLogged(false)
+      setLoading(false)
+      navigate('/login', { replace: true })
+    }
+    window.addEventListener('mystash:session-expired', handleSessionExpired)
+    return () => {
+      axios.interceptors.response.eject(interceptorId)
+      window.removeEventListener('mystash:session-expired', handleSessionExpired)
+    }
+  }, [dispatch, filter.setFilter, navigate])
 
   const getToken = async (code: unknown, state: unknown) => {
     const attempt = consumeGitHubOAuth(code, state)
